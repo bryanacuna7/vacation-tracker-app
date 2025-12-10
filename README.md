@@ -295,7 +295,6 @@ The system automatically enforces several business rules:
 ## 👨‍💻 Author
 
 **Bryan Acuña**  
-*Full-Stack Developer & Automation Specialist*
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/bryan-acu%C3%B1a-as12b7/)
 [![GitHub](https://img.shields.io/badge/GitHub-Follow-181717?style=for-the-badge&logo=github)](https://github.com/bryanacuna7)
@@ -321,7 +320,5 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 <div align="center">
 
 **⭐ If this project helped you, please consider giving it a star!**
-
-Made with ❤️ by [Bryan Acuña](https://github.com/bryanacuna7)
 
 </div>
