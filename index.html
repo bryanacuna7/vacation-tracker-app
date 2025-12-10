@@ -8,123 +8,95 @@
   
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+  
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
     :root {
-        --primary: #0071e3; --primary-dark: #005bb5;
-        --secondary: #f5f5f7; --bg-body: #ffffff; --bg-card: #ffffff;
-        --text-main: #1d1d1f; --text-secondary: #86868b;
-        --border: #e5e5e5; --radius-m: 12px; --radius-l: 16px;
-        
-        /* Colores de Estado */
-        --success: #34c759; --success-bg: #e8fceb;
-        --danger: #ff3b30; --danger-bg: #ffe5e5;
-        --warning: #ff9500; --warning-bg: #fff4e5;
-        --info: #5856d6; --info-bg: #efeffc;
-        --teal: #30b0c7; --teal-bg: #e0f8fc;
-        --neutral: #8e8e93; --neutral-bg: #f2f2f7;
-
-        --font-stack: 'Inter', sans-serif;
+        --primary: #0071e3; 
+        --secondary: #f5f5f7; 
+        --text-main: #1d1d1f; 
+        --text-sub: #86868b;
+        --border: #e5e5e5;
+        --radius: 16px;
+        --font: 'Inter', -apple-system, sans-serif;
     }
-    
-    * { box-sizing: border-box; outline: none; }
-    body { font-family: var(--font-stack); background-color: var(--bg-body); color: var(--text-main); margin: 0; padding: 0; font-size: 14px; }
-    
-    /* Layout */
-    .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
-    
-    /* Header & Nav */
-    .app-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 1px solid var(--border); margin-bottom: 30px; }
-    .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
-    
-    .nav-pills { display: flex; gap: 4px; background: #f5f5f7; padding: 4px; border-radius: 12px; }
-    .nav-item { padding: 8px 16px; border-radius: 8px; border: none; background: transparent; font-weight: 600; color: var(--text-secondary); cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px; transition: all 0.2s; }
-    .nav-item:hover { color: var(--text-main); }
-    .nav-item.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    .nav-badge { background: var(--danger); color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; min-width: 18px; text-align: center; }
 
+    * { box-sizing: border-box; outline: none; }
+    body { font-family: var(--font); background: #ffffff; color: var(--text-main); margin: 0; padding: 0; font-size: 14px; }
+    
+    /* Layout Global */
+    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .brand { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    
+    /* Navegación */
+    .nav { display: flex; background: var(--secondary); padding: 4px; border-radius: 12px; gap: 4px; }
+    .nav-btn { border: none; background: transparent; padding: 8px 16px; border-radius: 8px; font-weight: 600; color: var(--text-sub); cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px; font-family: var(--font); }
+    .nav-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    
     /* Tarjetas Generales */
-    .card { background: white; border: 1px solid var(--border); border-radius: var(--radius-l); padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+    .card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
     
-    /* --- ESTILOS ESPECÍFICOS DE "MIS SOLICITUDES" (DISEÑO RESTAURADO) --- */
-    .section-label { font-size: 12px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; }
+    /* --- DISEÑO ESPECÍFICO DE "MIS SOLICITUDES" --- */
+    .section-header { font-size: 12px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin: 30px 0 15px 0; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; }
     
+    /* El Cuadro Morado de Fecha */
     .date-box { 
         background: #F2F2FC; color: #5856d6; 
-        border-radius: 12px; min-width: 70px; height: 70px; 
+        width: 70px; height: 70px; border-radius: 12px; 
         display: flex; flex-direction: column; align-items: center; justify-content: center;
-        margin-right: 20px;
+        flex-shrink: 0; margin-right: 20px;
     }
-    .date-box-month { font-size: 11px; font-weight: 700; text-transform: uppercase; line-height: 1; margin-bottom: 4px; }
-    .date-box-day { font-size: 24px; font-weight: 800; line-height: 1; }
+    .db-month { font-size: 11px; font-weight: 700; text-transform: uppercase; line-height: 1; margin-bottom: 4px; }
+    .db-day { font-size: 24px; font-weight: 800; line-height: 1; }
 
     /* Badges */
     .badge { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; display: inline-block; }
-    .badge-success { background: var(--success-bg); color: var(--success); }
-    .badge-warning { background: var(--warning-bg); color: var(--warning); }
-    .badge-danger { background: var(--danger-bg); color: var(--danger); }
-    .badge-info { background: var(--info-bg); color: var(--info); }
-    .badge-teal { background: var(--teal-bg); color: var(--teal); }
-    .badge-neutral { background: var(--neutral-bg); color: var(--neutral); }
+    .bg-warn { background: #FFF4E5; color: #FF9500; }
+    .bg-succ { background: #E8FCEB; color: #34C759; }
+    .bg-dang { background: #FFE5E5; color: #FF3B30; }
+    .bg-info { background: #E0F8FC; color: #30B0C7; }
+    .bg-neut { background: #F2F2F7; color: #8E8E93; }
 
     /* Botones */
-    .btn { padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; }
+    .btn { border: 1px solid transparent; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; font-family: var(--font); display: inline-flex; align-items: center; gap: 6px; }
     .btn-outline { background: white; border-color: var(--border); color: var(--text-main); }
     .btn-outline:hover { background: var(--secondary); }
-    .btn-ghost { background: transparent; color: var(--text-secondary); }
-    .btn-ghost:hover { background: rgba(0,0,0,0.05); color: var(--danger); }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover { background: var(--primary-dark); }
-    .btn-sm { padding: 6px 12px; font-size: 12px; }
+    .btn-ghost { background: transparent; color: #ff3b30; }
+    .btn-ghost:hover { background: #ffe5e5; }
+    .btn-primary { background: var(--primary); color: white; width: 100%; justify-content: center; margin-top: 10px; }
 
-    /* Calendario Grid (Original) */
-    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--secondary); border: 1px solid var(--border); border-radius: 0 0 var(--radius-l) var(--radius-l); overflow: hidden; }
-    .calendar-header { padding: 12px 0; text-align: center; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); background: #fbfbfd; }
-    .calendar-cell { background: white; min-height: 100px; padding: 8px; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; }
-    .calendar-cell:hover:not(.disabled) { background: #fbfbfd; z-index: 2; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .calendar-cell.selected-range { background: #e3f0ff; }
-    .calendar-num { font-size: 14px; font-weight: 600; }
-    .disabled { background: #f5f5f7; color: #ccc; pointer-events: none; }
+    /* Utilidades */
+    .flex { display: flex; } .items-center { align-items: center; } .justify-between { justify-content: space-between; } .gap-2 { gap: 10px; }
+    .text-bold { font-weight: 700; color: var(--text-main); }
+    .text-sub { color: var(--text-sub); font-size: 13px; }
     
-    .event-dot { width: 6px; height: 6px; border-radius: 50%; margin-right: 2px; display: inline-block; }
-
-    /* Tablas (Para Team/Summary) */
-    .custom-table { width: 100%; border-collapse: collapse; }
-    .custom-table th { text-align: left; padding: 12px 16px; font-size: 11px; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
-    .custom-table td { padding: 16px; border-bottom: 1px solid var(--border); vertical-align: middle; }
-    .custom-table tr:last-child td { border-bottom: none; }
-
     /* Loader */
-    .loader-container { position: fixed; inset: 0; background: white; display: flex; justify-content: center; align-items: center; z-index: 999; flex-direction: column; gap: 10px; }
-    
-    /* Utilities */
-    .flex { display: flex; } .items-center { align-items: center; } .justify-between { justify-content: space-between; } .gap-2 { gap: 8px; } .gap-4 { gap: 16px; }
-    .text-sub { color: var(--text-secondary); font-size: 13px; }
-    .w-full { width: 100%; } .grid-cols-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 20px; } .col-span-3 { grid-column: span 3; } .col-span-9 { grid-column: span 9; }
+    .loader { position: fixed; inset: 0; background: white; display: flex; justify-content: center; align-items: center; z-index: 1000; font-weight: 600; color: #888; }
 
-    @media (max-width: 768px) {
-        .grid-cols-12 { display: flex; flex-direction: column; }
-        .nav-pills { overflow-x: auto; max-width: 100%; }
-        .app-header { flex-direction: column; gap: 10px; align-items: flex-start; }
+    @media (max-width: 600px) {
+        .card-responsive { flex-direction: column; align-items: flex-start; gap: 16px; }
+        .date-box { flex-direction: row; width: 100%; height: 40px; justify-content: flex-start; padding-left: 10px; gap: 10px; margin: 0; }
+        .nav { overflow-x: auto; }
+        .actions-responsive { width: 100%; display: flex; gap: 10px; }
+        .actions-responsive .btn { flex: 1; justify-content: center; }
     }
   </style>
 </head>
 <body>
-  
+
   <div id="root"></div>
-  <div id="initial-loader" class="loader-container">
-     <div style="font-weight:600; color:#888;">Cargando Portal...</div>
-  </div>
+  <div id="loader" class="loader">Cargando...</div>
 
   <script type="text/babel">
-    const { useState, useEffect, useMemo, memo } = React;
+    const { useState, useEffect, useMemo } = React;
 
-    // --- 1. CONFIGURACIÓN MOCK (GitHub Pages) ---
-    // Esto es crucial para que funcione en la web pública
+    // --- 1. CONFIGURACIÓN DEMO GITHUB PAGES ---
     const IS_DEV = typeof google === 'undefined';
     
     if (IS_DEV) {
@@ -132,36 +104,23 @@
             script: {
                 run: {
                     withSuccessHandler: (success) => ({
-                        withFailureHandler: (failure) => ({
+                        withFailureHandler: () => ({
                             getDashboardData: () => {
                                 setTimeout(() => {
                                     const y = new Date().getFullYear();
                                     success({
-                                        user: { email: 'demo.manager@techcorp.com', role: 'manager', team: 'Data Analytics', stats: { remaining: 12 } },
+                                        user: { email: 'demo@fundingmetrics.com', team: 'Data Analytics' },
                                         requests: [
-                                            // DATOS VISUALES PARA MIS SOLICITUDES
-                                            { id: 10, startDate: `${y}-11-02T12:00:00.000Z`, endDate: `${y}-11-17T12:00:00.000Z`, status: 'Pendiente', days: 5 },
-                                            { id: 1, startDate: `${y}-09-12T12:00:00.000Z`, endDate: `${y}-09-12T12:00:00.000Z`, status: 'Cancelado', days: 1 },
-                                            { id: 2, startDate: `${y}-04-12T12:00:00.000Z`, endDate: `${y}-04-12T12:00:00.000Z`, status: 'Rechazado', days: 1 },
-                                            { id: 3, startDate: `${y}-01-21T12:00:00.000Z`, endDate: `${y}-01-21T12:00:00.000Z`, status: 'Aprobado', days: 1 },
-                                            { id: 4, startDate: `${y}-08-15T12:00:00.000Z`, endDate: `${y}-08-15T12:00:00.000Z`, status: 'Aprobado (Excepción)', days: 1 }
-                                        ],
-                                        // DATOS PARA PESTAÑA EQUIPO
-                                        pending: [
-                                            { id: 101, employee: 'Sarah Connor', team: 'Data Analytics', startDate: `${y}-10-05T00:00:00.000Z`, endDate: `${y}-10-08T00:00:00.000Z`, status: 'Pendiente', days: 4 },
-                                            { id: 102, employee: 'John Doe', team: 'Data Analytics', startDate: `${y}-10-05T00:00:00.000Z`, endDate: `${y}-10-08T00:00:00.000Z`, status: 'Necesita Revisión', days: 4 }
-                                        ],
-                                        // DATOS PARA PESTAÑA RESUMEN
-                                        allRequests: [
-                                            { id: 201, employee: 'Sarah Connor', team: 'Data Analytics', startDate: `${y}-02-10T00:00:00.000Z`, endDate: `${y}-02-14T00:00:00.000Z`, status: 'Aprobado', days: 5 },
-                                            { id: 202, employee: 'Mike Ross', team: 'Legal', startDate: `${y}-03-01T00:00:00.000Z`, endDate: `${y}-03-03T00:00:00.000Z`, status: 'Aprobado', days: 3 }
+                                            // DATOS VISUALES (Coinciden con tu captura)
+                                            { id: 1, startDate: `${y}-02-11T12:00:00.000Z`, endDate: `${y}-02-17T12:00:00.000Z`, status: 'Pendiente', days: 5 },
+                                            { id: 2, startDate: `${y-1}-12-09T12:00:00.000Z`, endDate: `${y-1}-12-09T12:00:00.000Z`, status: 'Cancelado', days: 1 },
+                                            { id: 3, startDate: `${y-1}-12-04T12:00:00.000Z`, endDate: `${y-1}-12-04T12:00:00.000Z`, status: 'Rechazado', days: 1 },
+                                            { id: 4, startDate: `${y-1}-11-21T12:00:00.000Z`, endDate: `${y-1}-11-21T12:00:00.000Z`, status: 'Aprobado', days: 1 },
+                                            { id: 5, startDate: `${y-1}-09-12T12:00:00.000Z`, endDate: `${y-1}-09-12T12:00:00.000Z`, status: 'Aprobado (Excepción)', days: 1 }
                                         ]
                                     });
-                                }, 600);
+                                }, 500);
                             },
-                            // Mocks de acciones
-                            apiCreateRequest: () => setTimeout(() => success({success:true}), 500),
-                            apiProcessRequest: () => setTimeout(() => success({success:true}), 500),
                             apiCancelRequest: () => setTimeout(() => success({success:true}), 500)
                         })
                     })
@@ -171,232 +130,133 @@
     }
 
     // --- 2. UTILIDADES ---
-    const formatDate = (isoStr) => {
-        if(!isoStr) return '';
-        const d = new Date(isoStr);
+    const formatDate = (iso) => {
+        if(!iso) return '';
+        const d = new Date(iso);
         return `${d.getUTCDate().toString().padStart(2,'0')}/${(d.getUTCMonth()+1).toString().padStart(2,'0')}/${d.getUTCFullYear()}`;
     };
-    
-    const getMonthName = (isoStr) => {
+
+    const getMonthShort = (iso) => {
         const months = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
-        return months[new Date(isoStr).getUTCMonth()];
+        return months[new Date(iso).getUTCMonth()];
     };
 
+    const getDayNum = (iso) => new Date(iso).getUTCDate();
+
+    // --- 3. COMPONENTES VISUALES ---
+    
     const StatusBadge = ({ status }) => {
-        let type = 'neutral';
-        if (status === 'Aprobado') type = 'success';
-        else if (status.includes('Excepción')) type = 'teal';
-        else if (status === 'Pendiente') type = 'warning';
-        else if (status === 'Necesita Revisión') type = 'info';
-        else if (status === 'Rechazado') type = 'danger';
-        return <span className={`badge badge-${type}`}>{status.toUpperCase()}</span>;
+        let cls = 'bg-neut';
+        if (status === 'Pendiente') cls = 'bg-warn';
+        else if (status === 'Aprobado') cls = 'bg-succ';
+        else if (status === 'Rechazado') cls = 'bg-dang';
+        else if (status.includes('Excepción')) cls = 'bg-info';
+        return <span className={`badge ${cls}`}>{status.toUpperCase()}</span>;
     };
 
-    const Icon = ({ name }) => <i className={`bx bx-${name}`}></i>;
+    const App = () => {
+        const [data, setData] = useState(null);
+        const [tab, setTab] = useState('requests');
 
-    // --- 3. COMPONENTES DE VISTAS (Completos) ---
+        useEffect(() => {
+            google.script.run.withSuccessHandler(d => {
+                setData(d);
+                document.getElementById('loader').style.display = 'none';
+            }).getDashboardData();
+        }, []);
 
-    // A. MIS SOLICITUDES (Diseño Restaurado)
-    const MyRequestsTab = ({ requests, onCancel }) => {
-        const { active, history } = useMemo(() => {
-            const active = [], history = [];
-            requests.forEach(r => {
-                if (r.status === 'Pendiente' || r.status === 'Necesita Revisión') active.push(r);
-                else history.push(r);
-            });
-            active.sort((a,b) => new Date(a.startDate) - new Date(b.startDate));
-            history.sort((a,b) => new Date(b.startDate) - new Date(a.startDate));
-            return { active, history };
-        }, [requests]);
+        const handleCancel = () => {
+            Swal.fire({title: 'Demo', text: 'En la versión real, esto cancelaría la solicitud.', icon: 'info'});
+        };
+
+        if (!data) return null;
+
+        // Separar solicitudes
+        const active = data.requests.filter(r => r.status === 'Pendiente' || r.status === 'Necesita Revisión');
+        const history = data.requests.filter(r => r.status !== 'Pendiente' && r.status !== 'Necesita Revisión');
 
         return (
-            <div>
-                <div style={{marginBottom: '40px'}}>
-                    <div className="section-label"><Icon name="time-five"/> EN PROCESO</div>
-                    {active.length === 0 ? <div className="card text-sub" style={{textAlign:'center', borderStyle:'dashed'}}>No hay solicitudes activas.</div> : 
-                        active.map(req => (
-                            <div key={req.id} className="card flex justify-between items-center" style={{flexWrap:'wrap', gap:'20px'}}>
-                                <div className="flex items-center">
-                                    <div className="date-box">
-                                        <span className="date-box-month">{getMonthName(req.startDate)}</span>
-                                        <span className="date-box-day">{new Date(req.startDate).getUTCDate()}</span>
-                                    </div>
-                                    <div>
-                                        <div style={{fontWeight:700, fontSize:'16px', marginBottom:'6px'}}>
-                                            {formatDate(req.startDate)} <i className='bx bx-right-arrow-alt text-sub'></i> {formatDate(req.endDate)}
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sub">{req.days} días</span>
-                                            <StatusBadge status={req.status} />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex gap-2">
-                                    <button className="btn btn-outline" disabled><Icon name="edit-alt"/> Editar</button>
-                                    <button className="btn btn-ghost" onClick={() => onCancel(req.id)}><Icon name="trash"/> Cancelar</button>
-                                </div>
-                            </div>
-                        ))
-                    }
-                </div>
-
-                <div>
-                    <div className="section-label"><Icon name="archive"/> HISTORIAL</div>
-                    <div className="flex-col" style={{display:'flex', gap:'12px'}}>
-                        {history.map(req => (
-                            <div key={req.id} className="card" style={{padding:'16px 24px', margin:0, display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                                <div className="flex gap-4 items-center text-sub" style={{color:'#444'}}>
-                                    <span>{formatDate(req.startDate)}</span>
-                                    <i className='bx bx-right-arrow-alt'></i>
-                                    <span>{formatDate(req.endDate)}</span>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <span className="text-sub">{req.days}d</span>
-                                    <StatusBadge status={req.status} />
-                                </div>
-                            </div>
-                        ))}
+            <div className="container">
+                {/* HEADER */}
+                <div className="header">
+                    <div className="brand"><i className='bx bxs-plane-alt' style={{color:'#0071e3'}}></i> Portal Vacaciones</div>
+                    <div className="nav">
+                        <button className={`nav-btn ${tab==='home'?'active':''}`} onClick={()=>setTab('home')}><i className='bx bx-home'></i> Inicio</button>
+                        <button className={`nav-btn ${tab==='requests'?'active':''}`} onClick={()=>setTab('requests')}><i className='bx bx-list-ul'></i> Mis Solicitudes</button>
+                        <button className={`nav-btn ${tab==='team'?'active':''}`} onClick={()=>setTab('team')}><i className='bx bx-group'></i> Equipo</button>
                     </div>
                 </div>
-            </div>
-        );
-    };
 
-    // B. CALENDARIO (Completo Original)
-    const CalendarTab = ({ requests, onCreate }) => {
-        // Lógica simplificada de calendario para la demo
-        const weekDays = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
-        const days = Array.from({length: 30}, (_, i) => i + 1);
-        
-        return (
-            <div className="grid-cols-12">
-                <div className="col-span-9">
-                    <div className="card" style={{height:'100%'}}>
-                        <div className="flex justify-between items-center" style={{marginBottom:'20px'}}>
-                            <h3 style={{margin:0}}>Noviembre 2026</h3>
-                            <div className="flex gap-2"><button className="btn btn-outline btn-sm"><Icon name="chevron-left"/></button><button className="btn btn-outline btn-sm"><Icon name="chevron-right"/></button></div>
-                        </div>
-                        <div className="calendar-grid">
-                            {weekDays.map(d => <div key={d} className="calendar-header">{d}</div>)}
-                            {days.map(d => (
-                                <div key={d} className="calendar-cell">
-                                    <span className="calendar-num">{d}</span>
-                                    {d === 2 && <div className="event-dot" style={{background:'var(--warning)'}}></div>}
+                {/* CONTENIDO PRINCIPAL */}
+                {tab === 'requests' && (
+                    <div>
+                        <h2 style={{fontSize:'24px', fontWeight:700, marginBottom:'20px'}}>Mis Solicitudes</h2>
+
+                        {/* SECCIÓN EN PROCESO (DISEÑO RESTAURADO) */}
+                        <div className="section-header"><i className='bx bx-time-five'></i> En Proceso</div>
+                        
+                        {active.length === 0 ? <p className="text-sub">No tienes solicitudes pendientes.</p> : 
+                            active.map(r => (
+                                <div key={r.id} className="card card-responsive flex items-center justify-between">
+                                    <div className="flex items-center" style={{gap:'20px'}}>
+                                        <div className="date-box">
+                                            <span className="db-month">{getMonthShort(r.startDate)}</span>
+                                            <span className="db-day">{getDayNum(r.startDate)}</span>
+                                        </div>
+                                        <div>
+                                            <div className="text-bold" style={{fontSize:'16px', marginBottom:'6px', display:'flex', alignItems:'center', gap:'8px'}}>
+                                                {formatDate(r.startDate)} <i className='bx bx-right-arrow-alt text-sub'></i> {formatDate(r.endDate)}
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sub">{r.days} días</span>
+                                                <StatusBadge status={r.status} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="actions-responsive">
+                                        <button className="btn btn-outline" disabled><i className='bx bx-edit'></i> Editar</button>
+                                        <button className="btn btn-ghost" onClick={handleCancel}><i className='bx bx-trash'></i> Cancelar</button>
+                                    </div>
+                                </div>
+                            ))
+                        }
+
+                        {/* SECCIÓN HISTORIAL */}
+                        <div className="section-header"><i className='bx bx-archive'></i> Historial</div>
+                        <div style={{display:'flex', flexDirection:'column', gap:'12px'}}>
+                            {history.map(r => (
+                                <div key={r.id} className="card" style={{margin:0, padding:'16px 24px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+                                    <div className="flex items-center gap-4 text-sub" style={{color:'#333'}}>
+                                        <span>{formatDate(r.startDate)}</span>
+                                        <i className='bx bx-right-arrow-alt text-sub'></i>
+                                        <span>{formatDate(r.endDate)}</span>
+                                    </div>
+                                    <div className="flex items-center gap-4">
+                                        <span className="text-sub" style={{fontSize:'12px'}}>{r.days}d</span>
+                                        <StatusBadge status={r.status} />
+                                    </div>
                                 </div>
                             ))}
                         </div>
                     </div>
-                </div>
-                <div className="col-span-3 flex-col" style={{display:'flex', gap:'16px'}}>
-                    <div className="card" style={{background:'linear-gradient(135deg, #0071e3 0%, #00c6ff 100%)', color:'white'}}>
-                        <div style={{fontSize:'12px', opacity:0.9, textTransform:'uppercase', fontWeight:700}}>Saldo Disponible</div>
-                        <div style={{fontSize:'42px', fontWeight:800}}>12 <span style={{fontSize:'16px'}}>días</span></div>
+                )}
+
+                {/* PLACEHOLDERS OTRAS VISTAS */}
+                {tab === 'home' && (
+                    <div className="card" style={{textAlign:'center', padding:'60px'}}>
+                        <h3>Vista de Calendario</h3>
+                        <p className="text-sub">Aquí iría el calendario interactivo.</p>
+                        <button className="btn btn-primary" style={{width:'auto'}} onClick={()=>setTab('requests')}>Ver mis solicitudes</button>
                     </div>
-                    <div className="card">
-                        <h4 style={{marginTop:0}}>Nueva Solicitud</h4>
-                        <button className="btn btn-primary w-full" onClick={onCreate}>Seleccionar Fechas</button>
+                )}
+                
+                {tab === 'team' && (
+                    <div className="card" style={{textAlign:'center', padding:'60px'}}>
+                        <h3>Vista de Equipo</h3>
+                        <p className="text-sub">Solo visible para managers.</p>
                     </div>
-                </div>
-            </div>
-        );
-    };
+                )}
 
-    // C. EQUIPO (Completo Original)
-    const TeamTab = ({ pending, onAction }) => {
-        return (
-            <div className="card table-container">
-                <table className="custom-table">
-                    <thead><tr><th>Empleado</th><th>Equipo</th><th>Fechas</th><th>Estado</th><th style={{textAlign:'right'}}>Acción</th></tr></thead>
-                    <tbody>
-                        {pending.length === 0 ? <tr><td colSpan="5" style={{textAlign:'center', padding:'30px'}}>Todo al día.</td></tr> : 
-                        pending.map(r => (
-                            <tr key={r.id}>
-                                <td style={{fontWeight:600}}>{r.employee}</td>
-                                <td className="text-sub">{r.team}</td>
-                                <td>{formatDate(r.startDate)} - {formatDate(r.endDate)}</td>
-                                <td><StatusBadge status={r.status}/></td>
-                                <td style={{textAlign:'right'}}>
-                                    <button className="btn btn-ghost" onClick={()=>onAction(r.id, 'Rechazado')} style={{color:'var(--danger)'}}><Icon name="x"/></button>
-                                    <button className="btn btn-ghost" onClick={()=>onAction(r.id, 'Aprobado')} style={{color:'var(--success)'}}><Icon name="check"/></button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        );
-    };
-
-    // D. RESUMEN (Completo Original)
-    const SummaryTab = ({ allRequests }) => {
-        return (
-            <div className="card">
-                <h3>Resumen Anual</h3>
-                <div className="text-sub">Gráfica de ausencias por equipo (Placeholder Visual)</div>
-                <div style={{height:'200px', background:'#f9f9f9', marginTop:'20px', borderRadius:'12px', display:'flex', alignItems:'center', justifyContent:'center'}}>
-                   [Gráfico de Barras]
-                </div>
-            </div>
-        );
-    };
-
-    // --- 4. APP PRINCIPAL ---
-    const App = () => {
-        const [tab, setTab] = useState('home');
-        const [data, setData] = useState(null);
-
-        useEffect(() => {
-            google.script.run
-                .withSuccessHandler(d => { setData(d); document.getElementById('initial-loader').style.display='none'; })
-                .withFailureHandler(e => console.error(e))
-                .getDashboardData();
-        }, []);
-
-        const handleAction = (id, action) => {
-            Swal.fire({ title: `¿${action}?`, icon: 'question', showCancelButton: true }).then(r => {
-                if(r.isConfirmed) {
-                    if(IS_DEV) Swal.fire('Demo', 'Acción simulada', 'success');
-                    else google.script.run.withSuccessHandler(()=>location.reload()).apiProcessRequest(id, action);
-                }
-            });
-        };
-
-        if (!data) return null;
-        const { user, requests, pending, allRequests } = data;
-        const isManager = user.role === 'manager';
-
-        return (
-            <div>
-                <header className="app-header container">
-                    <div className="brand text-primary"><Icon name="plane-alt"/> Portal Vacaciones</div>
-                    <div className="nav-pills">
-                        <button className={`nav-item ${tab==='home'?'active':''}`} onClick={()=>setTab('home')}><Icon name="home"/> Inicio</button>
-                        <button className={`nav-item ${tab==='requests'?'active':''}`} onClick={()=>setTab('requests')}>
-                            <Icon name="list-ul"/> Mis Solicitudes 
-                            {requests.filter(r=>r.status==='Pendiente').length > 0 && <span className="nav-badge">{requests.filter(r=>r.status==='Pendiente').length}</span>}
-                        </button>
-                        {isManager && <button className={`nav-item ${tab==='team'?'active':''}`} onClick={()=>setTab('team')}><Icon name="group"/> Equipo {pending.length>0 && <span className="nav-badge">{pending.length}</span>}</button>}
-                        {isManager && <button className={`nav-item ${tab==='summary'?'active':''}`} onClick={()=>setTab('summary')}><Icon name="pie-chart-alt-2"/> Resumen</button>}
-                    </div>
-                    <div style={{display:'flex', alignItems:'center', gap:'10px'}}>
-                        <div style={{textAlign:'right'}}><div style={{fontWeight:700}}>{user.email.split('@')[0]}</div><div className="text-sub" style={{fontSize:'11px'}}>{user.team}</div></div>
-                        <div style={{width:'32px', height:'32px', borderRadius:'50%', background:'var(--info-bg)', color:'var(--info)', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'bold'}}>{user.email[0].toUpperCase()}</div>
-                    </div>
-                </header>
-
-                <main className="container">
-                    <h2 style={{fontSize:'24px', fontWeight:700, marginBottom:'24px'}}>
-                        {tab==='home' && 'Inicio'}
-                        {tab==='requests' && 'Mis Solicitudes'}
-                        {tab==='team' && 'Gestión de Equipo'}
-                        {tab==='summary' && 'Resumen Global'}
-                    </h2>
-                    
-                    {tab === 'home' && <CalendarTab requests={requests} onCreate={() => Swal.fire('Demo', 'Abrir modal de solicitud', 'info')} />}
-                    {tab === 'requests' && <MyRequestsTab requests={requests} onCancel={(id) => handleAction(id, 'Cancelado')} />}
-                    {tab === 'team' && <TeamTab pending={pending} onAction={handleAction} />}
-                    {tab === 'summary' && <SummaryTab allRequests={allRequests} />}
-                </main>
             </div>
         );
     };
