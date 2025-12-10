@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <base target="_top">
   <meta charset="UTF-8">
   <title>Portal de Vacaciones</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -12,253 +11,265 @@
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-  
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
     :root {
-        --primary: #0071e3; 
-        --secondary: #f5f5f7; 
-        --text-main: #1d1d1f; 
-        --text-sub: #86868b;
-        --border: #e5e5e5;
-        --radius: 16px;
-        --font: 'Inter', -apple-system, sans-serif;
+      --primary: #0071e3;
+      --bg-body: #ffffff;
+      --bg-gray: #f5f5f7;
+      --text-main: #1d1d1f;
+      --text-sub: #86868b;
+      --border: #e5e5e5;
     }
 
-    * { box-sizing: border-box; outline: none; }
-    body { font-family: var(--font); background: #ffffff; color: var(--text-main); margin: 0; padding: 0; font-size: 14px; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); margin: 0; font-size: 14px; }
     
-    /* Layout Global */
-    .container { max-width: 900px; margin: 0 auto; padding: 20px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-    .brand { font-size: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
-    
-    /* Navegación */
-    .nav { display: flex; background: var(--secondary); padding: 4px; border-radius: 12px; gap: 4px; }
-    .nav-btn { border: none; background: transparent; padding: 8px 16px; border-radius: 8px; font-weight: 600; color: var(--text-sub); cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 13px; font-family: var(--font); }
-    .nav-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-    
-    /* Tarjetas Generales */
-    .card { background: white; border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
-    
-    /* --- DISEÑO ESPECÍFICO DE "MIS SOLICITUDES" --- */
-    .section-header { font-size: 12px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin: 30px 0 15px 0; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; }
-    
-    /* El Cuadro Morado de Fecha */
-    .date-box { 
-        background: #F2F2FC; color: #5856d6; 
-        width: 70px; height: 70px; border-radius: 12px; 
-        display: flex; flex-direction: column; align-items: center; justify-content: center;
-        flex-shrink: 0; margin-right: 20px;
+    /* Layout */
+    .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+    .logo { font-weight: 800; font-size: 18px; display: flex; align-items: center; gap: 8px; }
+
+    /* Navegación (Pills) */
+    .nav { display: flex; background: var(--bg-gray); padding: 4px; border-radius: 12px; gap: 2px; }
+    .nav-btn {
+      border: none; background: transparent; padding: 8px 16px; border-radius: 8px;
+      font-weight: 600; color: var(--text-sub); cursor: pointer; font-size: 13px;
+      display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+    }
+    .nav-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+    .badge-count { background: #ff3b30; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; }
+
+    /* Títulos de Sección */
+    .section-title {
+      font-size: 12px; font-weight: 700; color: var(--text-sub); text-transform: uppercase;
+      margin: 30px 0 15px 0; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px;
+    }
+
+    /* Tarjetas */
+    .card {
+      background: white; border: 1px solid var(--border); border-radius: 16px;
+      padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    /* EL CUADRO MORADO (Fecha) - Idéntico a tu imagen */
+    .date-box {
+      background: #EFEFFC; color: #5856D6;
+      width: 70px; height: 70px; border-radius: 12px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      margin-right: 20px; flex-shrink: 0;
     }
     .db-month { font-size: 11px; font-weight: 700; text-transform: uppercase; line-height: 1; margin-bottom: 4px; }
     .db-day { font-size: 24px; font-weight: 800; line-height: 1; }
 
-    /* Badges */
-    .badge { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; display: inline-block; }
-    .bg-warn { background: #FFF4E5; color: #FF9500; }
-    .bg-succ { background: #E8FCEB; color: #34C759; }
-    .bg-dang { background: #FFE5E5; color: #FF3B30; }
-    .bg-info { background: #E0F8FC; color: #30B0C7; }
-    .bg-neut { background: #F2F2F7; color: #8E8E93; }
+    /* Badges de Estado */
+    .badge { padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; display: inline-block; }
+    .b-warning { background: #FFF4E5; color: #FF9500; } /* Pendiente */
+    .b-success { background: #E8FCEB; color: #34C759; } /* Aprobado */
+    .b-info { background: #E0F8FC; color: #30B0C7; }    /* Excepción */
+    .b-danger { background: #FFE5E5; color: #FF3B30; }  /* Rechazado */
+    .b-neutral { background: #F2F2F7; color: #8E8E93; }  /* Cancelado */
 
-    /* Botones */
-    .btn { border: 1px solid transparent; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; font-family: var(--font); display: inline-flex; align-items: center; gap: 6px; }
-    .btn-outline { background: white; border-color: var(--border); color: var(--text-main); }
-    .btn-outline:hover { background: var(--secondary); }
-    .btn-ghost { background: transparent; color: #ff3b30; }
+    /* Botones de Acción */
+    .btn-group { display: flex; gap: 10px; margin-top: 15px; justify-content: center; }
+    .btn { padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; border: 1px solid var(--border); background: white; display: flex; align-items: center; gap: 6px; }
+    .btn:hover { background: var(--bg-gray); }
+    .btn-ghost { border: none; color: #ff3b30; background: transparent; }
     .btn-ghost:hover { background: #ffe5e5; }
-    .btn-primary { background: var(--primary); color: white; width: 100%; justify-content: center; margin-top: 10px; }
 
-    /* Utilidades */
-    .flex { display: flex; } .items-center { align-items: center; } .justify-between { justify-content: space-between; } .gap-2 { gap: 10px; }
-    .text-bold { font-weight: 700; color: var(--text-main); }
-    .text-sub { color: var(--text-sub); font-size: 13px; }
-    
+    /* Utilidades Flex */
+    .flex-row { display: flex; align-items: center; }
+    .flex-col { display: flex; flex-direction: column; }
+    .gap-2 { gap: 8px; }
+    .text-dates { font-weight: 700; font-size: 16px; margin-bottom: 6px; }
+    .text-meta { font-size: 13px; color: var(--text-sub); }
+    .arrow { color: var(--text-sub); margin: 0 8px; font-size: 16px; }
+
     /* Loader */
-    .loader { position: fixed; inset: 0; background: white; display: flex; justify-content: center; align-items: center; z-index: 1000; font-weight: 600; color: #888; }
-
-    @media (max-width: 600px) {
-        .card-responsive { flex-direction: column; align-items: flex-start; gap: 16px; }
-        .date-box { flex-direction: row; width: 100%; height: 40px; justify-content: flex-start; padding-left: 10px; gap: 10px; margin: 0; }
-        .nav { overflow-x: auto; }
-        .actions-responsive { width: 100%; display: flex; gap: 10px; }
-        .actions-responsive .btn { flex: 1; justify-content: center; }
-    }
+    #loader { position: fixed; inset: 0; background: white; display: flex; justify-content: center; align-items: center; z-index: 999; }
   </style>
 </head>
 <body>
 
   <div id="root"></div>
-  <div id="loader" class="loader">Cargando...</div>
+  <div id="loader">Cargando...</div>
 
   <script type="text/babel">
-    const { useState, useEffect, useMemo } = React;
+    const { useState, useEffect } = React;
 
-    // --- 1. CONFIGURACIÓN DEMO GITHUB PAGES ---
-    const IS_DEV = typeof google === 'undefined';
-    
-    if (IS_DEV) {
-        window.google = {
-            script: {
-                run: {
-                    withSuccessHandler: (success) => ({
-                        withFailureHandler: () => ({
-                            getDashboardData: () => {
-                                setTimeout(() => {
-                                    const y = new Date().getFullYear();
-                                    success({
-                                        user: { email: 'demo@fundingmetrics.com', team: 'Data Analytics' },
-                                        requests: [
-                                            // DATOS VISUALES (Coinciden con tu captura)
-                                            { id: 1, startDate: `${y}-02-11T12:00:00.000Z`, endDate: `${y}-02-17T12:00:00.000Z`, status: 'Pendiente', days: 5 },
-                                            { id: 2, startDate: `${y-1}-12-09T12:00:00.000Z`, endDate: `${y-1}-12-09T12:00:00.000Z`, status: 'Cancelado', days: 1 },
-                                            { id: 3, startDate: `${y-1}-12-04T12:00:00.000Z`, endDate: `${y-1}-12-04T12:00:00.000Z`, status: 'Rechazado', days: 1 },
-                                            { id: 4, startDate: `${y-1}-11-21T12:00:00.000Z`, endDate: `${y-1}-11-21T12:00:00.000Z`, status: 'Aprobado', days: 1 },
-                                            { id: 5, startDate: `${y-1}-09-12T12:00:00.000Z`, endDate: `${y-1}-09-12T12:00:00.000Z`, status: 'Aprobado (Excepción)', days: 1 }
-                                        ]
-                                    });
-                                }, 500);
-                            },
-                            apiCancelRequest: () => setTimeout(() => success({success:true}), 500)
-                        })
-                    })
-                }
-            }
-        };
-    }
-
-    // --- 2. UTILIDADES ---
-    const formatDate = (iso) => {
-        if(!iso) return '';
-        const d = new Date(iso);
-        return `${d.getUTCDate().toString().padStart(2,'0')}/${(d.getUTCMonth()+1).toString().padStart(2,'0')}/${d.getUTCFullYear()}`;
+    // --- DATOS FIJOS (IGUALES A TU IMAGEN) ---
+    const MOCK_DATA = {
+      user: { email: 'bryan.acuna@demo.com', team: 'PA' },
+      requests: [
+        // EN PROCESO (Tarjeta Grande)
+        { id: 1, startDate: '2026-02-11', endDate: '2026-02-17', status: 'Pendiente', days: 5 },
+        
+        // HISTORIAL (Lista)
+        { id: 2, startDate: '2025-12-09', endDate: '2025-12-09', status: 'Cancelado', days: 1 },
+        { id: 3, startDate: '2025-12-04', endDate: '2025-12-04', status: 'Rechazado', days: 1 },
+        { id: 4, startDate: '2025-11-21', endDate: '2025-11-21', status: 'Aprobado', days: 1 },
+        { id: 5, startDate: '2025-09-12', endDate: '2025-09-12', status: 'Aprobado (Excepción)', days: 1 },
+        { id: 6, startDate: '2025-09-11', endDate: '2025-09-11', status: 'Aprobado', days: 1 }
+      ]
     };
 
-    const getMonthShort = (iso) => {
-        const months = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
-        return months[new Date(iso).getUTCMonth()];
+    // --- COMPONENTES ---
+
+    const Badge = ({ status }) => {
+      let cls = 'b-neutral';
+      if (status === 'Pendiente') cls = 'b-warning';
+      if (status === 'Aprobado') cls = 'b-success';
+      if (status.includes('Excepción')) cls = 'b-info';
+      if (status === 'Rechazado') cls = 'b-danger';
+      return <span className={`badge ${cls}`}>{status.toUpperCase()}</span>;
     };
 
-    const getDayNum = (iso) => new Date(iso).getUTCDate();
+    const DateBox = ({ dateStr }) => {
+      // Extraer mes y día manualmente para asegurar formato
+      const d = new Date(dateStr);
+      // Ajuste de zona horaria simple para demo
+      const day = d.getUTCDate();
+      const months = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
+      const month = months[d.getUTCMonth()];
+      
+      return (
+        <div className="date-box">
+          <span className="db-month">{month}</span>
+          <span className="db-day">{day}</span>
+        </div>
+      );
+    };
 
-    // --- 3. COMPONENTES VISUALES ---
-    
-    const StatusBadge = ({ status }) => {
-        let cls = 'bg-neut';
-        if (status === 'Pendiente') cls = 'bg-warn';
-        else if (status === 'Aprobado') cls = 'bg-succ';
-        else if (status === 'Rechazado') cls = 'bg-dang';
-        else if (status.includes('Excepción')) cls = 'bg-info';
-        return <span className={`badge ${cls}`}>{status.toUpperCase()}</span>;
+    const FormatDate = ({ d }) => {
+      const date = new Date(d);
+      const day = String(date.getUTCDate()).padStart(2, '0');
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+      const year = date.getUTCFullYear();
+      return <span>{day}/{month}/{year}</span>;
     };
 
     const App = () => {
-        const [data, setData] = useState(null);
-        const [tab, setTab] = useState('requests');
+      const [tab, setTab] = useState('requests');
+      const [loaded, setLoaded] = useState(false);
 
-        useEffect(() => {
-            google.script.run.withSuccessHandler(d => {
-                setData(d);
-                document.getElementById('loader').style.display = 'none';
-            }).getDashboardData();
-        }, []);
+      useEffect(() => {
+        // Simular carga rápida
+        setTimeout(() => {
+          document.getElementById('loader').style.display = 'none';
+          setLoaded(true);
+        }, 500);
+      }, []);
 
-        const handleCancel = () => {
-            Swal.fire({title: 'Demo', text: 'En la versión real, esto cancelaría la solicitud.', icon: 'info'});
-        };
+      if (!loaded) return null;
 
-        if (!data) return null;
+      // Separar datos
+      const active = MOCK_DATA.requests.filter(r => r.status === 'Pendiente');
+      const history = MOCK_DATA.requests.filter(r => r.status !== 'Pendiente');
 
-        // Separar solicitudes
-        const active = data.requests.filter(r => r.status === 'Pendiente' || r.status === 'Necesita Revisión');
-        const history = data.requests.filter(r => r.status !== 'Pendiente' && r.status !== 'Necesita Revisión');
-
-        return (
-            <div className="container">
-                {/* HEADER */}
-                <div className="header">
-                    <div className="brand"><i className='bx bxs-plane-alt' style={{color:'#0071e3'}}></i> Portal Vacaciones</div>
-                    <div className="nav">
-                        <button className={`nav-btn ${tab==='home'?'active':''}`} onClick={()=>setTab('home')}><i className='bx bx-home'></i> Inicio</button>
-                        <button className={`nav-btn ${tab==='requests'?'active':''}`} onClick={()=>setTab('requests')}><i className='bx bx-list-ul'></i> Mis Solicitudes</button>
-                        <button className={`nav-btn ${tab==='team'?'active':''}`} onClick={()=>setTab('team')}><i className='bx bx-group'></i> Equipo</button>
-                    </div>
-                </div>
-
-                {/* CONTENIDO PRINCIPAL */}
-                {tab === 'requests' && (
-                    <div>
-                        <h2 style={{fontSize:'24px', fontWeight:700, marginBottom:'20px'}}>Mis Solicitudes</h2>
-
-                        {/* SECCIÓN EN PROCESO (DISEÑO RESTAURADO) */}
-                        <div className="section-header"><i className='bx bx-time-five'></i> En Proceso</div>
-                        
-                        {active.length === 0 ? <p className="text-sub">No tienes solicitudes pendientes.</p> : 
-                            active.map(r => (
-                                <div key={r.id} className="card card-responsive flex items-center justify-between">
-                                    <div className="flex items-center" style={{gap:'20px'}}>
-                                        <div className="date-box">
-                                            <span className="db-month">{getMonthShort(r.startDate)}</span>
-                                            <span className="db-day">{getDayNum(r.startDate)}</span>
-                                        </div>
-                                        <div>
-                                            <div className="text-bold" style={{fontSize:'16px', marginBottom:'6px', display:'flex', alignItems:'center', gap:'8px'}}>
-                                                {formatDate(r.startDate)} <i className='bx bx-right-arrow-alt text-sub'></i> {formatDate(r.endDate)}
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-sub">{r.days} días</span>
-                                                <StatusBadge status={r.status} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="actions-responsive">
-                                        <button className="btn btn-outline" disabled><i className='bx bx-edit'></i> Editar</button>
-                                        <button className="btn btn-ghost" onClick={handleCancel}><i className='bx bx-trash'></i> Cancelar</button>
-                                    </div>
-                                </div>
-                            ))
-                        }
-
-                        {/* SECCIÓN HISTORIAL */}
-                        <div className="section-header"><i className='bx bx-archive'></i> Historial</div>
-                        <div style={{display:'flex', flexDirection:'column', gap:'12px'}}>
-                            {history.map(r => (
-                                <div key={r.id} className="card" style={{margin:0, padding:'16px 24px', display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-                                    <div className="flex items-center gap-4 text-sub" style={{color:'#333'}}>
-                                        <span>{formatDate(r.startDate)}</span>
-                                        <i className='bx bx-right-arrow-alt text-sub'></i>
-                                        <span>{formatDate(r.endDate)}</span>
-                                    </div>
-                                    <div className="flex items-center gap-4">
-                                        <span className="text-sub" style={{fontSize:'12px'}}>{r.days}d</span>
-                                        <StatusBadge status={r.status} />
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* PLACEHOLDERS OTRAS VISTAS */}
-                {tab === 'home' && (
-                    <div className="card" style={{textAlign:'center', padding:'60px'}}>
-                        <h3>Vista de Calendario</h3>
-                        <p className="text-sub">Aquí iría el calendario interactivo.</p>
-                        <button className="btn btn-primary" style={{width:'auto'}} onClick={()=>setTab('requests')}>Ver mis solicitudes</button>
-                    </div>
-                )}
-                
-                {tab === 'team' && (
-                    <div className="card" style={{textAlign:'center', padding:'60px'}}>
-                        <h3>Vista de Equipo</h3>
-                        <p className="text-sub">Solo visible para managers.</p>
-                    </div>
-                )}
-
+      return (
+        <div className="container">
+          {/* HEADER */}
+          <header className="header">
+            <div className="logo">Portal Vacaciones</div>
+            
+            <div className="nav">
+              <button className={`nav-btn ${tab === 'home' ? 'active' : ''}`} onClick={() => setTab('home')}>
+                <i className='bx bx-home'></i> Inicio
+              </button>
+              <button className={`nav-btn ${tab === 'requests' ? 'active' : ''}`} onClick={() => setTab('requests')}>
+                <i className='bx bx-list-ul'></i> Mis Solicitudes
+                <span className="badge-count">1</span>
+              </button>
+              <button className={`nav-btn ${tab === 'team' ? 'active' : ''}`} onClick={() => setTab('team')}>
+                <i className='bx bx-group'></i> Equipo <span className="badge-count">21</span>
+              </button>
+              <button className={`nav-btn ${tab === 'summary' ? 'active' : ''}`} onClick={() => setTab('summary')}>
+                <i className='bx bx-pie-chart-alt-2'></i> Resumen
+              </button>
             </div>
-        );
+
+            <div className="flex-row" style={{gap: '10px'}}>
+              <div style={{textAlign: 'right'}}>
+                <div style={{fontWeight: 700, fontSize: '13px'}}>bryan.acuna</div>
+                <div style={{fontSize: '11px', color: '#888'}}>EQUIPO: PA</div>
+              </div>
+              <div style={{width:'32px', height:'32px', background:'#E0F2FE', borderRadius:'50%', color:'#0071E3', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'bold'}}>
+                B
+              </div>
+            </div>
+          </header>
+
+          {/* CONTENIDO PRINCIPAL - MIS SOLICITUDES */}
+          {tab === 'requests' && (
+            <div>
+              <h2 style={{fontSize: '24px', fontWeight: 700, marginBottom: '20px'}}>Mis Solicitudes</h2>
+
+              {/* SECCIÓN EN PROCESO */}
+              <div className="section-title"><i className='bx bx-time-five'></i> EN PROCESO</div>
+              
+              {active.map(r => (
+                <div key={r.id} className="card">
+                  <div className="flex-row" style={{alignItems: 'flex-start'}}>
+                    <DateBox dateStr={r.startDate} />
+                    
+                    <div className="flex-col" style={{flex: 1}}>
+                      <div className="text-dates flex-row">
+                        <FormatDate d={r.startDate} />
+                        <i className='bx bx-right-arrow-alt arrow'></i>
+                        <FormatDate d={r.endDate} />
+                      </div>
+                      
+                      <div className="flex-row gap-2">
+                        <span className="text-meta">{r.days} días</span>
+                        <Badge status={r.status} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="btn-group">
+                    <button className="btn" onClick={() => Swal.fire('Editar', '', 'info')}>
+                      <i className='bx bx-edit-alt'></i> Editar
+                    </button>
+                    <button className="btn btn-ghost" onClick={() => Swal.fire('Cancelar', '', 'error')}>
+                      <i className='bx bx-trash'></i> Cancelar
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {/* SECCIÓN HISTORIAL */}
+              <div className="section-title"><i className='bx bx-archive'></i> HISTORIAL</div>
+              
+              <div className="flex-col" style={{gap: '12px'}}>
+                {history.map(r => (
+                  <div key={r.id} className="card" style={{margin: 0, padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <div className="flex-row text-meta" style={{color: '#444'}}>
+                      <FormatDate d={r.startDate} />
+                      <i className='bx bx-right-arrow-alt arrow'></i>
+                      <FormatDate d={r.endDate} />
+                    </div>
+                    
+                    <div className="flex-row gap-2">
+                      <span className="text-meta" style={{fontSize: '12px'}}>{r.days}d</span>
+                      <Badge status={r.status} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* PLACEHOLDERS OTRAS PESTAÑAS */}
+          {tab !== 'requests' && (
+            <div className="card" style={{textAlign: 'center', padding: '60px'}}>
+              <h3 style={{color: '#888'}}>Vista de Demo</h3>
+              <p>El contenido real se muestra en "Mis Solicitudes"</p>
+              <button className="btn" onClick={() => setTab('requests')} style={{margin: '20px auto'}}>Ir a Solicitudes</button>
+            </div>
+          )}
+
+        </div>
+      );
     };
 
     const root = ReactDOM.createRoot(document.getElementById('root'));
