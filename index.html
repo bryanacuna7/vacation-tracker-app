@@ -1,42 +1,78 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
   <base target="_top">
   <meta charset="UTF-8">
-  <title>Portal de Vacaciones - Demo</title>
+  <title>Portal de Vacaciones - Sistema de Gestión</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="description" content="Sistema de gestión de vacaciones corporativo - Demo para portfolio">
-  <meta name="author" content="Tu Nombre">
+  <meta name="description" content="Sistema moderno de gestión de vacaciones corporativo - Demo para portfolio">
+  <meta name="author" content="Your Name">
+  <meta name="keywords" content="vacation management, react, modern ui, corporate system">
   
-  <!-- External Dependencies -->
+  <!-- ============================================================
+       VACATION PORTAL - Modern Vacation Management System
+       
+       Created for portfolio demonstration purposes.
+       Features:
+       - Interactive calendar with date range selection
+       - Real-time balance tracking
+       - Manager approval workflow
+       - Team statistics and analytics
+       - Mobile-responsive design
+       
+       Tech Stack:
+       - React 18 (vanilla, no build tools)
+       - CSS Custom Properties for theming
+       - Boxicons for iconography
+       - SweetAlert2 for beautiful modals
+       
+       Design inspired by Apple and Stripe's 2025 aesthetics
+       ============================================================ -->
+  
+  <!-- ============================================================
+       EXTERNAL DEPENDENCIES
+       All libraries loaded from CDN for simplicity
+       ============================================================ -->
+  
+  <!-- 1. CSS Libraries -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- 2. React & Babel - Core framework -->
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+
+  <!-- 3. SweetAlert2 - Beautiful alert modals -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+  <!-- ============================================================
+       STYLES - Design System
+       
+       Modern design inspired by Apple/Stripe 2025 aesthetics
+       - Custom properties for theming
+       - Utility-first approach
+       - Component-based structure
+       - Responsive breakpoints
+       - Subtle animations and transitions
+       ============================================================ -->
   <style>
     /* ============================================================
-       CSS CUSTOM PROPERTIES
-       Design System based on Apple/Stripe 2025 aesthetics
+       CSS CUSTOM PROPERTIES (Design Tokens)
+       Centralized theming system for consistency
        ============================================================ */
     :root {
-        /* Primary Colors */
-        --primary: #0071e3;
+        /* Palette 2025 - Inspired by Apple/Stripe */
+        --primary: #0071e3;          /* Apple Blue */
         --primary-dark: #005bb5;
-        --secondary: #f5f5f7;
-        
-        /* Background Colors */
+        --secondary: #f5f5f7;        /* Apple Light Gray */
         --bg-body: #f5f5f7;
         --bg-card: #ffffff;
         
-        /* Text Colors */
         --text-main: #1d1d1f;
         --text-secondary: #86868b;
         --text-light: #bfbfbf;
 
-        /* Status Colors */
         --success: #34c759;
         --success-bg: #e8fceb;
         --danger: #ff3b30;
@@ -50,28 +86,25 @@
         --neutral: #8e8e93;
         --neutral-bg: #f2f2f7;
 
-        /* Border & Shadow */
         --border: #e5e5e5;
         --border-hover: #d1d1d6;
+
         --radius-m: 12px;
         --radius-l: 16px;
         --radius-xl: 20px;
+
         --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
         --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
         --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
 
-        /* Typography */
         --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     /* ============================================================
        GLOBAL RESET & BASE STYLES
+       Normalize browser defaults and set foundation
        ============================================================ */
-    * { 
-        box-sizing: border-box; 
-        outline: none; 
-        -webkit-tap-highlight-color: transparent; 
-    }
+    * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
     
     body { 
         font-family: var(--font-stack); 
@@ -84,7 +117,7 @@
         line-height: 1.5;
     }
     
-    /* Iframe compatibility (for Google Sites, etc) */
+    /* Fondo blanco cuando está en iframe (Google Sites, etc) */
     body.in-iframe {
         background-color: #ffffff;
     }
@@ -96,7 +129,8 @@
     }
 
     /* ============================================================
-       UTILITY CLASSES
+       LAYOUT UTILITIES
+       Common layout patterns and spacing helpers
        ============================================================ */
     .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
     .flex { display: flex; }
@@ -119,78 +153,49 @@
     
     /* ============================================================
        BUTTON COMPONENTS
+       Reusable button styles with variants and states
        ============================================================ */
     .btn {
-        display: inline-flex; 
-        align-items: center; 
-        justify-content: center; 
-        gap: 8px;
-        padding: 10px 16px; 
-        border-radius: var(--radius-m); 
-        border: none; 
-        cursor: pointer;
-        font-weight: 600; 
-        font-size: 14px; 
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        padding: 10px 16px; border-radius: var(--radius-m); border: none; cursor: pointer;
+        font-weight: 600; font-size: 14px; 
         transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         text-decoration: none;
         position: relative;
     }
-    
-    /* Button States */
     .btn:active:not(:disabled) { transform: scale(0.96); }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-    
-    /* Button Variants */
-    .btn-primary { 
-        background: var(--primary); 
-        color: white; 
-        box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3); 
-    }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3); }
     .btn-primary:hover:not(:disabled) { 
         background: var(--primary-dark); 
         box-shadow: 0 4px 12px rgba(0, 113, 227, 0.4);
         transform: translateY(-1px);
     }
-    
-    .btn-secondary { 
-        background: white; 
-        color: var(--text-main); 
-        border: 1px solid var(--border); 
-    }
+    .btn-secondary { background: white; color: var(--text-main); border: 1px solid var(--border); }
     .btn-secondary:hover:not(:disabled) { 
         background: var(--secondary); 
         border-color: var(--border-hover);
         box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
-    
     .btn-ghost { background: transparent; color: var(--text-secondary); }
     .btn-ghost:hover:not(:disabled) { background: rgba(0,0,0,0.05); color: var(--text-main); }
-    
     .btn-danger { background: var(--danger-bg); color: var(--danger); }
     .btn-danger:hover:not(:disabled) { 
         background: #fee2e2;
         box-shadow: 0 2px 8px rgba(255, 59, 48, 0.2);
     }
-    
     .btn-success { background: var(--success-bg); color: var(--success); }
     .btn-success:hover:not(:disabled) { 
         background: #dcfce7;
         box-shadow: 0 2px 8px rgba(52, 199, 89, 0.2);
     }
     
-    .btn-warning { background: var(--warning-bg); color: var(--warning); }
-    .btn-warning:hover:not(:disabled) {
-        background: #ffedd5;
-        box-shadow: 0 2px 8px rgba(255, 149, 0, 0.2);
-    }
-    
-    /* Button Sizes */
     .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
     .btn-block { width: 100%; }
 
     /* ============================================================
        CARD COMPONENTS
-       Subtle depth with smooth transitions
+       Container elements with subtle depth and hover effects
        ============================================================ */
     .card {
         background: var(--bg-card); 
@@ -220,1760 +225,1329 @@
         align-items: center; 
     }
 
-    /* ============================================================
-       TYPOGRAPHY
-       ============================================================ */
-    .text-h3 { 
-        font-size: 18px; 
-        font-weight: 700; 
-        margin: 0; 
-        color: var(--text-main); 
-    }
-    .text-bold { font-weight: 600; color: var(--text-main); }
-    .text-sub { color: var(--text-secondary); font-size: 13px; }
-    .text-xs { font-size: 12px; }
-    .text-sm { font-size: 13px; }
-    .text-primary { color: var(--primary); }
-    .text-secondary { color: var(--text-secondary); }
-    .text-success { color: var(--success); }
-    .text-danger { color: var(--danger); }
-    .text-warning { color: var(--warning); }
-    .text-info { color: var(--info); }
-    .text-upper { text-transform: uppercase; letter-spacing: 0.5px; }
-
-    /* ============================================================
-       FORM ELEMENTS
-       ============================================================ */
+    /* Inputs */
     .input-group { margin-bottom: 16px; }
-    .input-label { 
-        display: block; 
-        font-size: 11px; 
-        font-weight: 600; 
-        text-transform: uppercase; 
-        letter-spacing: 0.5px; 
-        color: var(--text-secondary); 
-        margin-bottom: 6px; 
-    }
-    .input-display { 
-        background: var(--secondary); 
-        padding: 12px 16px; 
-        border-radius: var(--radius-m); 
-        font-weight: 500; 
-        font-size: 14px; 
-        color: var(--text-main); 
-        border: 1px solid transparent;
-    }
+    .input-label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.5px; }
+    .input-display { background: var(--secondary); padding: 12px 16px; border-radius: var(--radius-m); font-weight: 600; color: var(--text-main); border: 1px solid transparent; }
+    .input-checkbox { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
 
-    /* ============================================================
-       STATUS BADGES
-       ============================================================ */
-    .status-badge {
-        display: inline-flex; 
-        align-items: center; 
-        gap: 6px;
-        padding: 6px 12px; 
-        border-radius: 20px; 
-        font-size: 12px; 
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .status-approved { background: var(--success-bg); color: var(--success); }
-    .status-pending { background: var(--warning-bg); color: var(--warning); }
-    .status-rejected { background: var(--danger-bg); color: var(--danger); }
-    .status-review { background: var(--info-bg); color: var(--info); }
-    .status-cancelled { background: var(--neutral-bg); color: var(--neutral); }
-
-    /* ============================================================
-       LOADING & ANIMATIONS
-       ============================================================ */
-    .loader-container {
-        position: fixed; 
-        inset: 0; 
-        background: var(--bg-body); 
-        display: flex; 
-        align-items: center; 
-        justify-content: center; 
-        z-index: 9999;
-        flex-direction: column;
-        gap: 20px;
-    }
-    
-    .spinner {
-        width: 48px; 
-        height: 48px; 
-        border: 4px solid var(--secondary); 
-        border-top-color: var(--primary); 
-        border-radius: 50%; 
-        animation: spin 0.8s linear infinite;
-    }
-    
-    .spinner-sm {
-        display: inline-block;
-        width: 14px; 
-        height: 14px; 
-        border: 2px solid rgba(255,255,255,0.3); 
-        border-top-color: white; 
-        border-radius: 50%; 
-        animation: spin 0.6s linear infinite;
-    }
-    
-    @keyframes spin { to { transform: rotate(360deg); } }
-    
-    .fade-in {
-        animation: fadeIn 0.3s ease-in;
-    }
-    
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ============================================================
-       HEADER & NAVIGATION
-       ============================================================ */
+    /* Navigation / Header */
     .app-header {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid var(--border);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        transition: all 0.3s ease;
+        position: sticky; top: 0; z-index: 100;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        height: 64px; display: flex; align-items: center;
     }
     
-    .header-content {
-        padding: 16px 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 24px;
-        flex-wrap: wrap;
-    }
-
-    /* Navigation Pills */
-    .nav-pills {
-        display: flex;
-        gap: 8px;
-        background: var(--secondary);
+    /* Tab Navigation Container */
+    .nav-pills-container {
+        position: relative;
+        background: rgba(0,0,0,0.04);
+        border-radius: 12px;
         padding: 4px;
-        border-radius: var(--radius-m);
-        flex-wrap: wrap;
+        display: flex;
+        gap: 4px;
+    }
+    
+    /* Tab Indicator (animated) */
+    .tab-indicator {
+        position: absolute;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.08);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+        z-index: 0;
     }
     
     .nav-pill {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 16px;
-        border-radius: 8px;
-        font-size: 13px;
-        font-weight: 600;
-        color: var(--text-secondary);
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        white-space: nowrap;
+        padding: 6px 16px; border-radius: 10px; font-size: 13px; font-weight: 600;
+        color: var(--text-secondary); cursor: pointer; 
+        transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex; align-items: center; gap: 6px; border: none; background: transparent;
+        position: relative;
+        z-index: 1;
     }
+    .nav-pill:hover { color: var(--text-main); }
+    .nav-pill.active { color: var(--primary); }
     
-    .nav-pill:hover {
-        color: var(--text-main);
-        background: rgba(0,0,0,0.05);
-    }
-    
-    .nav-pill.active {
-        background: white;
-        color: var(--primary);
-        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    }
-    
-    /* Badge for notifications */
+    /* Badge count */
     .nav-badge {
         position: absolute;
-        top: 4px;
-        right: 8px;
+        top: -6px;
+        right: -8px;
         background: var(--danger);
         color: white;
         font-size: 10px;
-        font-weight: 700;
-        padding: 2px 6px;
+        font-weight: 800;
+        padding: 2px 5px;
         border-radius: 10px;
         min-width: 18px;
-        text-align: center;
-    }
-
-    /* Mobile Bottom Navigation */
-    .nav-mobile {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(255,255,255,0.95);
-        backdrop-filter: blur(20px);
-        border-top: 1px solid var(--border);
-        display: flex;
-        justify-content: space-around;
-        padding: 8px 0;
-        z-index: 100;
-        box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
-    }
-    
-    .nav-mobile-item {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        padding: 8px 16px;
-        background: none;
-        border: none;
-        color: var(--text-secondary);
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-size: 11px;
-        font-weight: 600;
-    }
-    
-    .nav-mobile-item.active {
-        color: var(--primary);
-    }
-
-    /* ============================================================
-       LAYOUT GRIDS
-       ============================================================ */
-    .grid-main {
-        display: grid;
-        grid-template-columns: 1fr 400px;
-        gap: 24px;
-        align-items: start;
-    }
-
-    /* Balance Card - Hero element */
-    .balance-card {
-        background: linear-gradient(135deg, var(--primary) 0%, #0051a8 100%);
-        color: white;
-        padding: 24px;
-        border-radius: var(--radius-l);
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 8px 24px rgba(0, 113, 227, 0.3);
-    }
-    
-    .balance-circle {
-        position: absolute;
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.1);
-        top: -30px;
-        right: -30px;
-    }
-
-    /* ============================================================
-       CALENDAR COMPONENT
-       ============================================================ */
-    .calendar-container {
-        background: white;
-        border-radius: var(--radius-l);
-        padding: 24px;
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow-md);
-    }
-    
-    .calendar-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 24px;
-        padding-bottom: 16px;
-        border-bottom: 1px solid var(--border);
-    }
-    
-    .calendar-weekdays {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 8px;
-        margin-bottom: 8px;
-    }
-    
-    .calendar-weekday {
-        text-align: center;
-        font-size: 11px;
-        font-weight: 700;
-        color: var(--text-secondary);
-        padding: 8px;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .calendar-grid {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 8px;
-    }
-    
-    .calendar-day {
-        aspect-ratio: 1;
+        height: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
-        border-radius: var(--radius-m);
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        border: 2px solid transparent;
-        position: relative;
+        box-shadow: 0 2px 4px rgba(255, 59, 48, 0.3);
+        line-height: 1;
     }
     
-    .calendar-day:hover:not(.disabled):not(.other-month) {
-        background: var(--secondary);
-        transform: scale(1.05);
+    .nav-mobile {
+        position: fixed; bottom: 0; left: 0; right: 0; background: white; z-index: 90;
+        display: flex; justify-content: space-around; padding: 12px 0;
+        border-top: 1px solid var(--border); box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
     }
+    .nav-mobile-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); background: none; border: none; }
+    .nav-mobile-item.active { color: var(--primary); }
     
-    .calendar-day.today {
+    /* Typography */
+    .text-h1 { font-size: 42px; font-weight: 800; letter-spacing: -1px; margin: 0; }
+    .text-h2 { font-size: 24px; font-weight: 700; margin: 0; letter-spacing: -0.5px; }
+    .text-h3 { font-size: 18px; font-weight: 600; margin: 0; }
+    .text-sub { color: var(--text-secondary); font-size: 14px; }
+    .text-bold { font-weight: 600; }
+    .text-primary { color: var(--primary); }
+
+    /* Calendar Grid */
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--secondary); border: 1px solid var(--border); border-radius: 0 0 var(--radius-l) var(--radius-l); overflow: hidden; }
+    .calendar-day-header { padding: 12px 0; text-align: center; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); background: rgba(245,245,247,0.5); }
+    .calendar-cell { 
+        background: white; min-height: 100px; padding: 8px; position: relative; cursor: pointer; 
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex; flex-direction: column; justify-content: space-between;
+        border: 1px solid transparent;
+    }
+    .calendar-cell:hover:not([style*="pointer-events: none"]) { 
+        background: #fbfbfd; 
         border-color: var(--primary);
-        color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 113, 227, 0.1);
+        z-index: 10;
     }
-    
-    .calendar-day.selected {
-        background: var(--primary);
+    .calendar-cell.selected-single { 
+        background: var(--primary); 
         color: white;
+        box-shadow: 
+            0 2px 8px rgba(0, 113, 227, 0.2);
+    }
+    .calendar-cell.selected-start { 
+        background: var(--primary); 
+        color: white; 
+        border-top-left-radius: 8px; 
+        border-bottom-left-radius: 8px; 
+        z-index: 2;
+        box-shadow: 
+            0 2px 8px rgba(0, 113, 227, 0.2);
+    }
+    .calendar-cell.selected-end { 
+        background: var(--primary); 
+        color: white; 
+        border-top-right-radius: 8px; 
+        border-bottom-right-radius: 8px; 
+        z-index: 2;
+        box-shadow: 
+            0 2px 8px rgba(0, 113, 227, 0.2);
+    }
+    .calendar-cell.selected-range { 
+        background: #e3f0ff; 
+        color: var(--primary-dark);
+    }
+    .calendar-cell.selected-range .calendar-num { color: var(--primary-dark); }
+    
+    .calendar-num { font-size: 14px; font-weight: 600; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; margin: 0 auto; }
+    .dot-success { background: var(--success); }
+    .dot-warning { background: var(--warning); }
+    .dot-danger { background: var(--danger); }
+    .dot-info { background: var(--info); }
+    .dot-teal { background: var(--teal); }
+    .dot-neutral { background: var(--neutral); }
+
+    /* Event Badge in Calendar */
+    .event-badge {
+        font-size: 10px; padding: 2px 4px; border-radius: 4px; margin-bottom: 2px;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        display: flex; flex-direction: column; line-height: 1.2;
+    }
+    .event-badge-team {
+        font-size: 9px; font-weight: 700; text-transform: uppercase; color: var(--info);
+    }
+    .event-badge-name {
+        font-weight: 600; color: var(--text-main);
+    }
+    .status-border-success { border-left: 3px solid var(--success); background: rgba(52, 199, 89, 0.1); }
+    .status-border-warning { border-left: 3px solid var(--warning); background: rgba(255, 149, 0, 0.1); }
+    .status-border-danger { border-left: 3px solid var(--danger); background: rgba(255, 59, 48, 0.1); }
+    .status-border-teal { border-left: 3px solid var(--teal); background: rgba(48, 176, 199, 0.1); }
+
+    /* Balance Card - Sutil pero presente */
+    .balance-card {
+        background: linear-gradient(135deg, #0071e3 0%, #00c6ff 100%);
+        color: white; 
+        border-radius: var(--radius-l); 
+        padding: 24px;
+        position: relative; 
+        overflow: hidden;
+        box-shadow: 
+            0 2px 8px rgba(0, 113, 227, 0.2),
+            0 8px 24px rgba(0, 113, 227, 0.15);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
-    .calendar-day.in-range {
-        background: var(--info-bg);
-        color: var(--info);
+    .balance-card:hover {
+        box-shadow: 
+            0 4px 12px rgba(0, 113, 227, 0.25),
+            0 12px 32px rgba(0, 113, 227, 0.2);
+        transform: translateY(-2px);
     }
     
-    .calendar-day.disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-    }
-    
-    .calendar-day.other-month {
-        opacity: 0.3;
-        color: var(--text-light);
-    }
-    
-    .calendar-day.weekend {
-        color: var(--danger);
-    }
-    
-    .calendar-day.has-vacation::after {
-        content: '';
-        position: absolute;
-        bottom: 4px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 4px;
-        height: 4px;
-        border-radius: 50%;
-        background: var(--success);
+    .balance-circle { 
+        position: absolute; 
+        background: rgba(255,255,255,0.1); 
+        border-radius: 50%; 
     }
 
-    /* ============================================================
-       REQUEST LIST COMPONENT
-       ============================================================ */
-    .request-item {
-        background: white;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-l);
-        padding: 20px;
-        margin-bottom: 16px;
-        transition: all 0.3s ease;
+    /* Tables */
+    .table-container { overflow-x: auto; }
+    .custom-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+    .custom-table th { text-align: left; padding: 16px; font-size: 12px; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border); background: #fafafa; }
+    .custom-table td { padding: 16px; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .custom-table tr:last-child td { border-bottom: none; }
+    .custom-table tr:hover td { background: #fafafa; }
+
+    /* Badges */
+    .badge { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.3px; display: inline-block; }
+    
+    .badge-success { background: var(--success-bg); color: var(--success); border: 1px solid #bbf7d0; }
+    .badge-teal { background: var(--teal-bg); color: var(--teal); border: 1px solid #bcebf5; }
+    
+    .badge-warning { background: var(--warning-bg); color: var(--warning); border: 1px solid #fed7aa; }
+    .badge-info { background: var(--info-bg); color: var(--info); border: 1px solid #e0e7ff; }
+
+    .badge-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #fecaca; }
+    
+    .badge-neutral { background: var(--neutral-bg); color: var(--neutral); border: 1px solid #e5e5ea; }
+
+
+    /* Filters */
+    .filter-btn { display: flex; justify-content: space-between; width: 100%; padding: 10px 14px; border-radius: 8px; border: none; background: transparent; cursor: pointer; font-size: 14px; color: var(--text-secondary); }
+    .filter-btn:hover { background: var(--secondary); color: var(--text-main); }
+    .filter-btn.active { background: #e3f0ff; color: var(--primary); font-weight: 600; }
+    
+    /* Loader */
+    .loader-container { position: fixed; inset: 0; background: var(--bg-body); display: flex; justify-content: center; align-items: center; z-index: 2000; flex-direction: column; gap: 16px; }
+    .spinner { width: 40px; height: 40px; border: 3px solid rgba(0, 113, 227, 0.1); border-left-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+    .spinner-sm { width: 16px; height: 16px; border: 2px solid rgba(255, 255, 255, 0.3); border-left-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Success Animation */
+    .bounce-in {
+      animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    @keyframes bounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
     }
     
-    .request-item:hover {
-        border-color: var(--primary);
-        box-shadow: var(--shadow-md);
-        transform: translateX(4px);
+    .fade-in {
+      animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
-    .request-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-    }
-    
-    .request-dates {
-        display: flex;
-        gap: 16px;
-        align-items: center;
-        margin-bottom: 12px;
-        padding: 12px;
-        background: var(--secondary);
-        border-radius: var(--radius-m);
-    }
-    
-    .request-actions {
-        display: flex;
-        gap: 8px;
-        margin-top: 12px;
-        padding-top: 12px;
-        border-top: 1px solid var(--border);
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* ============================================================
-       SUMMARY/STATS COMPONENTS
-       ============================================================ */
-    .stat-card {
-        background: white;
-        border: 1px solid var(--border);
-        border-radius: var(--radius-l);
-        padding: 20px;
-        text-align: center;
-        transition: all 0.3s ease;
+    /* SweetAlert Override */
+    div:where(.swal2-popup) { font-family: var(--font-stack) !important; border-radius: var(--radius-l) !important; padding: 2em !important; }
+    div:where(.swal2-popup.swal2-show) { animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important; }
+    div:where(.swal2-title) { color: var(--text-main) !important; font-size: 20px !important; }
+    div:where(.swal2-icon.swal2-success) { animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important; }
+    div:where(.swal2-styled.swal2-confirm) { background-color: var(--primary) !important; border-radius: 10px !important; box-shadow: none !important; }
+    div:where(.swal2-styled.swal2-cancel) { background-color: transparent !important; color: var(--text-secondary) !important; box-shadow: none !important; }
+  
+    @media (min-width: 768px) {
+        .md-flex { display: flex; }
+        .md-hidden { display: none; }
+        .md-block { display: block; }
+        .grid-main { 
+            display: grid; 
+            grid-template-columns: 1fr minmax(260px, 280px); 
+            gap: 24px; 
+        }
+        .grid-cols-12 { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; }
+        .col-span-3 { grid-column: span 3; }
+        .col-span-9 { grid-column: span 9; }
     }
     
-    .stat-card:hover {
-        transform: translateY(-4px);
-        box-shadow: var(--shadow-md);
+    
+    /* Focus States - Accesibilidad */
+    *:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      border-radius: 4px;
     }
     
-    .stat-value {
-        font-size: 36px;
-        font-weight: 800;
-        margin: 8px 0;
+    button:focus-visible, 
+    a:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 4px rgba(0, 113, 227, 0.1);
     }
     
-    .stat-label {
-        font-size: 12px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        color: var(--text-secondary);
+    .calendar-cell:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: -3px;
+      z-index: 10;
     }
-
-    /* ============================================================
-       EMPTY STATES
-       ============================================================ */
+    
+    /* Empty States */
     .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        color: var(--text-secondary);
+      padding: 60px 40px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
     }
     
-    .empty-state-icon {
-        font-size: 64px;
-        margin-bottom: 16px;
-        opacity: 0.3;
+    .empty-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--secondary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      margin-bottom: 8px;
     }
-
-    /* ============================================================
-       RESPONSIVE DESIGN
-       ============================================================ */
-    @media (max-width: 768px) {
+    
+    .empty-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 0;
+    }
+    
+    .empty-description {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin: 0;
+      max-width: 400px;
+    }
+    
+    @media (max-width: 767px) {
         .grid-main {
-            grid-template-columns: 1fr;
-        }
-        
-        .md-hidden {
-            display: none;
-        }
-        
-        .md-block {
-            display: block;
-        }
-        
-        .calendar-day {
-            font-size: 12px;
-        }
-        
-        .header-content {
-            flex-direction: column;
+            display: flex;
+            flex-direction: column-reverse; /* Sidebar arriba en mobile */
             gap: 16px;
         }
-        
-        .nav-pills {
-            width: 100%;
-            justify-content: center;
+        .balance-card {
+            padding: 20px;
         }
-    }
-    
-    @media (min-width: 769px) {
-        .md-hidden {
-            display: flex;
+        .balance-card div[style*="fontSize: '48px'"] {
+            font-size: 36px !important;
         }
-        
-        .md-block {
-            display: block;
-        }
-    }
-
-    /* ============================================================
-       SCROLLBAR STYLING
-       ============================================================ */
-    ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: var(--secondary);
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: var(--border-hover);
-        border-radius: 4px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--text-secondary);
+        .container { padding: 0 16px; }
     }
   </style>
 </head>
 <body>
-  <!-- React Root Element -->
+  
   <div id="root"></div>
+  <div id="initial-loader" class="loader-container">
+    <div class="spinner"></div>
+    <div style="font-weight: 600; color: var(--text-secondary);">Cargando Portal...</div>
+  </div>
 
-  <!-- React Application -->
   <script type="text/babel">
-    const { useState, useEffect, useRef } = React;
-
-    /* ============================================================
-       MOCK DATA SERVICE
-       Simulates backend API calls with localStorage persistence
-       ============================================================ */
-    const MockDataService = {
-      // Initialize demo data if not exists
-      init() {
-        if (!localStorage.getItem('vacationRequests')) {
-          const demoRequests = [
-            {
-              id: '1',
-              userEmail: 'demo@example.com',
-              team: 'Desarrollo',
-              startDate: '2025-01-15',
-              endDate: '2025-01-19',
-              days: 5,
-              status: 'Aprobada',
-              submittedAt: '2025-01-05T10:00:00Z',
-              approvedAt: '2025-01-06T14:30:00Z',
-              approvedBy: 'manager@example.com'
-            },
-            {
-              id: '2',
-              userEmail: 'demo@example.com',
-              team: 'Desarrollo',
-              startDate: '2025-03-10',
-              endDate: '2025-03-14',
-              days: 5,
-              status: 'Pendiente',
-              submittedAt: '2025-01-08T09:15:00Z'
-            }
-          ];
-          localStorage.setItem('vacationRequests', JSON.stringify(demoRequests));
-        }
-        
-        if (!localStorage.getItem('currentUser')) {
-          const demoUser = {
-            email: 'demo@example.com',
-            team: 'Desarrollo',
-            isManager: false,
-            stats: {
-              total: 15,
-              used: 5,
-              pending: 5,
-              remaining: 5
-            }
-          };
-          localStorage.setItem('currentUser', JSON.stringify(demoUser));
-        }
-      },
-
-      // Get current user
-      getCurrentUser() {
-        return JSON.parse(localStorage.getItem('currentUser'));
-      },
-
-      // Get all requests
-      getAllRequests() {
-        return JSON.parse(localStorage.getItem('vacationRequests')) || [];
-      },
-
-      // Get user's requests
-      getUserRequests(email) {
-        const all = this.getAllRequests();
-        return all.filter(r => r.userEmail === email);
-      },
-
-      // Get pending requests (for managers)
-      getPendingRequests() {
-        const all = this.getAllRequests();
-        return all.filter(r => r.status === 'Pendiente');
-      },
-
-      // Create new request
-      createRequest(requestData) {
-        const requests = this.getAllRequests();
-        const newRequest = {
-          id: Date.now().toString(),
-          ...requestData,
-          submittedAt: new Date().toISOString(),
-          status: 'Pendiente'
-        };
-        requests.push(newRequest);
-        localStorage.setItem('vacationRequests', JSON.stringify(requests));
-        
-        // Update user stats
-        this.updateUserStats();
-        return newRequest;
-      },
-
-      // Update request
-      updateRequest(id, updates) {
-        const requests = this.getAllRequests();
-        const index = requests.findIndex(r => r.id === id);
-        if (index !== -1) {
-          requests[index] = { ...requests[index], ...updates };
-          localStorage.setItem('vacationRequests', JSON.stringify(requests));
-          this.updateUserStats();
-          return requests[index];
-        }
-        return null;
-      },
-
-      // Delete request
-      deleteRequest(id) {
-        const requests = this.getAllRequests();
-        const filtered = requests.filter(r => r.id !== id);
-        localStorage.setItem('vacationRequests', JSON.stringify(filtered));
-        this.updateUserStats();
-      },
-
-      // Update user statistics
-      updateUserStats() {
-        const user = this.getCurrentUser();
-        const requests = this.getUserRequests(user.email);
-        
-        const used = requests
-          .filter(r => r.status === 'Aprobada')
-          .reduce((sum, r) => sum + r.days, 0);
-        
-        const pending = requests
-          .filter(r => r.status === 'Pendiente')
-          .reduce((sum, r) => sum + r.days, 0);
-        
-        user.stats.used = used;
-        user.stats.pending = pending;
-        user.stats.remaining = user.stats.total - used - pending;
-        
-        localStorage.setItem('currentUser', JSON.stringify(user));
-      }
-    };
-
-    /* ============================================================
-       UTILITY FUNCTIONS
-       Date calculations and formatting helpers
-       ============================================================ */
+    const { useState, useEffect, useRef, useMemo, memo } = React;
     
-    /**
-     * Calculate business days between two dates (excludes weekends)
-     * @param {string} start - Start date (YYYY-MM-DD)
-     * @param {string} end - End date (YYYY-MM-DD)
-     * @returns {number} Number of business days
-     */
-    function calcBusinessDays(start, end) {
-      if (!start || !end) return 0;
-      
-      const startDate = new Date(start);
-      const endDate = new Date(end);
-      let count = 0;
-      
-      const current = new Date(startDate);
-      while (current <= endDate) {
-        const day = current.getDay();
-        if (day !== 0 && day !== 6) { // Not Sunday (0) or Saturday (6)
-          count++;
-        }
-        current.setDate(current.getDate() + 1);
-      }
-      
-      return count;
+    // Detectar si está en iframe y aplicar clase al body
+    if (window.self !== window.top) {
+      document.body.classList.add('in-iframe');
     }
 
-    /**
-     * Format date to friendly Spanish format
-     * @param {string} dateStr - Date string (YYYY-MM-DD)
-     * @returns {string} Formatted date (e.g., "15 Ene 2025")
-     */
-    function formatDateFriendly(dateStr) {
-      if (!dateStr) return '';
-      const d = new Date(dateStr + 'T12:00:00');
-      const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-      return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-    }
-
-    /**
-     * Format timestamp to readable date-time
-     * @param {string} isoStr - ISO timestamp
-     * @returns {string} Formatted date-time
-     */
-    function formatDateTime(isoStr) {
-      if (!isoStr) return '';
-      const d = new Date(isoStr);
-      return d.toLocaleString('es-ES', { 
-        day: '2-digit', 
-        month: 'short', 
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    }
-
-    /**
-     * Check if date is weekend
-     * @param {Date} date - Date object
-     * @returns {boolean} True if weekend
-     */
-    function isWeekend(date) {
-      const day = date.getDay();
-      return day === 0 || day === 6;
-    }
-
-    /**
-     * Check if date has approved vacation
-     * @param {Date} date - Date to check
-     * @param {Array} requests - Array of vacation requests
-     * @returns {boolean} True if date has vacation
-     */
-    function hasVacation(date, requests) {
-      const dateStr = date.toISOString().split('T')[0];
-      return requests.some(r => {
-        if (r.status !== 'Aprobada') return false;
-        return dateStr >= r.startDate && dateStr <= r.endDate;
-      });
-    }
-
-    /* ============================================================
-       ICON COMPONENT
-       Wrapper for Boxicons library
-       ============================================================ */
-    const Icon = ({name, size = '20px', className = ''}) => (
-      <i className={`bx bx-${name} ${className}`} style={{fontSize: size, lineHeight: '1'}}></i>
-    );
-
-    /* ============================================================
-       CALENDAR COMPONENT
-       Interactive date picker with vacation visualization
-       ============================================================ */
-    const CalendarView = ({requests, selection, onDateClick}) => {
-      const [currentMonth, setCurrentMonth] = useState(new Date());
-      
-      // Get days for current month view
-      const getDaysInMonth = () => {
-        const year = currentMonth.getFullYear();
-        const month = currentMonth.getMonth();
-        
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        const daysInMonth = lastDay.getDate();
-        
-        const startPadding = firstDay.getDay();
-        const days = [];
-        
-        // Previous month padding
-        const prevMonthLastDay = new Date(year, month, 0).getDate();
-        for (let i = startPadding - 1; i >= 0; i--) {
-          days.push({
-            date: new Date(year, month - 1, prevMonthLastDay - i),
-            isCurrentMonth: false
-          });
-        }
-        
-        // Current month days
-        for (let i = 1; i <= daysInMonth; i++) {
-          days.push({
-            date: new Date(year, month, i),
-            isCurrentMonth: true
-          });
-        }
-        
-        // Next month padding
-        const remaining = 42 - days.length;
-        for (let i = 1; i <= remaining; i++) {
-          days.push({
-            date: new Date(year, month + 1, i),
-            isCurrentMonth: false
-          });
-        }
-        
-        return days;
-      };
-
-      // Navigate months
-      const prevMonth = () => {
-        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
-      };
-      
-      const nextMonth = () => {
-        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
-      };
-
-      // Check if date is in selection range
-      const isInRange = (date) => {
-        if (!selection.start || !selection.end) return false;
-        const dateStr = date.toISOString().split('T')[0];
-        return dateStr >= selection.start && dateStr <= selection.end;
-      };
-
-      // Check if date is selected endpoint
-      const isSelected = (date) => {
-        const dateStr = date.toISOString().split('T')[0];
-        return dateStr === selection.start || dateStr === selection.end;
-      };
-
-      const days = getDaysInMonth();
-      const today = new Date().toISOString().split('T')[0];
-
-      return (
-        <div className="calendar-container">
-          {/* Calendar Header */}
-          <div className="calendar-header">
-            <button onClick={prevMonth} className="btn btn-ghost btn-sm">
-              <Icon name="chevron-left" />
-            </button>
-            <h3 className="text-h3">
-              {currentMonth.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
-            </h3>
-            <button onClick={nextMonth} className="btn btn-ghost btn-sm">
-              <Icon name="chevron-right" />
-            </button>
-          </div>
-
-          {/* Weekday Headers */}
-          <div className="calendar-weekdays">
-            {['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].map(day => (
-              <div key={day} className="calendar-weekday">{day}</div>
-            ))}
-          </div>
-
-          {/* Calendar Grid */}
-          <div className="calendar-grid">
-            {days.map((day, idx) => {
-              const dateStr = day.date.toISOString().split('T')[0];
-              const isToday = dateStr === today;
-              const isWknd = isWeekend(day.date);
-              const hasVac = hasVacation(day.date, requests);
-              
-              return (
-                <div
-                  key={idx}
-                  className={`calendar-day 
-                    ${!day.isCurrentMonth ? 'other-month' : ''} 
-                    ${isToday ? 'today' : ''} 
-                    ${isWknd ? 'weekend disabled' : ''} 
-                    ${isSelected(day.date) ? 'selected' : ''} 
-                    ${isInRange(day.date) ? 'in-range' : ''}
-                    ${hasVac ? 'has-vacation' : ''}`}
-                  onClick={() => !isWknd && day.isCurrentMonth && onDateClick(dateStr)}
-                >
-                  {day.date.getDate()}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Legend */}
-          <div className="flex gap-4" style={{marginTop: '16px', fontSize: '12px', color: 'var(--text-secondary)'}}>
-            <div className="flex items-center gap-2">
-              <div style={{width: '12px', height: '12px', borderRadius: '50%', background: 'var(--success)'}}></div>
-              <span>Vacaciones</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div style={{width: '12px', height: '12px', borderRadius: '50%', background: 'var(--info)'}}></div>
-              <span>Selección</span>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    /* ============================================================
-       MY REQUESTS TAB
-       Display and manage user's vacation requests
-       ============================================================ */
-    const MyRequestsTab = ({requests, onCancel, onEdit}) => {
-      if (!requests || requests.length === 0) {
-        return (
-          <div className="empty-state">
-            <div className="empty-state-icon">📅</div>
-            <h3 className="text-h3" style={{marginBottom: '8px'}}>No tienes solicitudes</h3>
-            <p className="text-sub">Crea tu primera solicitud de vacaciones desde el calendario</p>
-          </div>
-        );
-      }
-
-      // Sort by submission date (newest first)
-      const sorted = [...requests].sort((a, b) => 
-        new Date(b.submittedAt) - new Date(a.submittedAt)
-      );
-
-      return (
-        <div className="fade-in">
-          <div style={{marginBottom: '24px'}}>
-            <h2 className="text-h3" style={{fontSize: '24px', marginBottom: '8px'}}>
-              Mis Solicitudes
-            </h2>
-            <p className="text-sub">Gestiona tus solicitudes de vacaciones</p>
-          </div>
-
-          {sorted.map(req => (
-            <div key={req.id} className="request-item">
-              {/* Request Header */}
-              <div className="request-header">
-                <span className={`status-badge status-${req.status.toLowerCase()}`}>
-                  <Icon name={
-                    req.status === 'Aprobada' ? 'check-circle' :
-                    req.status === 'Rechazada' ? 'x-circle' :
-                    req.status === 'Cancelada' ? 'minus-circle' :
-                    'clock'
-                  } />
-                  {req.status}
-                </span>
-                <span className="text-xs text-secondary">
-                  Solicitado: {formatDateTime(req.submittedAt)}
-                </span>
-              </div>
-
-              {/* Request Dates */}
-              <div className="request-dates">
-                <div className="flex-col">
-                  <span className="text-xs text-secondary">Desde</span>
-                  <span className="text-bold">{formatDateFriendly(req.startDate)}</span>
-                </div>
-                <Icon name="arrow-right" className="text-secondary" />
-                <div className="flex-col">
-                  <span className="text-xs text-secondary">Hasta</span>
-                  <span className="text-bold">{formatDateFriendly(req.endDate)}</span>
-                </div>
-                <div style={{
-                  marginLeft: 'auto',
-                  padding: '8px 16px',
-                  background: 'var(--info-bg)',
-                  borderRadius: 'var(--radius-m)',
-                  color: 'var(--info)',
-                  fontWeight: '700'
-                }}>
-                  {req.days} días
-                </div>
-              </div>
-
-              {/* Additional Info */}
-              {req.approvedAt && (
-                <div className="text-xs text-secondary" style={{marginTop: '8px'}}>
-                  <Icon name="check" size="14px" /> Aprobado el {formatDateTime(req.approvedAt)}
-                  {req.approvedBy && ` por ${req.approvedBy}`}
-                </div>
-              )}
-              
-              {req.rejectedAt && req.rejectionReason && (
-                <div className="text-xs text-danger" style={{marginTop: '8px', padding: '8px', background: 'var(--danger-bg)', borderRadius: 'var(--radius-m)'}}>
-                  <Icon name="info-circle" size="14px" /> Motivo: {req.rejectionReason}
-                </div>
-              )}
-
-              {/* Actions */}
-              {(req.status === 'Pendiente' || req.status === 'Necesita Revisión') && (
-                <div className="request-actions">
-                  <button onClick={() => onEdit(req)} className="btn btn-secondary btn-sm flex-1">
-                    <Icon name="edit" size="16px" /> Modificar
-                  </button>
-                  <button onClick={() => onCancel(req.id)} className="btn btn-danger btn-sm flex-1">
-                    <Icon name="trash" size="16px" /> Cancelar
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      );
-    };
-
-    /* ============================================================
-       TEAM MANAGEMENT TAB (For Managers)
-       Approve or reject team vacation requests
-       ============================================================ */
-    const TeamManagement = ({pendingRequests, onAction}) => {
-      if (!pendingRequests || pendingRequests.length === 0) {
-        return (
-          <div className="empty-state">
-            <div className="empty-state-icon">✅</div>
-            <h3 className="text-h3" style={{marginBottom: '8px'}}>Sin solicitudes pendientes</h3>
-            <p className="text-sub">Todas las solicitudes han sido revisadas</p>
-          </div>
-        );
-      }
-
-      return (
-        <div className="fade-in">
-          <div style={{marginBottom: '24px'}}>
-            <h2 className="text-h3" style={{fontSize: '24px', marginBottom: '8px'}}>
-              Gestión de Equipo
-            </h2>
-            <p className="text-sub">{pendingRequests.length} solicitud(es) pendiente(s) de revisión</p>
-          </div>
-
-          {pendingRequests.map(req => (
-            <div key={req.id} className="request-item">
-              <div className="request-header">
-                <div className="flex items-center gap-3">
-                  <div style={{
-                    width: '36px',
-                    height: '36px',
-                    borderRadius: '50%',
-                    background: 'var(--info-bg)',
-                    color: 'var(--info)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: '700'
-                  }}>
-                    {req.userEmail.charAt(0).toUpperCase()}
-                  </div>
-                  <div>
-                    <div className="text-bold">{req.userEmail.split('@')[0]}</div>
-                    <div className="text-xs text-secondary">{req.team}</div>
-                  </div>
-                </div>
-                <span className="text-xs text-secondary">
-                  {formatDateTime(req.submittedAt)}
-                </span>
-              </div>
-
-              <div className="request-dates">
-                <div className="flex-col">
-                  <span className="text-xs text-secondary">Desde</span>
-                  <span className="text-bold">{formatDateFriendly(req.startDate)}</span>
-                </div>
-                <Icon name="arrow-right" className="text-secondary" />
-                <div className="flex-col">
-                  <span className="text-xs text-secondary">Hasta</span>
-                  <span className="text-bold">{formatDateFriendly(req.endDate)}</span>
-                </div>
-                <div style={{
-                  marginLeft: 'auto',
-                  padding: '8px 16px',
-                  background: 'var(--info-bg)',
-                  borderRadius: 'var(--radius-m)',
-                  color: 'var(--info)',
-                  fontWeight: '700'
-                }}>
-                  {req.days} días
-                </div>
-              </div>
-
-              <div className="request-actions">
-                <button 
-                  onClick={() => onAction(req.id, 'reject')} 
-                  className="btn btn-danger btn-sm flex-1"
-                >
-                  <Icon name="x" size="16px" /> Rechazar
-                </button>
-                <button 
-                  onClick={() => onAction(req.id, 'approve')} 
-                  className="btn btn-success btn-sm flex-1"
-                >
-                  <Icon name="check" size="16px" /> Aprobar
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
-      );
-    };
-
-    /* ============================================================
-       SUMMARY VIEW TAB (For Managers)
-       Team statistics and overview
-       ============================================================ */
-    const SummaryView = ({allRequests}) => {
-      // Calculate statistics
-      const stats = {
-        total: allRequests.length,
-        approved: allRequests.filter(r => r.status === 'Aprobada').length,
-        pending: allRequests.filter(r => r.status === 'Pendiente').length,
-        rejected: allRequests.filter(r => r.status === 'Rechazada').length,
-        totalDays: allRequests
-          .filter(r => r.status === 'Aprobada')
-          .reduce((sum, r) => sum + r.days, 0)
-      };
-
-      // Group by team
-      const byTeam = allRequests.reduce((acc, req) => {
-        if (!acc[req.team]) {
-          acc[req.team] = { total: 0, approved: 0, days: 0 };
-        }
-        acc[req.team].total++;
-        if (req.status === 'Aprobada') {
-          acc[req.team].approved++;
-          acc[req.team].days += req.days;
-        }
-        return acc;
-      }, {});
-
-      return (
-        <div className="fade-in">
-          <div style={{marginBottom: '24px'}}>
-            <h2 className="text-h3" style={{fontSize: '24px', marginBottom: '8px'}}>
-              Resumen General
-            </h2>
-            <p className="text-sub">Estadísticas del equipo</p>
-          </div>
-
-          {/* Overview Stats */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '16px',
-            marginBottom: '32px'
-          }}>
-            <div className="stat-card">
-              <div className="stat-label">Total Solicitudes</div>
-              <div className="stat-value text-primary">{stats.total}</div>
-            </div>
-            
-            <div className="stat-card">
-              <div className="stat-label">Aprobadas</div>
-              <div className="stat-value text-success">{stats.approved}</div>
-            </div>
-            
-            <div className="stat-card">
-              <div className="stat-label">Pendientes</div>
-              <div className="stat-value text-warning">{stats.pending}</div>
-            </div>
-            
-            <div className="stat-card">
-              <div className="stat-label">Días Totales</div>
-              <div className="stat-value text-info">{stats.totalDays}</div>
-            </div>
-          </div>
-
-          {/* By Team */}
-          <div className="card">
-            <div className="card-header">
-              <h3 className="text-h3">Por Equipo</h3>
-            </div>
-            <div className="card-body">
-              {Object.entries(byTeam).map(([team, data]) => (
-                <div key={team} style={{
-                  padding: '16px',
-                  marginBottom: '12px',
-                  background: 'var(--secondary)',
-                  borderRadius: 'var(--radius-m)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center'
-                }}>
-                  <div>
-                    <div className="text-bold">{team}</div>
-                    <div className="text-xs text-secondary">
-                      {data.total} solicitudes · {data.approved} aprobadas
-                    </div>
-                  </div>
-                  <div style={{
-                    padding: '8px 16px',
-                    background: 'white',
-                    borderRadius: 'var(--radius-m)',
-                    fontWeight: '700',
-                    color: 'var(--info)'
-                  }}>
-                    {data.days} días
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    /* ============================================================
-       MAIN APP COMPONENT
-       Root component managing all application state
-       ============================================================ */
-    function App() {
-      // State management
-      const [loading, setLoading] = useState(true);
-      const [user, setUser] = useState(null);
-      const [requests, setRequests] = useState([]);
-      const [allRequests, setAllRequests] = useState([]);
-      const [pending, setPending] = useState([]);
-      const [activeTab, setActiveTab] = useState('home');
-      const [startDate, setStartDate] = useState('');
-      const [endDate, setEndDate] = useState('');
-      const [editingId, setEditingId] = useState(null);
-      const [submitting, setSubmitting] = useState(false);
-
-      // Refs for tab navigation
-      const tabRefs = useRef({});
-
-      // Initialize app
-      useEffect(() => {
-        const init = async () => {
-          try {
-            // Initialize mock data
-            MockDataService.init();
-            
-            // Load user data
-            const currentUser = MockDataService.getCurrentUser();
-            setUser(currentUser);
-            
-            // Load requests
-            const userRequests = MockDataService.getUserRequests(currentUser.email);
-            setRequests(userRequests);
-            
-            // Load manager data if applicable
-            if (currentUser.isManager) {
-              const all = MockDataService.getAllRequests();
-              setAllRequests(all);
-              setPending(MockDataService.getPendingRequests());
-            }
-            
-            // Simulate loading delay
-            await new Promise(resolve => setTimeout(resolve, 800));
-            setLoading(false);
-          } catch (error) {
-            console.error('Initialization error:', error);
-            Swal.fire('Error', 'Error al cargar la aplicación', 'error');
-          }
-        };
-
-        init();
-      }, []);
-
-      // Detect if running in iframe
-      useEffect(() => {
-        if (window.self !== window.top) {
-          document.body.classList.add('in-iframe');
-        }
-      }, []);
-
-      /**
-       * Handle calendar date clicks
-       * Manages date range selection logic
-       */
-      const handleCalendarClick = (dateStr) => {
-        if (!startDate || (startDate && endDate)) {
-          // Start new selection
-          setStartDate(dateStr);
-          setEndDate('');
-        } else if (dateStr > startDate) {
-          // Complete selection
-          setEndDate(dateStr);
-        } else {
-          // Reset if clicking before start
-          setStartDate(dateStr);
-          setEndDate('');
-        }
-      };
-
-      /**
-       * Submit new vacation request or update existing
-       */
-      const handleFormSubmit = async () => {
-        if (!startDate || !endDate) {
-          Swal.fire('Atención', 'Selecciona las fechas de inicio y fin', 'warning');
-          return;
-        }
-
-        const days = calcBusinessDays(startDate, endDate);
-        
-        if (days <= 0) {
-          Swal.fire('Atención', 'Debes seleccionar al menos un día hábil', 'warning');
-          return;
-        }
-
-        // Check if user has enough balance
-        if (!editingId && days > user.stats.remaining) {
-          Swal.fire('Saldo Insuficiente', 
-            `No tienes suficientes días disponibles. Necesitas ${days} días pero solo tienes ${user.stats.remaining}.`,
-            'error'
-          );
-          return;
-        }
-
-        setSubmitting(true);
-
+    // --- UTILS ---
+    const formatDateFriendly = (dateStr) => {
+        if(!dateStr) return '...';
         try {
-          if (editingId) {
-            // Update existing request
-            MockDataService.updateRequest(editingId, {
-              startDate,
-              endDate,
-              days,
-              status: 'Necesita Revisión'
-            });
-            
-            Swal.fire('¡Actualizado!', 'Tu solicitud ha sido modificada', 'success');
-            setEditingId(null);
-          } else {
-            // Create new request
-            MockDataService.createRequest({
-              userEmail: user.email,
-              team: user.team,
-              startDate,
-              endDate,
-              days
-            });
-            
-            Swal.fire('¡Enviado!', 'Tu solicitud ha sido creada', 'success');
-          }
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return dateStr;
+            const d = date.getUTCDate();
+            const m = date.getUTCMonth() + 1;
+            const y = date.getUTCFullYear(); 
+            return `${d.toString().padStart(2, '0')}/${m.toString().padStart(2, '0')}/${y}`;
+        } catch(e) { return dateStr; }
+    };
 
-          // Refresh data
-          const updatedUser = MockDataService.getCurrentUser();
-          setUser(updatedUser);
-          setRequests(MockDataService.getUserRequests(user.email));
-          
-          if (user.isManager) {
-            setPending(MockDataService.getPendingRequests());
-            setAllRequests(MockDataService.getAllRequests());
-          }
+    const calcBusinessDays = (startStr, endStr) => {
+        if (!startStr || !endStr) return 0;
+        try {
+            const start = new Date(startStr);
+            const end = new Date(endStr);
+            start.setUTCHours(12,0,0,0);
+            end.setUTCHours(12,0,0,0);
+            if (end < start) return 0;
+            let count = 0; let cur = new Date(start);
+            while (cur <= end) {
+                const day = cur.getUTCDay();
+                if (day !== 0 && day !== 6) count++; 
+                cur.setUTCDate(cur.getUTCDate() + 1);
+            }
+            return count;
+        } catch (e) { return 0; }
+    };
 
-          // Reset form
-          setStartDate('');
-          setEndDate('');
-        } catch (error) {
-          console.error('Submit error:', error);
-          Swal.fire('Error', 'No se pudo procesar la solicitud', 'error');
-        } finally {
-          setSubmitting(false);
-        }
+    // --- COMPONENTS ---
+    const Icon = ({ name, className = "", size = "20px" }) => {
+      // Map Lucide names to Boxicons
+      const map = {
+        'chevron-left': 'bx-chevron-left',
+        'chevron-right': 'bx-chevron-right',
+        'calendar-plus': 'bx-calendar-plus',
+        'edit-3': 'bx-edit-alt',
+        'trash-2': 'bx-trash',
+        'archive': 'bx-archive',
+        'clock': 'bx-time-five',
+        'arrow-right': 'bx-right-arrow-alt',
+        'plane': 'bx-plane-alt',
+        'home': 'bx-home-alt',
+        'list': 'bx-list-ul',
+        'users': 'bx-group',
+        'sun': 'bx-sun',
+        'hash': 'bx-hash',
+        'pencil': 'bx-pencil',
+        'check': 'bx-check',
+        'x': 'bx-x',
+        'pie-chart': 'bx-pie-chart-alt-2'
       };
+      const iconClass = map[name] || `bx-${name}`;
+      return <i className={`bx ${iconClass} ${className}`} style={{fontSize: size}}></i>;
+    };
 
-      /**
-       * Cancel a vacation request
-       */
-      const handleCancelRequest = async (id) => {
-        const result = await Swal.fire({
-          title: '¿Cancelar solicitud?',
-          text: 'Esta acción no se puede deshacer',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonText: 'Sí, cancelar',
-          cancelButtonText: 'No'
+    const StatusBadge = ({ status }) => {
+       // Mapping statuses to specific colors
+       let type = 'neutral';
+       
+       switch(status) {
+           case 'Aprobado': 
+               type = 'success'; break;
+           case 'Aprobado (Excepción)': 
+               type = 'teal'; break;
+           case 'Pendiente': 
+               type = 'warning'; break;
+           case 'Necesita Revisión': 
+               type = 'info'; break;
+           case 'Rechazado': 
+               type = 'danger'; break;
+           case 'Cancelado': 
+               type = 'neutral'; break;
+           default: 
+               type = 'neutral';
+       }
+       
+       return <span className={`badge badge-${type}`}>{status}</span>;
+    };
+    
+    const getStatusDotColor = (status) => {
+        if(status === 'Aprobado') return 'dot-success';
+        if(status === 'Aprobado (Excepción)') return 'dot-teal';
+        if(status === 'Pendiente') return 'dot-warning';
+        if(status === 'Necesita Revisión') return 'dot-info';
+        if(status === 'Rechazado') return 'dot-danger';
+        return 'dot-neutral';
+    };
+
+    const getStatusBorderClass = (status) => {
+        if(status.includes('Aprobado')) return 'status-border-success';
+        if(status === 'Aprobado (Excepción)') return 'status-border-teal';
+        if(status === 'Pendiente') return 'status-border-warning';
+        if(status === 'Rechazado') return 'status-border-danger';
+        return '';
+    };
+
+    // --- CALENDAR VIEW ---
+    const CalendarView = memo(({ requests, selection = {}, onDateClick, readOnly = false, showDetails = false, teamColors = {} }) => {
+      const [viewDate, setViewDate] = useState(new Date());
+      const year = viewDate.getFullYear();
+      const month = viewDate.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      
+      let firstDayIndex = new Date(year, month, 1).getDay();
+      const firstDayOffset = (firstDayIndex + 6) % 7;
+      
+      const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      const weekDays = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+
+      const getDayInfo = (day) => {
+        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        let selType = null;
+        if (selection.start) {
+           if (dateStr === selection.start && (!selection.end || selection.end === selection.start)) selType = 'single';
+           else if (dateStr === selection.start) selType = 'start';
+           else if (dateStr === selection.end) selType = 'end';
+           else if (selection.end && dateStr > selection.start && dateStr < selection.end) selType = 'range';
+        }
+        
+        // Find all requests for this day
+        const dayRequests = requests.filter(r => {
+           if(r.status === 'Cancelado' || r.status === 'Rechazado') return false;
+           const s = r.startDate.substring(0, 10);
+           const e = r.endDate.substring(0, 10);
+           return dateStr >= s && dateStr <= e;
         });
 
-        if (result.isConfirmed) {
-          MockDataService.deleteRequest(id);
-          
-          const updatedUser = MockDataService.getCurrentUser();
-          setUser(updatedUser);
-          setRequests(MockDataService.getUserRequests(user.email));
-          
-          if (user.isManager) {
-            setPending(MockDataService.getPendingRequests());
-            setAllRequests(MockDataService.getAllRequests());
-          }
-          
-          Swal.fire('Cancelada', 'La solicitud ha sido eliminada', 'success');
-        }
+        return { selType, reqs: dayRequests };
       };
-
-      /**
-       * Edit existing request
-       */
-      const handleEditClick = (request) => {
-        setEditingId(request.id);
-        setStartDate(request.startDate);
-        setEndDate(request.endDate);
-        setActiveTab('home');
-        
-        // Scroll to form
-        setTimeout(() => {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }, 100);
-      };
-
-      /**
-       * Manager actions (approve/reject)
-       */
-      const handleManagerAction = async (id, action) => {
-        if (action === 'reject') {
-          const { value: reason } = await Swal.fire({
-            title: 'Motivo del rechazo',
-            input: 'textarea',
-            inputPlaceholder: 'Escribe el motivo...',
-            showCancelButton: true,
-            confirmButtonText: 'Rechazar',
-            cancelButtonText: 'Cancelar'
-          });
-
-          if (reason) {
-            MockDataService.updateRequest(id, {
-              status: 'Rechazada',
-              rejectedAt: new Date().toISOString(),
-              rejectedBy: user.email,
-              rejectionReason: reason
-            });
-            
-            Swal.fire('Rechazada', 'La solicitud ha sido rechazada', 'info');
-          }
-        } else {
-          MockDataService.updateRequest(id, {
-            status: 'Aprobada',
-            approvedAt: new Date().toISOString(),
-            approvedBy: user.email
-          });
-          
-          Swal.fire('¡Aprobada!', 'La solicitud ha sido aprobada', 'success');
-        }
-
-        // Refresh manager data
-        setPending(MockDataService.getPendingRequests());
-        setAllRequests(MockDataService.getAllRequests());
-      };
-
-      // Loading screen
-      if (loading) {
-        return (
-          <div className="loader-container">
-            <div className="spinner"></div>
-            <div style={{fontSize: '14px', color: 'var(--text-secondary)', marginTop: '16px'}}>
-              Cargando Portal de Vacaciones...
-            </div>
-          </div>
-        );
-      }
-
-      const isManager = user?.isManager || false;
 
       return (
-        <div>
+        <div className="card h-full flex-col flex">
+          <div className="card-header" style={{border: 'none', paddingBottom: 0}}>
+             <h3 className="text-h3">{months[month]} <span className="text-secondary" style={{fontWeight:400}}>{year}</span></h3>
+             <div className="flex gap-1">
+                <button onClick={() => setViewDate(new Date(year, month-1, 1))} className="btn btn-secondary btn-sm" style={{padding: '6px'}}><Icon name="chevron-left" /></button>
+                <button onClick={() => setViewDate(new Date(year, month+1, 1))} className="btn btn-secondary btn-sm" style={{padding: '6px'}}><Icon name="chevron-right" /></button>
+             </div>
+          </div>
+          <div className="calendar-grid" style={{margin: '20px', borderRadius: '12px', border: '1px solid var(--border)'}}>
+             {weekDays.map(d => <div key={d} className="calendar-day-header">{d}</div>)}
+             {Array.from({length: firstDayOffset}).map((_, i) => <div key={`empty-${i}`} style={{background: '#f9f9f9'}} />)}
+             
+             {Array.from({length: daysInMonth}).map((_, i) => {
+                const day = i + 1;
+                const { selType, reqs } = getDayInfo(day);
+                const currentDate = new Date(year, month, day);
+                const dayOfWeek = currentDate.getDay(); // 0=Sun, 6=Sat
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+                let className = "calendar-cell";
+                if(selType === 'single') className += " selected-single";
+                if(selType === 'start') className += " selected-start";
+                if(selType === 'end') className += " selected-end";
+                if(selType === 'range') className += " selected-range";
+
+                const style = isWeekend ? { background: '#f5f5f7', color: '#bfbfbf', pointerEvents: 'none' } : {};
+                
+                return (
+                  <div key={day} onClick={() => !readOnly && !isWeekend && onDateClick(new Date(year, month, day))} className={className} style={style}>
+                     <span className="calendar-num">{day}</span>
+                     
+                     {/* RENDER CONTENT */}
+                     {showDetails ? (
+                        <div className="flex-col flex gap-1 mt-1" style={{overflow: 'hidden'}}>
+                            {reqs.map((r, idx) => {
+                                const isPending = r.isPending || (r.status === 'Pendiente' || r.status === 'Necesita Revisión');
+                                const color = r.color || teamColors[r.team] || '#888';
+                                const bgStyle = {
+                                    backgroundColor: isPending ? 'white' : color,
+                                    border: `1px solid ${color}`,
+                                    color: isPending ? color : 'white',
+                                    borderLeft: `4px solid ${color}`
+                                };
+                                
+                                return (
+                                <div key={idx} className="event-badge" style={bgStyle} title={`${r.employee} (${r.team})`}>
+                                    <span className="event-badge-name" style={{color: 'inherit'}}>{r.employee ? r.employee.split(' ')[0] : 'Vacaciones'}</span>
+                                    <span className="event-badge-team" style={{color: 'inherit', opacity: 0.8}}>{r.team}</span>
+                                </div>
+                            )})}
+                        </div>
+                     ) : (
+                         <div className="flex justify-center mt-2 gap-1 flex-wrap">
+                            {reqs.slice(0, 3).map((r, idx) => (
+                               <div key={idx} className={`dot ${getStatusDotColor(r.status)}`} title={r.employee || 'Vacaciones'}></div>
+                            ))}
+                            {reqs.length > 3 && <div className="dot" style={{background: '#888'}}></div>}
+                         </div>
+                     )}
+                  </div>
+                );
+             })}
+          </div>
+        </div>
+      );
+    });
+
+    // --- SUMMARY VIEW (NEW) ---
+    const SummaryView = ({ allRequests }) => {
+        const [year, setYear] = useState(new Date().getFullYear());
+        const [monthFilter, setMonthFilter] = useState(new Date().getMonth()); // Default current month
+        const [teamFilter, setTeamFilter] = useState('All');
+        
+        const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        const teams = useMemo(() => ['All', ...new Set(allRequests.map(r => r.team))], [allRequests]);
+
+        // Generate Color Map for Teams
+        const teamColors = useMemo(() => {
+            const colors = ['#0071e3', '#34c759', '#ff9500', '#ff3b30', '#5856d6', '#30b0c7', '#8e8e93'];
+            const map = {};
+            teams.filter(t => t !== 'All').forEach((t, i) => {
+                map[t] = colors[i % colors.length];
+            });
+            return map;
+        }, [teams]);
+
+        // Aggregate Data by Employee
+        const aggregatedList = useMemo(() => {
+            const map = {}; // { "Name": { team, count } }
+            
+            allRequests.forEach(req => {
+                if(!req.status.includes('Aprobado')) return; // Only count Approved for summary stats
+
+                const start = new Date(req.startDate);
+                const end = new Date(req.endDate);
+                
+                // Filter by Team
+                if (teamFilter !== 'All' && req.team !== teamFilter) return;
+
+                // Iterate days to attribute to the correct year/month
+                let cur = new Date(start);
+                cur.setHours(12,0,0,0); end.setHours(12,0,0,0);
+
+                let daysCount = 0;
+                while(cur <= end) {
+                    if (cur.getFullYear() === year) {
+                        const m = cur.getMonth();
+                        const d = cur.getDay();
+                        // Business days
+                        if(d !== 0 && d !== 6) {
+                            if (monthFilter === 'All' || monthFilter === m) {
+                                daysCount++;
+                            }
+                        }
+                    }
+                    cur.setDate(cur.getDate() + 1);
+                }
+
+                if (daysCount > 0) {
+                    const emp = req.employee || 'Desconocido';
+                    if (!map[emp]) map[emp] = { employee: emp, team: req.team, count: 0 };
+                    map[emp].count += daysCount;
+                }
+            });
+
+            return Object.values(map).sort((a,b) => b.count - a.count);
+        }, [allRequests, year, monthFilter, teamFilter]);
+
+        // Enrich requests with display properties for Calendar
+        const calendarRequests = useMemo(() => {
+            return allRequests.map(req => ({
+                ...req,
+                color: teamColors[req.team] || '#888', // Assign team color
+                isPending: !req.status.includes('Aprobado')
+            })).filter(req => teamFilter === 'All' || req.team === teamFilter);
+        }, [allRequests, teamColors, teamFilter]);
+
+        return (
+            <div className="flex-col flex gap-6">
+                <div className="flex justify-between items-center flex-wrap gap-4">
+                    <h2 className="text-h2">Resumen de Ausencias</h2>
+                    <div className="flex gap-2 items-center">
+                        <select className="input-display" style={{padding:'8px', minWidth:'120px'}} value={teamFilter} onChange={e => setTeamFilter(e.target.value)}>
+                            {teams.map(t => <option key={t} value={t}>{t === 'All' ? 'Todos los equipos' : t}</option>)}
+                        </select>
+                        
+                        <div className="flex items-center bg-white rounded-lg border p-1">
+                            <button onClick={() => setYear(year-1)} className="btn btn-ghost btn-sm"><Icon name="chevron-left"/></button>
+                            <span className="text-bold px-2">{year}</span>
+                            <button onClick={() => setYear(year+1)} className="btn btn-ghost btn-sm"><Icon name="chevron-right"/></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex-col flex gap-8">
+                    
+                    {/* Aggregated List View */}
+                    <div className="card">
+                        <div className="card-header">
+                            <div className="flex gap-2 w-full overflow-x-auto">
+                                <button onClick={() => setMonthFilter('All')} className={`nav-pill ${monthFilter==='All'?'active':''}`}>Todo el Año</button>
+                                {months.map((m, i) => (
+                                    <button key={m} onClick={() => setMonthFilter(i)} className={`nav-pill ${monthFilter===i?'active':''}`}>{m}</button>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="table-container">
+                            <table className="custom-table">
+                                <thead>
+                                    <tr>
+                                        <th>Empleado</th>
+                                        <th>Equipo</th>
+                                        <th style={{textAlign:'center'}}>Días Totales ({monthFilter === 'All' ? year : months[monthFilter]})</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {aggregatedList.length === 0 ? (
+                                        <tr><td colSpan="3" style={{textAlign:'center', padding:'32px'}}>No hay ausencias aprobadas para este periodo.</td></tr>
+                                    ) : (
+                                        aggregatedList.map(row => (
+                                            <tr key={row.employee}>
+                                                <td className="text-bold">{row.employee}</td>
+                                                <td><span className="badge badge-neutral" style={{color: teamColors[row.team]}}>{row.team}</span></td>
+                                                <td style={{textAlign:'center', fontWeight:'800', fontSize:'16px'}}>{row.count}</td>
+                                            </tr>
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    {/* Calendar View */}
+                    <div>
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-h3">Calendario de Equipo</h3>
+                            <div className="flex gap-4 text-xs">
+                                <div className="flex items-center gap-1"><div className="dot" style={{background:'#333'}}></div> Aprobado (Sólido)</div>
+                                <div className="flex items-center gap-1"><div className="dot" style={{background:'#333', opacity:0.4}}></div> Pendiente (Tenue)</div>
+                            </div>
+                        </div>
+                        <CalendarView 
+                            requests={calendarRequests} 
+                            readOnly={true} 
+                            showDetails={true} 
+                            selection={{}} 
+                            teamColors={teamColors}
+                        />
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    // --- TEAM MANAGEMENT ---
+    const TeamManagement = ({ pendingRequests, onAction }) => {
+      const [filterTeam, setFilterTeam] = useState('All');
+      const [filterStatus, setFilterStatus] = useState('All');
+      const [selectedIds, setSelectedIds] = useState(new Set());
+
+      const teams = useMemo(() => ['All', ...new Set(pendingRequests.map(r => r.team))], [pendingRequests]);
+      
+      const { urgent, thisMonth, others } = useMemo(() => {
+         const list = pendingRequests.filter(r => {
+            const teamMatch = filterTeam === 'All' || r.team === filterTeam;
+            if (filterStatus === 'All') return teamMatch;
+            if (filterStatus === 'Conflictos') return teamMatch && r.status === 'Necesita Revisión';
+            return teamMatch && r.status === filterStatus;
+         });
+         
+         const now = new Date();
+         const sevenDays = new Date(); sevenDays.setDate(now.getDate() + 7);
+         
+         const u = [], tm = [], o = [];
+         
+         list.forEach(r => {
+             const d = new Date(r.startDate);
+             const isPending = r.status === 'Pendiente' || r.status === 'Necesita Revisión';
+             
+             if(isPending && d >= now && d <= sevenDays) { u.push(r); return; }
+             if(isPending && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) { tm.push(r); return; }
+             o.push(r);
+         });
+         
+         const sortFn = (a,b) => new Date(a.startDate) - new Date(b.startDate);
+         return { urgent: u.sort(sortFn), thisMonth: tm.sort(sortFn), others: o.sort(sortFn) };
+      }, [pendingRequests, filterTeam, filterStatus]);
+
+      const toggleSelectOne = (id) => {
+         const newSet = new Set(selectedIds);
+         if(newSet.has(id)) newSet.delete(id); else newSet.add(id);
+         setSelectedIds(newSet);
+      };
+
+      const handleBulkAction = (action) => {
+          Swal.fire({
+              title: `¿${action} ${selectedIds.size} solicitudes?`,
+              text: "Esta acción actualizará el estado de los seleccionados.",
+              icon: 'question',
+              showCancelButton: true,
+              confirmButtonText: `Sí, ${action}`,
+              cancelButtonText: 'Cancelar'
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  onAction(Array.from(selectedIds), action, true);
+                  setSelectedIds(new Set());
+              }
+          });
+      };
+      
+      const RenderGroup = ({ title, items, icon, color }) => {
+          if(!items || items.length === 0) return null;
+          return (
+             <div style={{marginBottom: '32px'}}>
+                <h4 style={{fontSize:'14px', fontWeight:'700', color: color, textTransform:'uppercase', marginBottom:'12px', display:'flex', alignItems:'center', gap:'8px', letterSpacing:'0.5px'}}>
+                   <Icon name={icon} /> {title} ({items.length})
+                </h4>
+                <div className="card table-container">
+                   <table className="custom-table">
+                    <thead>
+                       <tr>
+                          <th style={{width: '40px'}}></th>
+                          <th>Empleado</th>
+                          <th>Periodo</th>
+                          <th className="text-center">Días</th>
+                          <th>Estado</th>
+                          <th className="text-right">Acción</th>
+                       </tr>
+                    </thead>
+                    <tbody>
+                       {items.map(req => {
+                          const displayDays = req.days || calcBusinessDays(req.startDate, req.endDate);
+                          const isSelected = selectedIds.has(req.id);
+                          return (
+                          <tr key={req.id} style={isSelected ? {background: '#f0f7ff'} : {}}>
+                             <td><input type="checkbox" className="input-checkbox" checked={isSelected} onChange={() => toggleSelectOne(req.id)}/></td>
+                             <td>
+                                <div className="text-bold">{req.employee}</div>
+                                <div className="text-sub" style={{fontSize: '12px'}}>{req.team}</div>
+                             </td>
+                             <td>
+                                <div className="flex items-center gap-2 text-sub">
+                                    {formatDateFriendly(req.startDate)} <Icon name="arrow-right" size="14px"/> {formatDateFriendly(req.endDate)}
+                                </div>
+                             </td>
+                             <td style={{textAlign:'center'}}>
+                                <span className="badge badge-neutral">{displayDays}</span>
+                             </td>
+                             <td><StatusBadge status={req.status}/></td>
+                             <td>
+                                <div className="flex justify-end gap-1">
+                                    <button onClick={() => onAction(req.id, 'Rechazado')} title="Rechazar" className="btn btn-ghost" style={{color: 'var(--danger)', padding: '6px'}}><Icon name="x"/></button>
+                                    <button onClick={() => onAction(req.id, 'Aprobado')} title="Aprobar" className="btn btn-ghost" style={{color: 'var(--success)', padding: '6px'}}><Icon name="check"/></button>
+                                </div>
+                             </td>
+                          </tr>
+                       )})}
+                    </tbody>
+                   </table>
+                </div>
+             </div>
+          );
+      };
+
+      return (
+        <div className="grid-cols-12 md-block">
+           {/* Sidebar Filters */}
+           <div className="col-span-3">
+              <div className="card" style={{position: 'sticky', top: '90px'}}>
+                 <div className="card-body">
+                    <h3 className="input-label">Filtros Rápidos</h3>
+                    <div className="flex-col flex gap-1" style={{marginBottom: '20px'}}>
+                        {['All', 'Pendiente', 'Conflictos'].map(s => {
+                            const count = s === 'All' ? pendingRequests.length : pendingRequests.filter(r => s === 'Conflictos' ? r.status === 'Necesita Revisión' : r.status === s).length;
+                            return (
+                                <button key={s} onClick={() => setFilterStatus(s)} className={`filter-btn ${filterStatus===s ? 'active' : ''}`}>
+                                    <span>{s === 'All' ? 'Todos' : s}</span>
+                                    <span className={`badge ${s==='Conflictos'?'badge-danger':'badge-neutral'}`}>{count}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                    <h3 className="input-label">Equipos</h3>
+                    <div className="flex-col flex gap-1">
+                       {teams.map(t => (
+                          <button key={t} onClick={() => setFilterTeam(t)} className={`filter-btn ${filterTeam===t ? 'active' : ''}`}>
+                             {t === 'All' ? 'Todos los equipos' : t}
+                          </button>
+                       ))}
+                    </div>
+                 </div>
+              </div>
+           </div>
+
+           {/* Content */}
+           <div className="col-span-9" style={{marginTop: '20px'}}>
+              <div className="flex justify-between items-center" style={{marginBottom: '16px'}}>
+                 <h2 className="text-h2">Administración de Equipo</h2>
+                 {selectedIds.size > 0 && (
+                    <div className="flex gap-2">
+                       <button onClick={() => handleBulkAction('Rechazado')} className="btn btn-danger btn-sm">Rechazar ({selectedIds.size})</button>
+                       <button onClick={() => handleBulkAction('Aprobado')} className="btn btn-success btn-sm">Aprobar ({selectedIds.size})</button>
+                    </div>
+                 )}
+              </div>
+
+              {urgent.length === 0 && thisMonth.length === 0 && others.length === 0 && (
+                  <div className="card empty-state">
+                      <div className="empty-icon" style={{background: 'var(--success-bg)'}}>✓</div>
+                      <h3 className="empty-title">¡Excelente trabajo!</h3>
+                      <p className="empty-description">No hay solicitudes pendientes de revisar. Tu equipo está al día.</p>
+                  </div>
+              )}
+
+              <RenderGroup title="Atención Requerida (Próximas)" items={urgent} icon="time-five" color="var(--warning)" />
+              <RenderGroup title="Este Mes" items={thisMonth} icon="calendar" color="var(--info)" />
+              <RenderGroup title="Futuras" items={others} icon="list-ul" color="var(--text-secondary)" />
+           </div>
+        </div>
+      );
+    };
+
+    // --- MIS SOLICITUDES ---
+    const MyRequestsTab = ({ requests, onCancel, onEdit }) => {
+      const { active, history } = useMemo(() => {
+         const active = []; const history = [];
+         requests.forEach(r => {
+             if (r.status === 'Pendiente' || r.status === 'Necesita Revisión') active.push(r);
+             else history.push(r);
+         });
+         active.sort((a,b) => new Date(a.startDate) - new Date(b.startDate));
+         history.sort((a,b) => new Date(b.startDate) - new Date(a.startDate));
+         return { active, history };
+      }, [requests]);
+
+      return (
+        <div className="container" style={{maxWidth: '800px'}}>
+           <h2 className="text-h2" style={{marginBottom: '24px'}}>Mis Solicitudes</h2>
+
+           {/* SECCIÃ“N 1: EN PROCESO */}
+           <div style={{marginBottom: '32px'}}>
+              <h3 className="input-label" style={{marginBottom: '16px', display:'flex', gap:'6px'}}><Icon name="clock" size="16px"/> En Proceso</h3>
+              
+              {active.length === 0 ? (
+                 <div className="card empty-state">
+                    <div className="empty-icon">📋</div>
+                    <h3 className="empty-title">No tienes solicitudes pendientes</h3>
+                    <p className="empty-description">Cuando solicites vacaciones, aparecerán aquí para que puedas darles seguimiento</p>
+                    <button onClick={() => setActiveTab('home')} className="btn btn-primary" style={{marginTop: '8px'}}>
+                       <Icon name="calendar-plus" size="16px"/> Nueva Solicitud
+                    </button>
+                 </div>
+              ) : (
+                 <div className="flex-col flex gap-4">
+                 {active.map(req => {
+                    const displayDays = req.days || calcBusinessDays(req.startDate, req.endDate);
+                    return (
+                    <div key={req.id} className="card card-body flex flex-col md-flex justify-between items-center gap-4">
+                       <div className="flex gap-4 items-center w-full">
+                          <div style={{background: 'var(--info-bg)', color: 'var(--info)', padding: '10px', borderRadius: '12px', textAlign: 'center', minWidth: '60px'}}>
+                             <div style={{fontSize: '10px', fontWeight: '700', textTransform: 'uppercase'}}>{new Date(req.startDate).toLocaleString('es-ES', {month:'short'})}</div>
+                             <div style={{fontSize: '20px', fontWeight: '800', lineHeight: 1}}>{new Date(req.startDate).getUTCDate()}</div>
+                          </div>
+                          <div>
+                             <div className="flex items-center gap-2 text-bold">
+                                {formatDateFriendly(req.startDate)} <Icon name="arrow-right" size="14px" className="text-sub"/> {formatDateFriendly(req.endDate)}
+                             </div>
+                             <div className="flex gap-2 mt-1 items-center">
+                                <span className="text-sub" style={{fontSize:'12px'}}>{displayDays} días</span>
+                                <StatusBadge status={req.status} />
+                             </div>
+                          </div>
+                       </div>
+                       
+                       <div className="flex gap-2 w-full md-block" style={{width: 'auto'}}>
+                          <button onClick={() => onEdit(req)} className="btn btn-secondary btn-sm"><Icon name="pencil" size="14px"/> Editar</button>
+                          <button onClick={() => onCancel(req.id)} className="btn btn-ghost btn-sm" style={{color: 'var(--danger)'}}><Icon name="trash-2" size="14px"/> Cancelar</button>
+                       </div>
+                    </div>
+                 )})}
+                 </div>
+              )}
+           </div>
+
+           {/* SECCIÃ“N 2: HISTORIAL */}
+           <div>
+              <h3 className="input-label" style={{marginBottom: '16px', display:'flex', gap:'6px'}}><Icon name="archive" size="16px"/> Historial</h3>
+              <div className="flex-col flex gap-2">
+              {history.length === 0 ? (
+                 <p className="text-sub">No hay historial.</p>
+              ) : (
+                 history.map(req => {
+                    const displayDays = req.days || calcBusinessDays(req.startDate, req.endDate);
+                    return (
+                    <div key={req.id} className="card" style={{padding: '16px 24px', opacity: 0.8}}>
+                       <div className="flex justify-between items-center">
+                          <div className="flex gap-4 items-center">
+                             <div className="text-sub" style={{fontSize: '13px', width: '80px'}}>
+                                {formatDateFriendly(req.startDate)}
+                             </div>
+                             <Icon name="arrow-right" size="12px" className="text-sub"/>
+                             <div className="text-sub" style={{fontSize: '13px'}}>
+                                {formatDateFriendly(req.endDate)}
+                             </div>
+                          </div>
+                          <div className="flex items-center gap-3">
+                             <span className="text-sub" style={{fontSize: '12px'}}>{displayDays}d</span>
+                             <StatusBadge status={req.status} />
+                          </div>
+                       </div>
+                    </div>
+                 )})
+              )}
+              </div>
+           </div>
+        </div>
+      );
+    };
+
+    // --- MAIN APP ---
+    function App() {
+      const [activeTab, setActiveTab] = useState('home'); 
+      const [loading, setLoading] = useState(true);
+      const [data, setData] = useState(null);
+      
+      const [startDate, setStartDate] = useState('');
+      const [endDate, setEndDate] = useState('');
+      const [editingId, setEditingId] = useState(null); 
+      const [submitting, setSubmitting] = useState(false);
+      
+      // Refs para el tab indicator
+      const navContainerRef = useRef(null);
+      const tabRefs = useRef({});
+
+      // Use demo mode by default (set to false to connect to Google Apps Script backend)
+      const IS_DEV = true;
+
+      useEffect(() => {
+        const loader = document.getElementById('initial-loader');
+        if(loader) loader.style.display = 'none';
+        loadAllData();
+      }, []);
+      
+      // Efecto para animar el tab indicator
+      useEffect(() => {
+        if (!navContainerRef.current) return;
+        
+        const activeButton = tabRefs.current[activeTab];
+        if (!activeButton) return;
+        
+        const indicator = navContainerRef.current.querySelector('.tab-indicator');
+        if (!indicator) return;
+        
+        const { offsetLeft, offsetWidth } = activeButton;
+        indicator.style.left = `${offsetLeft}px`;
+        indicator.style.width = `${offsetWidth}px`;
+      }, [activeTab, data]);
+
+      const loadAllData = () => {
+        // DEMO DATA - Replace with real backend integration
+        setTimeout(() => {
+          setData({
+            user: { 
+              email: 'demo@example.com', 
+              role: 'manager', 
+              team: 'Desarrollo', 
+              stats: { remaining: 13 } 
+            },
+            requests: [
+                { id: 1, startDate: '2025-12-19T00:00:00.000Z', endDate: '2025-12-24T00:00:00.000Z', status: 'Pendiente', days: null },
+                { id: 99, startDate: '2025-06-10T00:00:00.000Z', endDate: '2025-06-12T00:00:00.000Z', status: 'Necesita Revisión', days: 3 },
+                { id: 100, startDate: '2024-01-01T00:00:00.000Z', endDate: '2024-01-05T00:00:00.000Z', status: 'Aprobado', days: 5 }
+            ],
+            pending: [
+              { id: 2, employee: 'Ana Gómez', team: 'Ventas', startDate: '2025-05-20T00:00:00.000Z', endDate: '2025-05-25T00:00:00.000Z', status: 'Pendiente', days: null },
+              { id: 3, employee: 'Luis Pérez', team: 'Desarrollo', startDate: '2025-06-10T00:00:00.000Z', endDate: '2025-06-12T00:00:00.000Z', status: 'Necesita Revisión', days: 3 }
+            ],
+            allRequests: [
+              { id: 101, employee: 'Ana Gómez', team: 'Ventas', startDate: '2025-01-10T00:00:00.000Z', endDate: '2025-01-15T00:00:00.000Z', status: 'Aprobado', days: 4 },
+              { id: 102, employee: 'Luis Pérez', team: 'Desarrollo', startDate: '2025-02-10T00:00:00.000Z', endDate: '2025-02-12T00:00:00.000Z', status: 'Aprobado', days: 2 }
+            ]
+          });
+          setLoading(false);
+        }, 800);
+      };
+
+      const handleCalendarClick = (date) => {
+        const d = new Date(date);
+        const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        
+        if (!startDate || (startDate && endDate && startDate !== endDate)) {
+            setStartDate(dateStr); setEndDate(dateStr); 
+        } else if (startDate === endDate) {
+            if (dateStr < startDate) setStartDate(dateStr); else setEndDate(dateStr);
+        }
+      };
+
+      const handleFormSubmit = () => {
+        if (!startDate || !endDate) return Swal.fire({
+            title: 'Faltan fechas',
+            text: 'Por favor selecciona las fechas de inicio y fin en el calendario',
+            icon: 'warning',
+            confirmButtonText: 'Entendido'
+        });
+        
+        Swal.fire({
+            title: editingId ? 'Actualizar Solicitud' : 'Confirmar Solicitud',
+            html: `
+               <div style="text-align: center; margin: 16px 0;">
+                  <p style="margin-bottom: 8px; color: #666;">Periodo seleccionado:</p>
+                  <p style="font-weight: 600; margin-bottom: 16px;">${formatDateFriendly(startDate)} → ${formatDateFriendly(endDate)}</p>
+                  <div style="background: #e3f0ff; padding: 12px; border-radius: 8px; display: inline-block;">
+                     <span style="color: #0071e3; font-weight: 800; font-size: 24px;">${calcBusinessDays(startDate, endDate)}</span>
+                     <span style="color: #0071e3; font-size: 14px; margin-left: 4px;">días hábiles</span>
+                  </div>
+               </div>
+            `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: editingId ? 'Actualizar' : 'Solicitar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                setSubmitting(true);
+                Swal.fire({title: 'Procesando...', didOpen: () => Swal.showLoading()});
+                
+                // DEMO MODE: Simulate success
+                setTimeout(() => {
+                    Swal.fire('¡Éxito!', 'Solicitud procesada correctamente (modo demo)', 'success');
+                    setStartDate(''); setEndDate(''); setEditingId(null); setSubmitting(false); 
+                    setTimeout(() => { loadAllData(); setActiveTab('my-requests'); }, 1500);
+                }, 500);
+            }
+        });
+      };
+
+      const handleManagerAction = async (idOrIds, action, isBulk = false) => {
+        if (!isBulk) {
+            const result = await Swal.fire({
+                title: `¿${action} solicitud?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sí, confirmar'
+            });
+            if (!result.isConfirmed) return;
+        }
+
+        const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds];
+        const newPending = data.pending.filter(r => !ids.includes(r.id));
+        setData(prev => ({ ...prev, pending: newPending }));
+
+        // DEMO MODE: Show success message
+        Swal.fire({
+           title: '¡Listo!',
+           text: `Solicitud ${action === 'Aprobado' ? 'aprobada' : 'rechazada'} correctamente (modo demo)`,
+           icon: 'success',
+           timer: 2000,
+           showConfirmButton: false
+        });
+        setTimeout(() => loadAllData(), 500);
+      };
+
+      const handleEditClick = (req) => {
+         const s = req.startDate.substring(0, 10);
+         const e = req.endDate.substring(0, 10);
+         setStartDate(s); setEndDate(e); setEditingId(req.id);
+         setActiveTab('home'); 
+      };
+
+      const handleCancelRequest = (id) => {
+         Swal.fire({
+             title: '¿Cancelar Solicitud?',
+             text: "Esta acción no se puede deshacer.",
+             icon: 'warning',
+             showCancelButton: true,
+             confirmButtonColor: '#d33',
+             confirmButtonText: 'Sí, cancelar'
+         }).then((result) => {
+             if (result.isConfirmed) {
+                 // DEMO MODE: Simulate cancellation
+                 Swal.fire({
+                    title: '¡Cancelada!',
+                    text: 'La solicitud ha sido eliminada correctamente (modo demo)',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                 }); 
+                 setTimeout(() => loadAllData(), 500);
+             }
+         });
+      };
+
+      if (loading && !data) return <div className="loader-container"><div className="spinner"></div></div>;
+      if (!data) return null;
+
+      const { user, requests, pending, allRequests } = data;
+      const isManager = user.role === 'manager';
+
+      return (
+        <div className="flex-col flex h-full min-h-screen">
+          
           {/* Header */}
           <header className="app-header">
-            <div className="container header-content">
-              {/* Logo */}
-              <div className="flex items-center gap-3">
-                <div style={{
-                  width: '40px',
-                  height: '40px',
-                  background: 'linear-gradient(135deg, var(--primary), var(--info))',
-                  borderRadius: 'var(--radius-m)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: 'white',
-                  fontSize: '20px'
-                }}>
-                  🏖️
-                </div>
-                <div>
-                  <h1 className="text-bold" style={{fontSize: '18px', lineHeight: '1.2'}}>
-                    Portal de Vacaciones
-                  </h1>
-                  <div className="text-xs text-secondary">Sistema de Gestión</div>
-                </div>
-              </div>
-
-              {/* Navigation Pills (Desktop) */}
-              <div className="nav-pills md-block" style={{display: 'none'}}>
-                <button 
-                  ref={el => tabRefs.current['home'] = el}
-                  onClick={() => setActiveTab('home')} 
-                  className={`nav-pill ${activeTab==='home'?'active':''}`}>
-                  <Icon name="home" size="16px"/> Inicio
-                </button>
-                
-                <button 
-                  ref={el => tabRefs.current['my-requests'] = el}
-                  onClick={() => setActiveTab('my-requests')} 
-                  className={`nav-pill ${activeTab==='my-requests'?'active':''}`}
-                  style={{
-                    position: 'relative',
-                    paddingRight: requests && requests.filter(r => r.status === 'Pendiente' || r.status === 'Necesita Revisión').length > 0 ? '24px' : '16px'
-                  }}>
-                  <Icon name="list" size="16px"/> Mis Solicitudes
-                  {requests && requests.filter(r => r.status === 'Pendiente' || r.status === 'Necesita Revisión').length > 0 && (
-                    <span className="nav-badge">
-                      {requests.filter(r => r.status === 'Pendiente' || r.status === 'Necesita Revisión').length}
-                    </span>
-                  )}
-                </button>
-                
-                {isManager && (
-                  <button 
-                    ref={el => tabRefs.current['team'] = el}
-                    onClick={() => setActiveTab('team')} 
-                    className={`nav-pill ${activeTab==='team'?'active':''}`}
-                    style={{
-                      position: 'relative',
-                      paddingRight: pending && pending.length > 0 ? '24px' : '16px'
-                    }}>
-                    <Icon name="users" size="16px"/> Equipo
-                    {pending && pending.length > 0 && (
-                      <span className="nav-badge">{pending.length}</span>
+             <div className="container flex justify-between items-center">
+                 <div className="flex items-center gap-2 text-primary">
+                    <Icon name="plane" size="24px"/>
+                    <span style={{fontWeight: 800, fontSize: '18px', letterSpacing: '-0.5px', color: 'var(--text-main)'}}>Portal Vacaciones</span>
+                 </div>
+                 
+                 {/* Desktop Nav */}
+                 <div className="md-flex gap-1 hidden nav-pills-container" ref={navContainerRef}>
+                    <div className="tab-indicator" style={{height: '32px', top: '4px'}}></div>
+                    
+                    <button 
+                       ref={el => tabRefs.current['home'] = el}
+                       onClick={() => setActiveTab('home')} 
+                       className={`nav-pill ${activeTab==='home'?'active':''}`}>
+                       <Icon name="home" size="16px"/> Inicio
+                    </button>
+                    
+                    <button 
+                       ref={el => tabRefs.current['my-requests'] = el}
+                       onClick={() => setActiveTab('my-requests')} 
+                       className={`nav-pill ${activeTab==='my-requests'?'active':''}`}
+                       style={{
+                          position: 'relative',
+                          paddingRight: requests && requests.filter(r => r.status === 'Pendiente' || r.status === 'Necesita Revisión').length > 0 ? '24px' : '16px'
+                       }}>
+                       <Icon name="list" size="16px"/> Mis Solicitudes
+                       {requests && requests.filter(r => r.status === 'Pendiente' || r.status === 'Necesita Revisión').length > 0 && (
+                          <span className="nav-badge">
+                             {requests.filter(r => r.status === 'Pendiente' || r.status === 'Necesita Revisión').length}
+                          </span>
+                       )}
+                    </button>
+                    
+                    {isManager && (
+                       <button 
+                          ref={el => tabRefs.current['team'] = el}
+                          onClick={() => setActiveTab('team')} 
+                          className={`nav-pill ${activeTab==='team'?'active':''}`}
+                          style={{
+                             position: 'relative',
+                             paddingRight: pending && pending.length > 0 ? '24px' : '16px'
+                          }}>
+                          <Icon name="users" size="16px"/> Equipo
+                          {pending && pending.length > 0 && (
+                             <span className="nav-badge">{pending.length}</span>
+                          )}
+                       </button>
                     )}
-                  </button>
-                )}
-                
-                {isManager && (
-                  <button 
-                    ref={el => tabRefs.current['summary'] = el}
-                    onClick={() => setActiveTab('summary')} 
-                    className={`nav-pill ${activeTab==='summary'?'active':''}`}>
-                    <Icon name="pie-chart" size="16px"/> Resumen
-                  </button>
-                )}
-              </div>
+                    
+                    {isManager && (
+                       <button 
+                          ref={el => tabRefs.current['summary'] = el}
+                          onClick={() => setActiveTab('summary')} 
+                          className={`nav-pill ${activeTab==='summary'?'active':''}`}>
+                          <Icon name="pie-chart" size="16px"/> Resumen
+                       </button>
+                    )}
+                 </div>
 
-              {/* User Info */}
-              <div className="flex items-center gap-3">
-                <div className="hidden md-block text-right">
-                  <div className="text-bold" style={{fontSize:'13px'}}>
-                    {user.email.split('@')[0]}
-                  </div>
-                  <div className="text-sub" style={{fontSize:'11px', textTransform:'uppercase'}}>
-                    Equipo: {user.team}
-                  </div>
-                </div>
-                <div style={{
-                  width:'36px', 
-                  height:'36px', 
-                  background:'var(--info-bg)', 
-                  color:'var(--info)', 
-                  borderRadius:'50%', 
-                  display:'flex', 
-                  alignItems:'center', 
-                  justifyContent:'center', 
-                  fontWeight:'700'
-                }}>
-                  {user.email.charAt(0).toUpperCase()}
-                </div>
-              </div>
-            </div>
+                 <div className="flex items-center gap-3">
+                    <div className="hidden md-block text-right">
+                       <div className="text-bold" style={{fontSize:'13px'}}>{user.email.split('@')[0]}</div>
+                       <div className="text-sub" style={{fontSize:'11px', textTransform:'uppercase'}}>Equipo: {user.team}</div>
+                    </div>
+                    <div style={{width:'36px', height:'36px', background:'var(--info-bg)', color:'var(--info)', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'700'}}>
+                       {user.email.charAt(0).toUpperCase()}
+                    </div>
+                 </div>
+             </div>
           </header>
 
-          {/* Main Content */}
           <main className="container" style={{paddingTop: '32px', paddingBottom: '100px'}}>
-            {/* Home Tab */}
-            {activeTab === 'home' && (
-              <div className="grid-main fade-in">
-                {/* Calendar - Main Feature */}
-                <div className="h-full">
-                  <CalendarView 
-                    requests={requests} 
-                    selection={{start: startDate, end: endDate}} 
-                    onDateClick={handleCalendarClick} 
-                  />
+             {activeTab === 'home' && (
+                <div className="grid-main fade-in">
+                   {/* CALENDARIO - Protagonista a la izquierda */}
+                   <div className="h-full">
+                      <CalendarView requests={requests} selection={{start: startDate, end: endDate}} onDateClick={handleCalendarClick} />
+                   </div>
+                   
+                   {/* SIDEBAR - Compacto a la derecha */}
+                   <div className="flex-col flex gap-4">
+                      {/* Stats Card - Más compacto */}
+                      <div className="balance-card">
+                         <div className="balance-circle" style={{width: '120px', height: '120px', top: '-15px', right: '-15px'}}></div>
+                         <div className="relative">
+                             <div className="input-label" style={{color: 'rgba(255,255,255,0.8)', fontSize: '11px'}}>SALDO DISPONIBLE</div>
+                             <div style={{fontSize: '48px', fontWeight: '800', margin: '8px 0', lineHeight: '1'}}>
+                                {user.stats.remaining} <span style={{fontSize: '18px', fontWeight: '600', opacity: 0.9}}>días</span>
+                             </div>
+                         </div>
+                      </div>
+                      
+                      {/* Form Card - Más compacto */}
+                      <div className="card card-body" style={{padding: '20px'}}>
+                         <h3 className="text-h3" style={{marginBottom: '16px', display:'flex', gap:'8px', alignItems:'center', fontSize: '16px'}}>
+                            <Icon name={editingId ? 'edit-3' : 'calendar-plus'} size="18px" className={editingId ? 'text-warning' : 'text-primary'}/>
+                            {editingId ? 'Modificar' : 'Nueva Solicitud'}
+                         </h3>
+                         
+                         <div className="input-group" style={{marginBottom: '12px'}}>
+                             <label className="input-label">Desde</label>
+                             <div className="input-display" style={{padding: '10px 14px', fontSize: '13px'}}>
+                                {startDate ? formatDateFriendly(startDate) : '-'}
+                             </div>
+                         </div>
+                         <div className="input-group" style={{marginBottom: '12px'}}>
+                             <label className="input-label">Hasta</label>
+                             <div className="input-display" style={{padding: '10px 14px', fontSize: '13px'}}>
+                                {endDate ? formatDateFriendly(endDate) : '-'}
+                             </div>
+                         </div>
+                         
+                         {startDate && endDate && (
+                            <div style={{
+                               background: 'var(--info-bg)', 
+                               padding: '10px 14px', 
+                               borderRadius: 'var(--radius-m)',
+                               border: '1px solid var(--info)',
+                               marginBottom: '12px'
+                            }}>
+                               <div style={{display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'space-between'}}>
+                                  <span style={{fontSize: '12px', color: 'var(--info)', fontWeight: '600'}}>
+                                     <Icon name="sun" size="14px"/> Días hábiles
+                                  </span>
+                                  <span style={{fontSize: '18px', fontWeight: '800', color: 'var(--info)'}}>
+                                     {calcBusinessDays(startDate, endDate)}
+                                  </span>
+                               </div>
+                            </div>
+                         )}
+
+                         <div className="flex gap-2" style={{marginTop: '16px'}}>
+                            {editingId && <button onClick={() => {setEditingId(null); setStartDate(''); setEndDate('');}} className="btn btn-secondary btn-sm flex-1">Cancelar</button>}
+                            <button onClick={handleFormSubmit} disabled={submitting} className={`btn btn-sm flex-1 ${editingId ? 'btn-warning' : 'btn-primary'}`}>
+                               {submitting && <span className="spinner-sm" style={{marginRight: '6px'}}></span>}
+                               {submitting ? 'Guardando...' : (editingId ? 'Actualizar' : 'Solicitar')}
+                            </button>
+                         </div>
+                      </div>
+                   </div>
                 </div>
-                
-                {/* Sidebar - Form & Stats */}
-                <div className="flex-col flex gap-4">
-                  {/* Balance Card */}
-                  <div className="balance-card">
-                    <div className="balance-circle" style={{
-                      width: '120px', 
-                      height: '120px', 
-                      top: '-15px', 
-                      right: '-15px'
-                    }}></div>
-                    <div className="relative">
-                      <div className="input-label" style={{
-                        color: 'rgba(255,255,255,0.8)', 
-                        fontSize: '11px'
-                      }}>
-                        SALDO DISPONIBLE
-                      </div>
-                      <div style={{
-                        fontSize: '48px', 
-                        fontWeight: '800', 
-                        margin: '8px 0', 
-                        lineHeight: '1'
-                      }}>
-                        {user.stats.remaining} <span style={{
-                          fontSize: '18px', 
-                          fontWeight: '600', 
-                          opacity: 0.9
-                        }}>días</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Request Form Card */}
-                  <div className="card card-body" style={{padding: '20px'}}>
-                    <h3 className="text-h3" style={{
-                      marginBottom: '16px', 
-                      display:'flex', 
-                      gap:'8px', 
-                      alignItems:'center', 
-                      fontSize: '16px'
-                    }}>
-                      <Icon 
-                        name={editingId ? 'edit-3' : 'calendar-plus'} 
-                        size="18px" 
-                        className={editingId ? 'text-warning' : 'text-primary'}
-                      />
-                      {editingId ? 'Modificar' : 'Nueva Solicitud'}
-                    </h3>
-                    
-                    {/* Start Date Display */}
-                    <div className="input-group" style={{marginBottom: '12px'}}>
-                      <label className="input-label">Desde</label>
-                      <div className="input-display" style={{padding: '10px 14px', fontSize: '13px'}}>
-                        {startDate ? formatDateFriendly(startDate) : '-'}
-                      </div>
-                    </div>
-                    
-                    {/* End Date Display */}
-                    <div className="input-group" style={{marginBottom: '12px'}}>
-                      <label className="input-label">Hasta</label>
-                      <div className="input-display" style={{padding: '10px 14px', fontSize: '13px'}}>
-                        {endDate ? formatDateFriendly(endDate) : '-'}
-                      </div>
-                    </div>
-                    
-                    {/* Business Days Calculation */}
-                    {startDate && endDate && (
-                      <div style={{
-                        background: 'var(--info-bg)', 
-                        padding: '10px 14px', 
-                        borderRadius: 'var(--radius-m)',
-                        border: '1px solid var(--info)',
-                        marginBottom: '12px'
-                      }}>
-                        <div style={{
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: '8px', 
-                          justifyContent: 'space-between'
-                        }}>
-                          <span style={{
-                            fontSize: '12px', 
-                            color: 'var(--info)', 
-                            fontWeight: '600'
-                          }}>
-                            <Icon name="sun" size="14px"/> Días hábiles
-                          </span>
-                          <span style={{
-                            fontSize: '18px', 
-                            fontWeight: '800', 
-                            color: 'var(--info)'
-                          }}>
-                            {calcBusinessDays(startDate, endDate)}
-                          </span>
-                        </div>
-                      </div>
-                    )}
+             )}
 
-                    {/* Action Buttons */}
-                    <div className="flex gap-2" style={{marginTop: '16px'}}>
-                      {editingId && (
-                        <button 
-                          onClick={() => {
-                            setEditingId(null); 
-                            setStartDate(''); 
-                            setEndDate('');
-                          }} 
-                          className="btn btn-secondary btn-sm flex-1"
-                        >
-                          Cancelar
-                        </button>
-                      )}
-                      <button 
-                        onClick={handleFormSubmit} 
-                        disabled={submitting} 
-                        className={`btn btn-sm flex-1 ${editingId ? 'btn-warning' : 'btn-primary'}`}
-                      >
-                        {submitting && <span className="spinner-sm" style={{marginRight: '6px'}}></span>}
-                        {submitting ? 'Guardando...' : (editingId ? 'Actualizar' : 'Solicitar')}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+             {activeTab === 'my-requests' && <div className="fade-in"><MyRequestsTab requests={requests} onCancel={handleCancelRequest} onEdit={handleEditClick} /></div>}
 
-            {/* My Requests Tab */}
-            {activeTab === 'my-requests' && (
-              <div className="fade-in">
-                <MyRequestsTab 
-                  requests={requests} 
-                  onCancel={handleCancelRequest} 
-                  onEdit={handleEditClick} 
-                />
-              </div>
-            )}
-
-            {/* Team Management Tab (Manager Only) */}
-            {activeTab === 'team' && isManager && (
-              <div className="fade-in">
-                <TeamManagement 
-                  pendingRequests={pending} 
-                  onAction={handleManagerAction} 
-                />
-              </div>
-            )}
-            
-            {/* Summary Tab (Manager Only) */}
-            {activeTab === 'summary' && isManager && (
-              <div className="fade-in">
-                <SummaryView allRequests={allRequests || []} />
-              </div>
-            )}
+             {activeTab === 'team' && isManager && <div className="fade-in"><TeamManagement pendingRequests={pending} onAction={handleManagerAction} /></div>}
+             
+             {activeTab === 'summary' && isManager && <div className="fade-in"><SummaryView allRequests={allRequests || []} /></div>}
           </main>
           
-          {/* Mobile Bottom Navigation */}
           <div className="nav-mobile md-hidden">
-            {['home', 'my-requests', ...(isManager ? ['team', 'summary'] : [])].map(t => {
-              const getBadgeCount = () => {
-                if (t === 'my-requests' && requests) {
-                  return requests.filter(r => 
-                    r.status === 'Pendiente' || r.status === 'Necesita Revisión'
-                  ).length;
-                }
-                if (t === 'team' && pending) {
-                  return pending.length;
-                }
-                return 0;
-              };
-              
-              const badgeCount = getBadgeCount();
-              
-              return (
-                <button 
-                  key={t} 
-                  onClick={() => setActiveTab(t)} 
-                  className={`nav-mobile-item ${activeTab===t ? 'active' : ''}`} 
-                  style={{position: 'relative'}}
-                >
-                  <Icon 
-                    name={
-                      t==='home'?'home':
-                      (t==='team'?'users':
-                      (t==='summary'?'pie-chart':'list'))
-                    } 
-                    size="22px"
-                  />
-                  <span style={{fontSize: '10px', fontWeight: 600}}>
-                    {t==='home'?'Inicio':
-                     (t==='team'?'Equipo':
-                     (t==='summary'?'Resumen':'Solicitudes'))}
-                  </span>
-                  {badgeCount > 0 && (
-                    <span 
-                      className="nav-badge" 
-                      style={{
-                        top: '4px', 
-                        right: '50%', 
-                        transform: 'translateX(50%)'
-                      }}
-                    >
-                      {badgeCount}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
+             {['home', 'my-requests', ...(isManager ? ['team', 'summary'] : [])].map(t => {
+                const getBadgeCount = () => {
+                   if (t === 'my-requests' && requests) {
+                      return requests.filter(r => r.status === 'Pendiente' || r.status === 'Necesita Revisión').length;
+                   }
+                   if (t === 'team' && pending) {
+                      return pending.length;
+                   }
+                   return 0;
+                };
+                
+                const badgeCount = getBadgeCount();
+                
+                return (
+                   <button key={t} onClick={() => setActiveTab(t)} className={`nav-mobile-item ${activeTab===t ? 'active' : ''}`} style={{position: 'relative'}}>
+                      <Icon name={t==='home'?'home':(t==='team'?'users':(t==='summary'?'pie-chart':'list'))} size="22px"/>
+                      <span style={{fontSize: '10px', fontWeight: 600}}>
+                        {t==='home'?'Inicio':(t==='team'?'Equipo':(t==='summary'?'Resumen':'Solicitudes'))}
+                      </span>
+                      {badgeCount > 0 && (
+                         <span className="nav-badge" style={{top: '4px', right: '50%', transform: 'translateX(50%)'}}>{badgeCount}</span>
+                      )}
+                   </button>
+                );
+             })}
           </div>
         </div>
       );
     }
 
-    // Render application
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
