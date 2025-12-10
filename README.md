@@ -278,31 +278,6 @@ The system automatically enforces several business rules:
 
 ---
 
-## 🗺️ Roadmap
-
-### ✅ Completed
-- [x] Core vacation request system
-- [x] Manager approval workflow
-- [x] Email notifications
-- [x] Calendar integration
-- [x] Mobile responsive design
-- [x] Demo mode for portfolio
-
-### 🚧 In Progress
-- [ ] Dark mode theme
-- [ ] Multi-language support (i18n)
-- [ ] Advanced analytics dashboard
-
-### 🔮 Future Enhancements
-- [ ] Slack integration for notifications
-- [ ] Export to PDF/Excel
-- [ ] Sick leave tracking
-- [ ] Public holiday automation
-- [ ] Team capacity planning
-- [ ] Integration with HRIS systems
-
----
-
 ## 💡 Lessons Learned
 
 ### Technical Challenges
