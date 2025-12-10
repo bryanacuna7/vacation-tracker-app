@@ -8,157 +8,89 @@
   
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
-
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
     :root {
-        /* Color Palette - Apple/Enterprise Inspired */
-        --primary: #0071e3;          
-        --primary-dark: #005bb5;
-        --secondary: #f5f5f7;        
-        --bg-body: #f5f5f7;
-        --bg-card: #ffffff;
+        /* Enterprise Color Palette */
+        --primary: #0071e3; --primary-dark: #005bb5;
+        --secondary: #f5f5f7; --bg-body: #f5f5f7; --bg-card: #ffffff;
+        --text-main: #1d1d1f; --text-secondary: #86868b; --text-light: #bfbfbf;
         
-        --text-main: #1d1d1f;
-        --text-secondary: #86868b;
-        --text-light: #bfbfbf;
-
         /* Status Colors */
         --success: #34c759; --success-bg: #e8fceb;
         --danger: #ff3b30; --danger-bg: #ffe5e5;
         --warning: #ff9500; --warning-bg: #fff4e5;
         --info: #5856d6; --info-bg: #efeffc;
-        --teal: #30b0c7; --teal-bg: #e0f8fc;
         --neutral: #8e8e93; --neutral-bg: #f2f2f7;
 
-        --border: #e5e5e5;
-        --border-hover: #d1d1d6;
-
-        --radius-m: 12px;
-        --radius-l: 16px;
-
+        --border: #e5e5e5; --radius-m: 12px; --radius-l: 16px;
         --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; }
-    
-    body { 
-        font-family: var(--font-stack); 
-        background-color: var(--bg-body); 
-        color: var(--text-main); 
-        margin: 0; padding: 0;
-        -webkit-font-smoothing: antialiased;
-        font-size: 14px; line-height: 1.5;
-    }
-    
-    /* Iframe Context Detection (e.g., embedded in Google Sites) */
+    body { font-family: var(--font-stack); background-color: var(--bg-body); color: var(--text-main); margin: 0; font-size: 14px; line-height: 1.5; }
     body.in-iframe { background-color: #ffffff; }
-    body.in-iframe .app-header { background: rgba(255, 255, 255, 0.95); }
 
-    /* --- LAYOUT UTILS --- */
+    /* Layout Utils */
     .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
-    .flex { display: flex; }
-    .flex-col { flex-direction: column; }
-    .items-center { align-items: center; }
-    .justify-between { justify-content: space-between; }
-    .justify-center { justify-content: center; }
-    .gap-1 { gap: 4px; } .gap-2 { gap: 8px; } .gap-4 { gap: 16px; } .gap-6 { gap: 24px; }
-    .w-full { width: 100%; } .h-full { height: 100%; }
-    .hidden { display: none; } .block { display: block; }
+    .flex { display: flex; } .flex-col { flex-direction: column; }
+    .items-center { align-items: center; } .justify-between { justify-content: space-between; }
+    .gap-1 { gap: 4px; } .gap-2 { gap: 8px; } .gap-4 { gap: 16px; }
+    .w-full { width: 100%; } .h-full { height: 100%; } .hidden { display: none; }
     .relative { position: relative; }
-    
-    /* --- COMPONENTS --- */
-    
-    /* Buttons */
-    .btn {
-        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
-        padding: 10px 16px; border-radius: var(--radius-m); border: none; cursor: pointer;
-        font-weight: 600; font-size: 14px; 
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .btn:active:not(:disabled) { transform: scale(0.96); }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* UI Components */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; border-radius: var(--radius-m); border: none; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; }
+    .btn:active { transform: scale(0.98); }
     .btn-primary { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3); }
-    .btn-primary:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); }
     .btn-secondary { background: white; color: var(--text-main); border: 1px solid var(--border); }
-    .btn-secondary:hover:not(:disabled) { background: var(--secondary); border-color: var(--border-hover); }
     .btn-ghost { background: transparent; color: var(--text-secondary); }
-    .btn-ghost:hover:not(:disabled) { background: rgba(0,0,0,0.05); color: var(--text-main); }
+    .btn-ghost:hover { background: rgba(0,0,0,0.05); color: var(--text-main); }
     .btn-danger { background: var(--danger-bg); color: var(--danger); }
     .btn-success { background: var(--success-bg); color: var(--success); }
-    
     .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
 
-    /* Cards */
-    .card {
-        background: var(--bg-card); border-radius: var(--radius-l);
-        border: 1px solid rgba(0, 0, 0, 0.06);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 4px 12px rgba(0, 0, 0, 0.04);
-        overflow: hidden; transition: all 0.3s ease;
-    }
-    .card:hover { border-color: rgba(0, 113, 227, 0.08); transform: translateY(-1px); }
+    .card { background: var(--bg-card); border-radius: var(--radius-l); border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 1px 3px rgba(0,0,0,0.03); overflow: hidden; }
     .card-body { padding: 24px; }
     .card-header { padding: 16px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
 
-    /* Inputs */
-    .input-label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px; }
-    .input-display { background: var(--secondary); padding: 12px 16px; border-radius: var(--radius-m); font-weight: 600; color: var(--text-main); border: 1px solid transparent; }
+    .input-label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.5px; }
+    .input-display { background: var(--secondary); padding: 12px 16px; border-radius: var(--radius-m); font-weight: 600; color: var(--text-main); border: 1px solid transparent; width: 100%; }
+    .input-checkbox { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+    
+    .filter-btn { display: flex; justify-content: space-between; width: 100%; padding: 10px 14px; border-radius: 8px; border: none; background: transparent; cursor: pointer; font-size: 14px; color: var(--text-secondary); }
+    .filter-btn:hover { background: var(--secondary); color: var(--text-main); }
+    .filter-btn.active { background: #e3f0ff; color: var(--primary); font-weight: 600; }
 
     /* Navigation */
-    .app-header {
-        position: sticky; top: 0; z-index: 100;
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(0,0,0,0.05);
-        height: 64px; display: flex; align-items: center;
-    }
-    
+    .app-header { position: sticky; top: 0; z-index: 100; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(0,0,0,0.05); height: 64px; display: flex; align-items: center; }
     .nav-pills-container { position: relative; background: rgba(0,0,0,0.04); border-radius: 12px; padding: 4px; display: flex; gap: 4px; }
     .tab-indicator { position: absolute; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 0; }
-    
     .nav-pill { padding: 6px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; color: var(--text-secondary); cursor: pointer; border: none; background: transparent; position: relative; z-index: 1; display: flex; align-items: center; gap: 6px; }
-    .nav-pill:hover { color: var(--text-main); }
     .nav-pill.active { color: var(--primary); }
     .nav-badge { position: absolute; top: -6px; right: -8px; background: var(--danger); color: white; font-size: 10px; font-weight: 800; padding: 2px 5px; border-radius: 10px; min-width: 18px; line-height: 1; }
-
-    /* Mobile Nav */
     .nav-mobile { position: fixed; bottom: 0; left: 0; right: 0; background: white; z-index: 90; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid var(--border); }
-    .nav-mobile-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--text-secondary); background: none; border: none; }
-    .nav-mobile-item.active { color: var(--primary); }
     
-    /* Calendar Grid */
+    /* Calendar & Tables */
     .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--secondary); border: 1px solid var(--border); border-radius: 0 0 var(--radius-l) var(--radius-l); overflow: hidden; }
     .calendar-day-header { padding: 12px 0; text-align: center; font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-secondary); background: rgba(245,245,247,0.5); }
-    .calendar-cell { 
-        background: white; min-height: 100px; padding: 8px; position: relative; cursor: pointer; 
-        transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between;
-    }
+    .calendar-cell { background: white; min-height: 100px; padding: 8px; position: relative; cursor: pointer; transition: all 0.2s; display: flex; flex-direction: column; justify-content: space-between; }
     .calendar-cell:hover:not([style*="pointer-events: none"]) { background: #fbfbfd; z-index: 10; box-shadow: 0 4px 12px rgba(0, 113, 227, 0.1); }
     .calendar-cell.selected-single { background: var(--primary); color: white; }
     .calendar-cell.selected-start { background: var(--primary); color: white; border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
     .calendar-cell.selected-end { background: var(--primary); color: white; border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
     .calendar-cell.selected-range { background: #e3f0ff; color: var(--primary-dark); }
-    
     .calendar-num { font-size: 14px; font-weight: 600; }
     .dot { width: 6px; height: 6px; border-radius: 50%; margin: 0 auto; }
-    .dot-success { background: var(--success); } .dot-warning { background: var(--warning); } .dot-danger { background: var(--danger); }
-    
-    .event-badge { font-size: 10px; padding: 2px 4px; border-radius: 4px; margin-bottom: 2px; display: flex; flex-direction: column; line-height: 1.2; overflow: hidden; white-space: nowrap; }
+    .event-badge { font-size: 10px; padding: 2px 4px; border-radius: 4px; margin-bottom: 2px; display: flex; flex-direction: column; overflow: hidden; white-space: nowrap; }
 
-    /* Balance Card */
-    .balance-card {
-        background: linear-gradient(135deg, #0071e3 0%, #00c6ff 100%); color: white; 
-        border-radius: var(--radius-l); padding: 24px; position: relative; overflow: hidden;
-        box-shadow: 0 8px 24px rgba(0, 113, 227, 0.15);
-    }
+    .balance-card { background: linear-gradient(135deg, #0071e3 0%, #00c6ff 100%); color: white; border-radius: var(--radius-l); padding: 24px; position: relative; overflow: hidden; box-shadow: 0 8px 24px rgba(0, 113, 227, 0.15); }
     .balance-circle { position: absolute; background: rgba(255,255,255,0.1); border-radius: 50%; }
 
-    /* Tables */
     .table-container { overflow-x: auto; }
     .custom-table { width: 100%; border-collapse: collapse; min-width: 600px; }
     .custom-table th { text-align: left; padding: 16px; font-size: 12px; text-transform: uppercase; color: var(--text-secondary); border-bottom: 1px solid var(--border); background: #fafafa; }
@@ -170,14 +102,12 @@
     .badge-info { background: var(--info-bg); color: var(--info); }
     .badge-neutral { background: var(--neutral-bg); color: var(--neutral); }
 
-    /* Utilities */
     .loader-container { position: fixed; inset: 0; background: var(--bg-body); display: flex; justify-content: center; align-items: center; z-index: 2000; flex-direction: column; gap: 16px; }
     .spinner { width: 40px; height: 40px; border: 3px solid rgba(0, 113, 227, 0.1); border-left-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .fade-in { animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* Responsive */
     @media (min-width: 768px) {
         .md-flex { display: flex; } .md-hidden { display: none; } .md-block { display: block; }
         .grid-main { display: grid; grid-template-columns: 1fr minmax(260px, 280px); gap: 24px; }
@@ -201,12 +131,7 @@
   <script type="text/babel">
     const { useState, useEffect, useRef, useMemo, memo } = React;
     
-    // --- UTILITIES & HELPERS ---
-    
-    /**
-     * Formats a date string into DD/MM/YYYY.
-     * @param {string} dateStr - ISO date string
-     */
+    // --- UTILS ---
     const formatDateFriendly = (dateStr) => {
         if(!dateStr) return '...';
         try {
@@ -218,15 +143,10 @@
             return `${d.toString().padStart(2, '0')}/${m.toString().padStart(2, '0')}/${y}`;
         } catch(e) { return dateStr; }
     };
-
-    /**
-     * Calculates business days between two dates.
-     */
     const calcBusinessDays = (startStr, endStr) => {
         if (!startStr || !endStr) return 0;
         try {
-            const start = new Date(startStr);
-            const end = new Date(endStr);
+            const start = new Date(startStr); const end = new Date(endStr);
             start.setUTCHours(12,0,0,0); end.setUTCHours(12,0,0,0);
             if (end < start) return 0;
             let count = 0; let cur = new Date(start);
@@ -239,40 +159,32 @@
         } catch (e) { return 0; }
     };
 
-    // --- UI COMPONENTS ---
-
+    // --- SHARED COMPONENTS ---
     const Icon = ({ name, className = "", size = "20px" }) => {
       const map = {
-        'chevron-left': 'bx-chevron-left', 'chevron-right': 'bx-chevron-right',
-        'calendar-plus': 'bx-calendar-plus', 'edit-3': 'bx-edit-alt',
-        'trash-2': 'bx-trash', 'archive': 'bx-archive', 'clock': 'bx-time-five',
-        'arrow-right': 'bx-right-arrow-alt', 'plane': 'bx-plane-alt',
-        'home': 'bx-home-alt', 'list': 'bx-list-ul', 'users': 'bx-group',
-        'sun': 'bx-sun', 'pencil': 'bx-pencil', 'check': 'bx-check', 'x': 'bx-x',
-        'pie-chart': 'bx-pie-chart-alt-2'
+        'chevron-left': 'bx-chevron-left', 'chevron-right': 'bx-chevron-right', 'calendar-plus': 'bx-calendar-plus',
+        'edit-3': 'bx-edit-alt', 'trash-2': 'bx-trash', 'archive': 'bx-archive', 'clock': 'bx-time-five',
+        'arrow-right': 'bx-right-arrow-alt', 'plane': 'bx-plane-alt', 'home': 'bx-home-alt', 'list': 'bx-list-ul',
+        'users': 'bx-group', 'sun': 'bx-sun', 'pencil': 'bx-pencil', 'check': 'bx-check', 'x': 'bx-x', 'pie-chart': 'bx-pie-chart-alt-2'
       };
       return <i className={`bx ${map[name] || `bx-${name}`} ${className}`} style={{fontSize: size}}></i>;
     };
 
     const StatusBadge = ({ status }) => {
        const map = { 'Aprobado': 'success', 'Pendiente': 'warning', 'Necesita Revisión': 'info', 'Rechazado': 'danger' };
-       const type = map[status] || 'neutral';
-       return <span className={`badge badge-${type}`}>{status}</span>;
+       const displayMap = { 'Aprobado': 'Approved', 'Pendiente': 'Pending', 'Necesita Revisión': 'Review Needed', 'Rechazado': 'Rejected' };
+       return <span className={`badge badge-${map[status] || 'neutral'}`}>{displayMap[status] || status}</span>;
     };
-    
+
     // --- COMPLEX VIEWS ---
 
-    /**
-     * Calendar Component.
-     * Renders a monthly grid with event markers and selection logic.
-     */
+    /** Calendar View: Monthly grid with events */
     const CalendarView = memo(({ requests, selection = {}, onDateClick, readOnly = false, showDetails = false, teamColors = {} }) => {
       const [viewDate, setViewDate] = useState(new Date());
-      const year = viewDate.getFullYear();
-      const month = viewDate.getMonth();
+      const year = viewDate.getFullYear(); const month = viewDate.getMonth();
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       const firstDayOffset = (new Date(year, month, 1).getDay() + 6) % 7;
-      const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+      const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
       const getDayInfo = (day) => {
         const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
@@ -285,8 +197,7 @@
         }
         const dayRequests = requests.filter(r => {
            if(r.status === 'Cancelado' || r.status === 'Rechazado') return false;
-           const s = r.startDate.substring(0, 10);
-           const e = r.endDate.substring(0, 10);
+           const s = r.startDate.substring(0, 10); const e = r.endDate.substring(0, 10);
            return dateStr >= s && dateStr <= e;
         });
         return { selType, reqs: dayRequests };
@@ -302,33 +213,24 @@
              </div>
           </div>
           <div className="calendar-grid" style={{margin: '20px', borderRadius: '12px', border: '1px solid var(--border)'}}>
-             {["L", "M", "X", "J", "V", "S", "D"].map(d => <div key={d} className="calendar-day-header">{d}</div>)}
+             {["M", "T", "W", "T", "F", "S", "S"].map((d, i) => <div key={i} className="calendar-day-header">{d}</div>)}
              {Array.from({length: firstDayOffset}).map((_, i) => <div key={`empty-${i}`} style={{background: '#f9f9f9'}} />)}
-             
              {Array.from({length: daysInMonth}).map((_, i) => {
                 const day = i + 1;
                 const { selType, reqs } = getDayInfo(day);
                 const dayOfWeek = new Date(year, month, day).getDay();
                 const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-
                 let className = "calendar-cell";
                 if(selType === 'single') className += " selected-single";
                 if(selType === 'start') className += " selected-start";
                 if(selType === 'end') className += " selected-end";
                 if(selType === 'range') className += " selected-range";
-
                 return (
                   <div key={day} onClick={() => !readOnly && !isWeekend && onDateClick(new Date(year, month, day))} className={className} style={isWeekend ? { background: '#f5f5f7', color: '#bfbfbf', pointerEvents: 'none' } : {}}>
                      <span className="calendar-num">{day}</span>
                      {showDetails ? (
                         <div className="flex-col flex gap-1 mt-1" style={{overflow: 'hidden'}}>
-                            {reqs.map((r, idx) => {
-                                const color = r.color || teamColors[r.team] || '#888';
-                                return (
-                                <div key={idx} className="event-badge" style={{backgroundColor: color, color: 'white'}} title={`${r.employee} (${r.team})`}>
-                                    <span style={{fontWeight:600}}>{r.employee ? r.employee.split(' ')[0] : 'Vacaciones'}</span>
-                                </div>
-                            )})}
+                            {reqs.map((r, idx) => <div key={idx} className="event-badge" style={{backgroundColor: r.color || teamColors[r.team] || '#888', color: 'white'}}><span style={{fontWeight:600}}>{r.employee ? r.employee.split(' ')[0] : 'Vacation'}</span></div>)}
                         </div>
                      ) : (
                          <div className="flex justify-center mt-2 gap-1 flex-wrap">
@@ -343,245 +245,333 @@
       );
     });
 
-    // --- SUMMARY VIEW (Manager) ---
+    /** Summary View: Analytics & Team Calendar (Restored) */
     const SummaryView = ({ allRequests }) => {
+        const [year, setYear] = useState(new Date().getFullYear());
+        const [monthFilter, setMonthFilter] = useState('All');
         const [teamFilter, setTeamFilter] = useState('All');
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const teams = useMemo(() => ['All', ...new Set(allRequests.map(r => r.team))], [allRequests]);
         
-        // Dynamic color assignment for visualization
         const teamColors = useMemo(() => {
             const colors = ['#0071e3', '#34c759', '#ff9500', '#ff3b30', '#5856d6', '#30b0c7'];
-            const map = {};
-            teams.filter(t => t !== 'All').forEach((t, i) => map[t] = colors[i % colors.length]);
+            const map = {}; teams.filter(t => t !== 'All').forEach((t, i) => map[t] = colors[i % colors.length]);
             return map;
         }, [teams]);
 
-        const calendarRequests = useMemo(() => {
-            return allRequests.map(req => ({ ...req, color: teamColors[req.team] || '#888' }))
-                              .filter(req => teamFilter === 'All' || req.team === teamFilter);
-        }, [allRequests, teamColors, teamFilter]);
+        const aggregatedList = useMemo(() => {
+            const map = {}; 
+            allRequests.forEach(req => {
+                if(!req.status.includes('Aprobado')) return;
+                if (teamFilter !== 'All' && req.team !== teamFilter) return;
+                let cur = new Date(req.startDate); const end = new Date(req.endDate); cur.setHours(12,0,0,0); end.setHours(12,0,0,0);
+                let daysCount = 0;
+                while(cur <= end) {
+                    if (cur.getFullYear() === year) {
+                        const m = cur.getMonth(); const d = cur.getDay();
+                        if(d !== 0 && d !== 6 && (monthFilter === 'All' || monthFilter === m)) daysCount++;
+                    }
+                    cur.setDate(cur.getDate() + 1);
+                }
+                if (daysCount > 0) {
+                    const emp = req.employee || 'Unknown';
+                    if (!map[emp]) map[emp] = { employee: emp, team: req.team, count: 0 };
+                    map[emp].count += daysCount;
+                }
+            });
+            return Object.values(map).sort((a,b) => b.count - a.count);
+        }, [allRequests, year, monthFilter, teamFilter]);
+
+        const calendarRequests = useMemo(() => allRequests.map(req => ({ ...req, color: teamColors[req.team] || '#888' })).filter(req => teamFilter === 'All' || req.team === teamFilter), [allRequests, teamColors, teamFilter]);
 
         return (
             <div className="flex-col flex gap-6">
-                <div className="flex justify-between items-center">
-                    <h2 style={{fontSize:'24px', fontWeight:700}}>Team Overview</h2>
-                    <select className="input-display" value={teamFilter} onChange={e => setTeamFilter(e.target.value)}>
-                        {teams.map(t => <option key={t} value={t}>{t === 'All' ? 'All Teams' : t}</option>)}
-                    </select>
+                <div className="flex justify-between items-center flex-wrap gap-4">
+                    <h2 style={{fontSize:'24px', fontWeight:700}}>Team Analytics</h2>
+                    <div className="flex gap-2 items-center">
+                        <select className="input-display" style={{padding:'8px', minWidth:'140px'}} value={teamFilter} onChange={e => setTeamFilter(e.target.value)}>
+                            {teams.map(t => <option key={t} value={t}>{t === 'All' ? 'All Teams' : t}</option>)}
+                        </select>
+                        <div className="flex items-center bg-white rounded-lg border p-1" style={{borderColor:'var(--border)'}}>
+                            <button onClick={() => setYear(year-1)} className="btn btn-ghost btn-sm"><Icon name="chevron-left"/></button>
+                            <span style={{fontWeight:600, padding:'0 8px'}}>{year}</span>
+                            <button onClick={() => setYear(year+1)} className="btn btn-ghost btn-sm"><Icon name="chevron-right"/></button>
+                        </div>
+                    </div>
                 </div>
-                <CalendarView requests={calendarRequests} readOnly={true} showDetails={true} teamColors={teamColors} />
+                <div className="flex-col flex gap-8">
+                    <div className="card">
+                        <div className="card-header" style={{display:'block', padding:'12px'}}>
+                            <div className="nav-pills-container" style={{overflowX:'auto', paddingBottom:'4px'}}>
+                                <button onClick={() => setMonthFilter('All')} className={`nav-pill ${monthFilter==='All'?'active':''}`}>Yearly</button>
+                                {months.map((m, i) => <button key={m} onClick={() => setMonthFilter(i)} className={`nav-pill ${monthFilter===i?'active':''}`}>{m}</button>)}
+                            </div>
+                        </div>
+                        <div className="table-container">
+                            <table className="custom-table">
+                                <thead><tr><th>Employee</th><th>Team</th><th style={{textAlign:'center'}}>Days ({monthFilter === 'All' ? year : months[monthFilter]})</th></tr></thead>
+                                <tbody>
+                                    {aggregatedList.length === 0 ? <tr><td colSpan="3" style={{textAlign:'center', padding:'32px', color:'var(--text-secondary)'}}>No approved absences.</td></tr> : 
+                                    aggregatedList.map(row => (
+                                        <tr key={row.employee}>
+                                            <td style={{fontWeight:600}}>{row.employee}</td>
+                                            <td><span className="badge badge-neutral" style={{color: teamColors[row.team], borderColor: teamColors[row.team]}}>{row.team}</span></td>
+                                            <td style={{textAlign:'center', fontWeight:'800', fontSize:'16px'}}>{row.count}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 style={{fontSize:'18px', fontWeight:600, marginBottom:'16px'}}>Team Calendar</h3>
+                        <CalendarView requests={calendarRequests} readOnly={true} showDetails={true} teamColors={teamColors} />
+                    </div>
+                </div>
             </div>
         );
     };
 
-    // --- TEAM MANAGEMENT (Manager) ---
+    /** Team Management: Filters, Bulk Actions, Grouping (Fully Restored) */
     const TeamManagement = ({ pendingRequests, onAction }) => {
-      return (
-          <div>
-            <h2 style={{fontSize:'24px', fontWeight:700, marginBottom: '20px'}}>Approvals Required</h2>
-            {pendingRequests.length === 0 ? (
-                <div className="card" style={{padding:'40px', textAlign:'center'}}>
-                    <div style={{fontSize:'40px', marginBottom:'10px'}}>✓</div>
-                    <h3>All caught up!</h3>
-                    <p style={{color:'var(--text-secondary)'}}>No pending requests to review.</p>
-                </div>
-            ) : (
+      const [filterTeam, setFilterTeam] = useState('All');
+      const [filterStatus, setFilterStatus] = useState('All');
+      const [selectedIds, setSelectedIds] = useState(new Set());
+      const teams = useMemo(() => ['All', ...new Set(pendingRequests.map(r => r.team))], [pendingRequests]);
+      
+      const { urgent, thisMonth, others } = useMemo(() => {
+         const list = pendingRequests.filter(r => {
+            const teamMatch = filterTeam === 'All' || r.team === filterTeam;
+            if (filterStatus === 'All') return teamMatch;
+            if (filterStatus === 'Conflicts') return teamMatch && r.status === 'Necesita Revisión';
+            if (filterStatus === 'Pending') return teamMatch && r.status === 'Pendiente';
+            return teamMatch;
+         });
+         const now = new Date(); const sevenDays = new Date(); sevenDays.setDate(now.getDate() + 7);
+         const u = [], tm = [], o = [];
+         list.forEach(r => {
+             const d = new Date(r.startDate);
+             if(d >= now && d <= sevenDays) { u.push(r); return; }
+             if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) { tm.push(r); return; }
+             o.push(r);
+         });
+         return { urgent: u, thisMonth: tm, others: o };
+      }, [pendingRequests, filterTeam, filterStatus]);
+
+      const toggleSelectOne = (id) => {
+         const newSet = new Set(selectedIds);
+         if(newSet.has(id)) newSet.delete(id); else newSet.add(id);
+         setSelectedIds(newSet);
+      };
+
+      const handleBulkAction = (action) => {
+          Swal.fire({
+              title: `${action} ${selectedIds.size} requests?`,
+              text: "This action cannot be undone.",
+              icon: 'question', showCancelButton: true, confirmButtonText: `Yes, ${action}`
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  onAction(Array.from(selectedIds), action, true);
+                  setSelectedIds(new Set());
+              }
+          });
+      };
+
+      const RenderGroup = ({ title, items, icon, color }) => {
+          if(!items || items.length === 0) return null;
+          return (
+             <div style={{marginBottom: '32px'}}>
+                <h4 style={{fontSize:'14px', fontWeight:'700', color: color, textTransform:'uppercase', marginBottom:'12px', display:'flex', alignItems:'center', gap:'8px', letterSpacing:'0.5px'}}>
+                   <Icon name={icon} /> {title} ({items.length})
+                </h4>
                 <div className="card table-container">
                    <table className="custom-table">
-                    <thead>
-                       <tr>
-                          <th>Employee</th>
-                          <th>Dates</th>
-                          <th>Days</th>
-                          <th>Status</th>
-                          <th style={{textAlign:'right'}}>Actions</th>
-                       </tr>
-                    </thead>
+                    <thead><tr><th style={{width: '40px'}}></th><th>Employee</th><th>Dates</th><th className="text-center">Days</th><th>Status</th><th className="text-right">Action</th></tr></thead>
                     <tbody>
-                       {pendingRequests.map(req => (
-                          <tr key={req.id}>
-                             <td>
-                                <div style={{fontWeight:600}}>{req.employee}</div>
-                                <div style={{fontSize: '12px', color:'var(--text-secondary)'}}>{req.team}</div>
-                             </td>
+                       {items.map(req => (
+                          <tr key={req.id} style={selectedIds.has(req.id) ? {background: '#f0f7ff'} : {}}>
+                             <td><input type="checkbox" className="input-checkbox" checked={selectedIds.has(req.id)} onChange={() => toggleSelectOne(req.id)}/></td>
+                             <td><div style={{fontWeight:600}}>{req.employee}</div><div style={{fontSize: '12px', color:'var(--text-secondary)'}}>{req.team}</div></td>
                              <td>{formatDateFriendly(req.startDate)} → {formatDateFriendly(req.endDate)}</td>
-                             <td><span className="badge badge-neutral">{req.days || calcBusinessDays(req.startDate, req.endDate)}</span></td>
+                             <td style={{textAlign:'center'}}><span className="badge badge-neutral">{req.days || calcBusinessDays(req.startDate, req.endDate)}</span></td>
                              <td><StatusBadge status={req.status}/></td>
-                             <td>
-                                <div className="flex justify-end gap-1">
-                                    <button onClick={() => onAction(req.id, 'Rechazado')} className="btn btn-ghost" style={{color: 'var(--danger)'}}><Icon name="x"/></button>
-                                    <button onClick={() => onAction(req.id, 'Aprobado')} className="btn btn-ghost" style={{color: 'var(--success)'}}><Icon name="check"/></button>
-                                </div>
-                             </td>
+                             <td><div className="flex justify-end gap-1"><button onClick={() => onAction(req.id, 'Rechazado')} className="btn btn-ghost" style={{color: 'var(--danger)'}}><Icon name="x"/></button><button onClick={() => onAction(req.id, 'Aprobado')} className="btn btn-ghost" style={{color: 'var(--success)'}}><Icon name="check"/></button></div></td>
                           </tr>
                        ))}
                     </tbody>
                    </table>
                 </div>
-            )}
-          </div>
-      );
-    };
+             </div>
+          );
+      };
 
-    // --- EMPLOYEE HISTORY ---
-    const MyRequestsTab = ({ requests, onCancel }) => {
       return (
-        <div className="container" style={{maxWidth: '800px'}}>
-           <h2 style={{fontSize:'24px', fontWeight:700, marginBottom: '24px'}}>My History</h2>
-           <div className="flex-col flex gap-4">
-              {requests.length === 0 ? <p>No history found.</p> : requests.map(req => (
-                  <div key={req.id} className="card card-body flex justify-between items-center">
-                      <div>
-                          <div className="flex items-center gap-2" style={{fontWeight:600}}>
-                            {formatDateFriendly(req.startDate)} <Icon name="arrow-right" size="14px"/> {formatDateFriendly(req.endDate)}
-                          </div>
-                          <div style={{fontSize:'12px', marginTop:'4px', color:'var(--text-secondary)'}}>
-                             {req.days || calcBusinessDays(req.startDate, req.endDate)} days
-                          </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                         <StatusBadge status={req.status} />
-                         {(req.status === 'Pendiente' || req.status === 'Necesita Revisión') && (
-                            <button onClick={() => onCancel(req.id)} className="btn btn-ghost btn-sm" style={{color: 'var(--danger)'}}>Cancel</button>
-                         )}
-                      </div>
-                  </div>
-              ))}
+        <div className="grid-cols-12 md-block">
+           <div className="col-span-3">
+              <div className="card" style={{position: 'sticky', top: '90px'}}>
+                 <div className="card-body">
+                    <h3 className="input-label">Quick Filters</h3>
+                    <div className="flex-col flex gap-1" style={{marginBottom: '20px'}}>
+                        {['All', 'Pending', 'Conflicts'].map(s => {
+                            const count = s === 'All' ? pendingRequests.length : pendingRequests.filter(r => s === 'Conflicts' ? r.status === 'Necesita Revisión' : r.status === 'Pendiente').length;
+                            return <button key={s} onClick={() => setFilterStatus(s)} className={`filter-btn ${filterStatus===s ? 'active' : ''}`}><span>{s}</span><span className={`badge ${s==='Conflicts'?'badge-danger':'badge-neutral'}`}>{count}</span></button>;
+                        })}
+                    </div>
+                    <h3 className="input-label">Teams</h3>
+                    <div className="flex-col flex gap-1">
+                       {teams.map(t => <button key={t} onClick={() => setFilterTeam(t)} className={`filter-btn ${filterTeam===t ? 'active' : ''}`}>{t === 'All' ? 'All Teams' : t}</button>)}
+                    </div>
+                 </div>
+              </div>
+           </div>
+           <div className="col-span-9" style={{marginTop: '20px'}}>
+              <div className="flex justify-between items-center" style={{marginBottom: '16px'}}>
+                 <h2 style={{fontSize:'24px', fontWeight:700}}>Management Console</h2>
+                 {selectedIds.size > 0 && <div className="flex gap-2"><button onClick={() => handleBulkAction('Rechazado')} className="btn btn-danger btn-sm">Reject ({selectedIds.size})</button><button onClick={() => handleBulkAction('Aprobado')} className="btn btn-success btn-sm">Approve ({selectedIds.size})</button></div>}
+              </div>
+              {urgent.length === 0 && thisMonth.length === 0 && others.length === 0 && <div className="card" style={{padding:'40px', textAlign:'center', borderStyle:'dashed', color:'var(--text-secondary)'}}><p>No matching requests found.</p></div>}
+              <RenderGroup title="Urgent / This Week" items={urgent} icon="clock" color="var(--warning)" />
+              <RenderGroup title="This Month" items={thisMonth} icon="calendar" color="var(--info)" />
+              <RenderGroup title="Upcoming" items={others} icon="list" color="var(--text-secondary)" />
            </div>
         </div>
       );
     };
 
-    // --- MAIN APPLICATION CONTAINER ---
+    /** Employee History: Sorted & Categorized (Restored) */
+    const MyRequestsTab = ({ requests, onCancel }) => {
+      const { active, history } = useMemo(() => {
+         const active = [], history = [];
+         requests.forEach(r => (r.status === 'Pendiente' || r.status === 'Necesita Revisión' ? active : history).push(r));
+         active.sort((a,b) => new Date(a.startDate) - new Date(b.startDate));
+         history.sort((a,b) => new Date(b.startDate) - new Date(a.startDate));
+         return { active, history };
+      }, [requests]);
+
+      return (
+        <div className="container" style={{maxWidth: '800px'}}>
+           <h2 style={{fontSize:'24px', fontWeight:700, marginBottom: '24px'}}>My Requests</h2>
+           <div style={{marginBottom: '32px'}}>
+              <h3 className="input-label" style={{marginBottom: '12px'}}><Icon name="clock"/> In Progress</h3>
+              {active.length === 0 ? <div className="card" style={{padding: '24px', textAlign: 'center', borderStyle: 'dashed', color: 'var(--text-secondary)'}}><p>No active requests.</p></div> : 
+                 <div className="flex-col flex gap-4">{active.map(req => (
+                    <div key={req.id} className="card card-body flex justify-between items-center">
+                       <div><div className="flex items-center gap-2" style={{fontWeight:600, fontSize:'16px'}}>{formatDateFriendly(req.startDate)} <Icon name="arrow-right" size="14px" className="text-secondary"/> {formatDateFriendly(req.endDate)}</div><div style={{marginTop:'4px', fontSize:'13px', color:'var(--text-secondary)'}}>{req.days || calcBusinessDays(req.startDate, req.endDate)} business days</div></div>
+                       <div className="flex items-center gap-3"><StatusBadge status={req.status} /><button onClick={() => onCancel(req.id)} className="btn btn-ghost btn-sm" style={{color: 'var(--danger)'}} title="Cancel"><Icon name="trash-2"/> Cancel</button></div>
+                    </div>
+                 ))}</div>
+              }
+           </div>
+           <div>
+              <h3 className="input-label" style={{marginBottom: '12px'}}><Icon name="archive"/> History</h3>
+              <div className="flex-col flex gap-2">
+              {history.length === 0 ? <p style={{color:'var(--text-secondary)', fontStyle:'italic'}}>No history found.</p> : history.map(req => (
+                    <div key={req.id} className="card" style={{padding: '16px 24px', opacity: 0.8}}><div className="flex justify-between items-center"><div className="flex gap-4 items-center"><div style={{width:'180px', fontSize:'14px', fontWeight:500}}>{formatDateFriendly(req.startDate)} <span style={{color:'var(--text-secondary)'}}>→</span> {formatDateFriendly(req.endDate)}</div></div><div className="flex items-center gap-3"><span style={{fontSize:'12px', color:'var(--text-secondary)'}}>{req.days || calcBusinessDays(req.startDate, req.endDate)}d</span><StatusBadge status={req.status} /></div></div></div>
+              ))}
+              </div>
+           </div>
+        </div>
+      );
+    };
+
+    // --- MAIN APP ---
     function App() {
       const [activeTab, setActiveTab] = useState('home'); 
       const [loading, setLoading] = useState(true);
       const [data, setData] = useState(null);
-      
-      const [startDate, setStartDate] = useState('');
-      const [endDate, setEndDate] = useState('');
+      const [startDate, setStartDate] = useState(''); const [endDate, setEndDate] = useState('');
       const [submitting, setSubmitting] = useState(false);
-      
-      const navContainerRef = useRef(null);
-      const tabRefs = useRef({});
-
-      // Check if running in Development Mode (GitHub Pages) or Production (Google Apps Script)
+      const navContainerRef = useRef(null); const tabRefs = useRef({});
       const IS_DEV = typeof google === 'undefined';
 
       useEffect(() => {
         document.getElementById('initial-loader').style.display = 'none';
-        if (window.self !== window.top) document.body.classList.add('in-iframe'); // Google Sites fix
+        if (window.self !== window.top) document.body.classList.add('in-iframe');
         loadAllData();
       }, []);
       
-      // Animated Tab Indicator
       useEffect(() => {
         if (!navContainerRef.current || !tabRefs.current[activeTab]) return;
         const btn = tabRefs.current[activeTab];
         const indicator = navContainerRef.current.querySelector('.tab-indicator');
-        if (indicator) {
-            indicator.style.left = `${btn.offsetLeft}px`;
-            indicator.style.width = `${btn.offsetWidth}px`;
-        }
+        if (indicator) { indicator.style.left = `${btn.offsetLeft}px`; indicator.style.width = `${btn.offsetWidth}px`; }
       }, [activeTab, data]);
 
       const loadAllData = () => {
         if (IS_DEV) {
-          // --- MOCK DATA FOR GITHUB PAGES DEMO ---
           setTimeout(() => {
             const year = new Date().getFullYear();
+            const today = new Date();
+            // Helpers for dynamic dates
+            const dateOffset = (days) => { const d = new Date(); d.setDate(today.getDate() + days); return d.toISOString(); };
+            
             setData({
-              user: { 
-                email: 'demo.manager@techcorp.com', 
-                role: 'manager', 
-                team: 'Data Analytics', 
-                stats: { remaining: 12, total: 15, used: 3 } 
-              },
+              user: { email: 'demo.manager@techcorp.com', role: 'manager', team: 'Data Analytics', stats: { remaining: 12, total: 15, used: 3 } },
               requests: [
                   { id: 1, startDate: `${year}-01-15T00:00:00.000Z`, endDate: `${year}-01-20T00:00:00.000Z`, status: 'Aprobado', days: 5 },
                   { id: 2, startDate: `${year}-04-10T00:00:00.000Z`, endDate: `${year}-04-12T00:00:00.000Z`, status: 'Aprobado', days: 3 },
-                  { id: 3, startDate: `${year}-12-20T00:00:00.000Z`, endDate: `${year}-12-28T00:00:00.000Z`, status: 'Pendiente', days: 6 }
+                  { id: 3, startDate: dateOffset(5), endDate: dateOffset(7), status: 'Pendiente', days: 3 } // Upcoming personal
               ],
               pending: [
-                { id: 101, employee: 'Sarah Connor', team: 'Data Analytics', startDate: `${year}-10-05T00:00:00.000Z`, endDate: `${year}-10-08T00:00:00.000Z`, status: 'Pendiente', days: 4 },
-                { id: 102, employee: 'John Doe', team: 'Data Analytics', startDate: `${year}-10-12T00:00:00.000Z`, endDate: `${year}-10-15T00:00:00.000Z`, status: 'Necesita Revisión', days: 4 },
-                { id: 103, employee: 'Emily Blunt', team: 'Engineering', startDate: `${year}-11-01T00:00:00.000Z`, endDate: `${year}-11-05T00:00:00.000Z`, status: 'Pendiente', days: 5 }
+                // Urgent / This Week
+                { id: 101, employee: 'Sarah Connor', team: 'Data Analytics', startDate: dateOffset(2), endDate: dateOffset(5), status: 'Pendiente', days: 4 },
+                // Conflict
+                { id: 102, employee: 'John Doe', team: 'Data Analytics', startDate: dateOffset(3), endDate: dateOffset(6), status: 'Necesita Revisión', days: 4 },
+                // Future
+                { id: 103, employee: 'Emily Blunt', team: 'Engineering', startDate: `${year}-11-01T00:00:00.000Z`, endDate: `${year}-11-05T00:00:00.000Z`, status: 'Pendiente', days: 5 },
+                { id: 104, employee: 'Rick Grimes', team: 'Security', startDate: `${year}-12-10T00:00:00.000Z`, endDate: `${year}-12-20T00:00:00.000Z`, status: 'Pendiente', days: 8 }
               ],
               allRequests: [
                 { id: 201, employee: 'Sarah Connor', team: 'Data Analytics', startDate: `${year}-02-10T00:00:00.000Z`, endDate: `${year}-02-14T00:00:00.000Z`, status: 'Aprobado', days: 5 },
                 { id: 202, employee: 'Mike Ross', team: 'Legal', startDate: `${year}-03-01T00:00:00.000Z`, endDate: `${year}-03-03T00:00:00.000Z`, status: 'Aprobado', days: 3 },
-                { id: 203, employee: 'Rachel Zane', team: 'Paralegal', startDate: `${year}-05-20T00:00:00.000Z`, endDate: `${year}-05-25T00:00:00.000Z`, status: 'Aprobado', days: 4 },
                 { id: 204, employee: 'Harvey Specter', team: 'Legal', startDate: `${year}-06-15T00:00:00.000Z`, endDate: `${year}-06-30T00:00:00.000Z`, status: 'Aprobado', days: 10 },
                 { id: 205, employee: 'Luis Litt', team: 'Finance', startDate: `${year}-08-10T00:00:00.000Z`, endDate: `${year}-08-12T00:00:00.000Z`, status: 'Aprobado', days: 3 },
-                // Visual conflicts for demo
-                { id: 207, employee: 'John Doe', team: 'Data Analytics', startDate: `${year}-10-12T00:00:00.000Z`, endDate: `${year}-10-15T00:00:00.000Z`, status: 'Pendiente', days: 4 },
-                { id: 208, employee: 'Jane Smith', team: 'Data Analytics', startDate: `${year}-10-13T00:00:00.000Z`, endDate: `${year}-10-14T00:00:00.000Z`, status: 'Aprobado', days: 2 }
+                { id: 208, employee: 'Jane Smith', team: 'Data Analytics', startDate: dateOffset(3), endDate: dateOffset(6), status: 'Aprobado', days: 4 } // Conflict Visual
               ]
             });
             setLoading(false);
           }, 800);
           return;
         }
-        
-        // Production: Call Google Apps Script Backend
-        google.script.run
-          .withSuccessHandler(d => { setData(d); setLoading(false); })
-          .withFailureHandler(e => { Swal.fire('Error', e.message, 'error'); setLoading(false); })
-          .getDashboardData();
+        google.script.run.withSuccessHandler(d => { setData(d); setLoading(false); }).withFailureHandler(e => { Swal.fire('Error', e.message, 'error'); setLoading(false); }).getDashboardData();
       };
 
       const handleCalendarClick = (date) => {
         const d = new Date(date);
         const dateStr = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        
-        if (!startDate || (startDate && endDate && startDate !== endDate)) {
-            setStartDate(dateStr); setEndDate(dateStr); 
-        } else if (startDate === endDate) {
-            if (dateStr < startDate) setStartDate(dateStr); else setEndDate(dateStr);
-        }
+        if (!startDate || (startDate && endDate && startDate !== endDate)) { setStartDate(dateStr); setEndDate(dateStr); } 
+        else if (startDate === endDate) { if (dateStr < startDate) setStartDate(dateStr); else setEndDate(dateStr); }
       };
 
       const handleFormSubmit = () => {
         if (!startDate || !endDate) return Swal.fire('Missing Dates', 'Please select a date range', 'warning');
-        
-        Swal.fire({
-            title: 'Confirm Request',
-            html: `Requesting <b>${calcBusinessDays(startDate, endDate)} days</b>?`,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Submit'
-        }).then((result) => {
+        Swal.fire({ title: 'Confirm Request', html: `Requesting <b>${calcBusinessDays(startDate, endDate)} days</b>?`, icon: 'question', showCancelButton: true, confirmButtonText: 'Submit' }).then((result) => {
             if (result.isConfirmed) {
                 setSubmitting(true);
-                
-                const cb = () => {
-                    Swal.fire('Success', 'Request submitted successfully', 'success');
-                    setStartDate(''); setEndDate(''); setSubmitting(false); 
-                    // Refresh data
-                    loadAllData();
-                };
-
+                const cb = () => { Swal.fire('Success', 'Request submitted', 'success'); setStartDate(''); setEndDate(''); setSubmitting(false); loadAllData(); };
                 if(IS_DEV) { setTimeout(cb, 800); return; }
                 google.script.run.withSuccessHandler(cb).withFailureHandler(e => { Swal.fire('Error', e.message, 'error'); setSubmitting(false); }).apiCreateRequest(startDate, endDate);
             }
         });
       };
 
-      const handleManagerAction = async (id, action) => {
+      const handleManagerAction = async (idOrIds, action, isBulk = false) => {
         if(IS_DEV) {
-           Swal.fire('Demo Mode', `Action '${action}' simulated for ID ${id}`, 'info');
-           // Simulate update locally
-           setData(prev => ({...prev, pending: prev.pending.filter(p => p.id !== id)}));
+           const count = Array.isArray(idOrIds) ? idOrIds.length : 1;
+           const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds];
+           Swal.fire('Demo Mode', `Action '${action}' simulated for ${count} request(s)`, 'info');
+           // Local update simulation
+           setData(prev => ({...prev, pending: prev.pending.filter(p => !ids.includes(p.id))}));
            return;
         }
-
-        const result = await Swal.fire({ title: `Confirm ${action}?`, icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes' });
-        if (!result.isConfirmed) return;
-
-        google.script.run.withSuccessHandler(() => {
-           Swal.fire('Done', `Request ${action}`, 'success');
-           loadAllData();
-        }).withFailureHandler(e => Swal.fire('Error', e.message, 'error')).apiProcessRequest(id, action);
+        if (!isBulk) {
+            const result = await Swal.fire({ title: `Confirm ${action}?`, icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes' });
+            if (!result.isConfirmed) return;
+        }
+        const ids = Array.isArray(idOrIds) ? idOrIds : [idOrIds];
+        const loopActions = async () => { for (const id of ids) { await new Promise(r => google.script.run.withSuccessHandler(r).withFailureHandler(r).apiProcessRequest(id, action)); }};
+        await loopActions();
+        Swal.fire('Done', `Processed ${ids.length} request(s)`, 'success'); loadAllData();
       };
 
       if (loading && !data) return <div className="loader-container"><div className="spinner"></div></div>;
@@ -592,104 +582,54 @@
 
       return (
         <div className="flex-col flex h-full min-h-screen">
-          
-          {/* --- HEADER --- */}
           <header className="app-header">
              <div className="container flex justify-between items-center">
                  <div className="flex items-center gap-2" style={{color: 'var(--primary)'}}>
-                    <Icon name="plane" size="24px"/>
-                    <span style={{fontWeight: 800, fontSize: '18px', color: 'var(--text-main)'}}>Vacation Portal</span>
+                    <Icon name="plane" size="24px"/> <span style={{fontWeight: 800, fontSize: '18px', color: 'var(--text-main)'}}>Vacation Portal</span>
                  </div>
-                 
                  <div className="md-flex gap-1 hidden nav-pills-container" ref={navContainerRef}>
                     <div className="tab-indicator" style={{height: '32px', top: '4px'}}></div>
                     {['home', 'my-requests', ...(isManager ? ['team', 'summary'] : [])].map(t => (
                         <button key={t} ref={el => tabRefs.current[t] = el} onClick={() => setActiveTab(t)} className={`nav-pill ${activeTab===t?'active':''}`}>
-                            {t === 'home' && <Icon name="home"/>}
-                            {t === 'my-requests' && <Icon name="list"/>}
-                            {t === 'team' && <Icon name="users"/>}
-                            {t === 'summary' && <Icon name="pie-chart"/>}
-                            {t.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                            {t === 'home' && <Icon name="home"/>} {t === 'my-requests' && <Icon name="list"/>} {t === 'team' && <Icon name="users"/>} {t === 'summary' && <Icon name="pie-chart"/>} {t.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
                         </button>
                     ))}
                  </div>
-
                  <div className="flex items-center gap-3">
-                    <div className="hidden md-block text-right">
-                       <div style={{fontWeight:600, fontSize:'13px'}}>{user.email.split('@')[0]}</div>
-                       <div style={{fontSize:'11px', textTransform:'uppercase', color:'var(--text-secondary)'}}>{user.team}</div>
-                    </div>
-                    <div style={{width:'36px', height:'36px', background:'var(--info-bg)', color:'var(--info)', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'700'}}>
-                       {user.email.charAt(0).toUpperCase()}
-                    </div>
+                    <div className="hidden md-block text-right"><div style={{fontWeight:600, fontSize:'13px'}}>{user.email.split('@')[0]}</div><div style={{fontSize:'11px', textTransform:'uppercase', color:'var(--text-secondary)'}}>{user.team}</div></div>
+                    <div style={{width:'36px', height:'36px', background:'var(--info-bg)', color:'var(--info)', borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'700'}}>{user.email.charAt(0).toUpperCase()}</div>
                  </div>
              </div>
           </header>
-
-          {/* --- MAIN CONTENT --- */}
           <main className="container" style={{paddingTop: '32px', paddingBottom: '100px'}}>
              {activeTab === 'home' && (
                 <div className="grid-main fade-in">
-                   {/* Calendar Column */}
-                   <div className="h-full">
-                      <CalendarView requests={requests} selection={{start: startDate, end: endDate}} onDateClick={handleCalendarClick} />
-                   </div>
-                   
-                   {/* Sidebar Column */}
+                   <div className="h-full"><CalendarView requests={requests} selection={{start: startDate, end: endDate}} onDateClick={handleCalendarClick} /></div>
                    <div className="flex-col flex gap-4">
                       <div className="balance-card">
                          <div className="balance-circle" style={{width: '120px', height: '120px', top: '-15px', right: '-15px'}}></div>
-                         <div className="relative">
-                             <div className="input-label" style={{color: 'rgba(255,255,255,0.8)'}}>AVAILABLE BALANCE</div>
-                             <div style={{fontSize: '48px', fontWeight: '800', margin: '8px 0', lineHeight: '1'}}>
-                                {user.stats.remaining} <span style={{fontSize: '18px', fontWeight: '600', opacity: 0.9}}>days</span>
-                             </div>
-                         </div>
+                         <div className="relative"><div className="input-label" style={{color: 'rgba(255,255,255,0.8)'}}>AVAILABLE BALANCE</div><div style={{fontSize: '48px', fontWeight: '800', margin: '8px 0', lineHeight: '1'}}>{user.stats.remaining} <span style={{fontSize: '18px', fontWeight: '600', opacity: 0.9}}>days</span></div></div>
                       </div>
-                      
                       <div className="card card-body" style={{padding: '20px'}}>
-                         <h3 style={{margin: '0 0 16px', display:'flex', gap:'8px', alignItems:'center', fontSize: '16px'}}>
-                            <Icon name="calendar-plus" className="text-primary"/> New Request
-                         </h3>
-                         
-                         <div style={{marginBottom: '12px'}}>
-                             <label className="input-label">Start</label>
-                             <div className="input-display">{startDate ? formatDateFriendly(startDate) : '-'}</div>
-                         </div>
-                         <div style={{marginBottom: '12px'}}>
-                             <label className="input-label">End</label>
-                             <div className="input-display">{endDate ? formatDateFriendly(endDate) : '-'}</div>
-                         </div>
-                         
-                         <button onClick={handleFormSubmit} disabled={submitting} className="btn btn-primary w-full">
-                            {submitting ? 'Processing...' : 'Submit Request'}
-                         </button>
+                         <h3 style={{margin: '0 0 16px', display:'flex', gap:'8px', alignItems:'center', fontSize: '16px'}}><Icon name="calendar-plus" className="text-primary"/> New Request</h3>
+                         <div style={{marginBottom: '12px'}}><label className="input-label">Start</label><div className="input-display">{startDate ? formatDateFriendly(startDate) : '-'}</div></div>
+                         <div style={{marginBottom: '12px'}}><label className="input-label">End</label><div className="input-display">{endDate ? formatDateFriendly(endDate) : '-'}</div></div>
+                         <button onClick={handleFormSubmit} disabled={submitting} className="btn btn-primary w-full">{submitting ? 'Processing...' : 'Submit Request'}</button>
                       </div>
                    </div>
                 </div>
              )}
-
              {activeTab === 'my-requests' && <div className="fade-in"><MyRequestsTab requests={requests} onCancel={(id) => handleManagerAction(id, 'Cancelado')} /></div>}
-
              {activeTab === 'team' && isManager && <div className="fade-in"><TeamManagement pendingRequests={pending} onAction={handleManagerAction} /></div>}
-             
              {activeTab === 'summary' && isManager && <div className="fade-in"><SummaryView allRequests={allRequests || []} /></div>}
           </main>
-          
-          {/* Mobile Navigation */}
           <div className="nav-mobile md-hidden">
-             {['home', 'my-requests', ...(isManager ? ['team', 'summary'] : [])].map(t => (
-                <button key={t} onClick={() => setActiveTab(t)} className={`nav-mobile-item ${activeTab===t ? 'active' : ''}`}>
-                   <Icon name={t==='home'?'home':(t==='team'?'users':(t==='summary'?'pie-chart':'list'))} size="22px"/>
-                </button>
-             ))}
+             {['home', 'my-requests', ...(isManager ? ['team', 'summary'] : [])].map(t => ( <button key={t} onClick={() => setActiveTab(t)} className={`nav-mobile-item ${activeTab===t ? 'active' : ''}`}><Icon name={t==='home'?'home':(t==='team'?'users':(t==='summary'?'pie-chart':'list'))} size="22px"/></button> ))}
           </div>
         </div>
       );
     }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
+    const root = ReactDOM.createRoot(document.getElementById('root')); root.render(<App />);
   </script>
 </body>
 </html>
