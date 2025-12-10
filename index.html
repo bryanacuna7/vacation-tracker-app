@@ -1,368 +1,1979 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <base target="_top">
   <meta charset="UTF-8">
-  <title>Portal de Vacaciones</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal de Vacaciones - Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Sistema de gestión de vacaciones corporativo - Demo para portfolio">
+  <meta name="author" content="Tu Nombre">
   
+  <!-- External Dependencies -->
   <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
+    /* ============================================================
+       CSS CUSTOM PROPERTIES
+       Design System based on Apple/Stripe 2025 aesthetics
+       ============================================================ */
     :root {
-      --primary: #0071e3;
-      --bg-body: #ffffff;
-      --bg-gray: #f5f5f7;
-      --text-main: #1d1d1f;
-      --text-sub: #86868b;
-      --border: #e5e5e5;
+        /* Primary Colors */
+        --primary: #0071e3;
+        --primary-dark: #005bb5;
+        --secondary: #f5f5f7;
+        
+        /* Background Colors */
+        --bg-body: #f5f5f7;
+        --bg-card: #ffffff;
+        
+        /* Text Colors */
+        --text-main: #1d1d1f;
+        --text-secondary: #86868b;
+        --text-light: #bfbfbf;
+
+        /* Status Colors */
+        --success: #34c759;
+        --success-bg: #e8fceb;
+        --danger: #ff3b30;
+        --danger-bg: #ffe5e5;
+        --warning: #ff9500;
+        --warning-bg: #fff4e5;
+        --info: #5856d6;
+        --info-bg: #efeffc;
+        --teal: #30b0c7;
+        --teal-bg: #e0f8fc;
+        --neutral: #8e8e93;
+        --neutral-bg: #f2f2f7;
+
+        /* Border & Shadow */
+        --border: #e5e5e5;
+        --border-hover: #d1d1d6;
+        --radius-m: 12px;
+        --radius-l: 16px;
+        --radius-xl: 20px;
+        --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+        --shadow-md: 0 4px 16px rgba(0,0,0,0.06);
+        --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
+
+        /* Typography */
+        --font-stack: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
-    body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-main); margin: 0; font-size: 14px; }
+    /* ============================================================
+       GLOBAL RESET & BASE STYLES
+       ============================================================ */
+    * { 
+        box-sizing: border-box; 
+        outline: none; 
+        -webkit-tap-highlight-color: transparent; 
+    }
     
-    /* Layout */
-    .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
-    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
-    .logo { font-weight: 800; font-size: 18px; display: flex; align-items: center; gap: 8px; color: var(--text-main); }
-
-    /* Navegación */
-    .nav { display: flex; background: var(--bg-gray); padding: 4px; border-radius: 12px; gap: 2px; }
-    .nav-btn {
-      border: none; background: transparent; padding: 8px 16px; border-radius: 8px;
-      font-weight: 600; color: var(--text-sub); cursor: pointer; font-size: 13px;
-      display: flex; align-items: center; gap: 6px; transition: all 0.2s;
+    body { 
+        font-family: var(--font-stack); 
+        background-color: var(--bg-body); 
+        color: var(--text-main); 
+        margin: 0; 
+        padding: 0;
+        -webkit-font-smoothing: antialiased;
+        font-size: 14px;
+        line-height: 1.5;
     }
-    .nav-btn:hover { color: var(--text-main); }
-    .nav-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-    .badge-count { background: #ff3b30; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 4px; }
-
-    /* Estilos Generales */
-    .section-title { font-size: 12px; font-weight: 700; color: var(--text-sub); text-transform: uppercase; margin: 30px 0 15px 0; letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
-    .card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-
-    /* EL CUADRO MORADO (Fecha) */
-    .date-box {
-      background: #EFEFFC; color: #5856D6;
-      width: 70px; height: 70px; border-radius: 12px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      margin-right: 20px; flex-shrink: 0;
+    
+    /* Iframe compatibility (for Google Sites, etc) */
+    body.in-iframe {
+        background-color: #ffffff;
     }
-    .db-month { font-size: 11px; font-weight: 700; text-transform: uppercase; line-height: 1; margin-bottom: 4px; }
-    .db-day { font-size: 24px; font-weight: 800; line-height: 1; }
+    body.in-iframe .app-header {
+        background: rgba(255, 255, 255, 0.95);
+    }
+    body.in-iframe .loader-container {
+        background: #ffffff;
+    }
 
-    /* Calendario */
-    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 10px; }
-    .cal-head { background: #fafafa; padding: 10px; text-align: center; font-size: 11px; font-weight: 700; color: var(--text-sub); }
-    .cal-cell { background: white; height: 100px; padding: 8px; position: relative; }
-    .cal-num { font-weight: 600; font-size: 13px; }
-    .cal-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 4px; }
-
-    /* Tablas */
-    table { width: 100%; border-collapse: collapse; }
-    th { text-align: left; padding: 12px 0; font-size: 11px; text-transform: uppercase; color: var(--text-sub); border-bottom: 1px solid var(--border); }
-    td { padding: 16px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
-    tr:last-child td { border-bottom: none; }
-
-    /* Badges */
-    .badge { padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 800; text-transform: uppercase; display: inline-block; }
-    .b-warning { background: #FFF4E5; color: #FF9500; }
-    .b-success { background: #E8FCEB; color: #34C759; }
-    .b-info { background: #E0F8FC; color: #30B0C7; }
-    .b-danger { background: #FFE5E5; color: #FF3B30; }
-    .b-neutral { background: #F2F2F7; color: #8E8E93; }
-
-    /* Botones */
-    .btn { padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; border: 1px solid var(--border); background: white; display: inline-flex; align-items: center; gap: 6px; }
-    .btn:hover { background: var(--bg-gray); }
-    .btn-primary { background: var(--primary); color: white; border: none; }
-    .btn-ghost { border: none; color: #ff3b30; background: transparent; }
-    .btn-icon { padding: 6px; border: none; background: transparent; color: var(--text-sub); cursor: pointer; font-size: 16px; }
-
-    /* Utilidades */
-    .flex-row { display: flex; align-items: center; }
-    .flex-col { display: flex; flex-direction: column; }
+    /* ============================================================
+       UTILITY CLASSES
+       ============================================================ */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; width: 100%; }
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .items-center { align-items: center; }
     .justify-between { justify-content: space-between; }
-    .text-dates { font-weight: 700; font-size: 16px; margin-bottom: 6px; display: flex; align-items: center; }
-    .text-meta { font-size: 13px; color: var(--text-sub); }
-    .arrow { color: var(--text-sub); margin: 0 8px; font-size: 16px; }
-
-    /* Loader */
-    #loader { position: fixed; inset: 0; background: white; display: flex; justify-content: center; align-items: center; z-index: 999; }
+    .justify-center { justify-content: center; }
+    .justify-end { justify-content: flex-end; }
+    .gap-1 { gap: 4px; }
+    .gap-2 { gap: 8px; }
+    .gap-3 { gap: 12px; }
+    .gap-4 { gap: 16px; }
+    .gap-6 { gap: 24px; }
+    .gap-8 { gap: 32px; }
+    .w-full { width: 100%; }
+    .h-full { height: 100%; }
+    .hidden { display: none; }
+    .block { display: block; }
+    .relative { position: relative; }
     
-    @media (max-width: 600px) {
-        .nav { overflow-x: auto; }
-        .date-box { width: 100%; height: 40px; flex-direction: row; gap: 10px; margin: 0 0 10px 0; }
-        .card-responsive { flex-direction: column; align-items: flex-start; }
+    /* ============================================================
+       BUTTON COMPONENTS
+       ============================================================ */
+    .btn {
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        gap: 8px;
+        padding: 10px 16px; 
+        border-radius: var(--radius-m); 
+        border: none; 
+        cursor: pointer;
+        font-weight: 600; 
+        font-size: 14px; 
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        text-decoration: none;
+        position: relative;
+    }
+    
+    /* Button States */
+    .btn:active:not(:disabled) { transform: scale(0.96); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    
+    /* Button Variants */
+    .btn-primary { 
+        background: var(--primary); 
+        color: white; 
+        box-shadow: 0 2px 8px rgba(0, 113, 227, 0.3); 
+    }
+    .btn-primary:hover:not(:disabled) { 
+        background: var(--primary-dark); 
+        box-shadow: 0 4px 12px rgba(0, 113, 227, 0.4);
+        transform: translateY(-1px);
+    }
+    
+    .btn-secondary { 
+        background: white; 
+        color: var(--text-main); 
+        border: 1px solid var(--border); 
+    }
+    .btn-secondary:hover:not(:disabled) { 
+        background: var(--secondary); 
+        border-color: var(--border-hover);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    .btn-ghost { background: transparent; color: var(--text-secondary); }
+    .btn-ghost:hover:not(:disabled) { background: rgba(0,0,0,0.05); color: var(--text-main); }
+    
+    .btn-danger { background: var(--danger-bg); color: var(--danger); }
+    .btn-danger:hover:not(:disabled) { 
+        background: #fee2e2;
+        box-shadow: 0 2px 8px rgba(255, 59, 48, 0.2);
+    }
+    
+    .btn-success { background: var(--success-bg); color: var(--success); }
+    .btn-success:hover:not(:disabled) { 
+        background: #dcfce7;
+        box-shadow: 0 2px 8px rgba(52, 199, 89, 0.2);
+    }
+    
+    .btn-warning { background: var(--warning-bg); color: var(--warning); }
+    .btn-warning:hover:not(:disabled) {
+        background: #ffedd5;
+        box-shadow: 0 2px 8px rgba(255, 149, 0, 0.2);
+    }
+    
+    /* Button Sizes */
+    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+    .btn-block { width: 100%; }
+
+    /* ============================================================
+       CARD COMPONENTS
+       Subtle depth with smooth transitions
+       ============================================================ */
+    .card {
+        background: var(--bg-card); 
+        border-radius: var(--radius-l);
+        border: 1px solid rgba(0, 0, 0, 0.06);
+        box-shadow: 
+            0 1px 3px rgba(0, 0, 0, 0.03),
+            0 4px 12px rgba(0, 0, 0, 0.04);
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card:hover {
+        border-color: rgba(0, 113, 227, 0.08);
+        box-shadow: 
+            0 2px 4px rgba(0, 0, 0, 0.04),
+            0 8px 20px rgba(0, 0, 0, 0.06);
+        transform: translateY(-1px);
+    }
+    
+    .card-body { padding: 24px; }
+    .card-header { 
+        padding: 16px 24px; 
+        border-bottom: 1px solid var(--border); 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+    }
+
+    /* ============================================================
+       TYPOGRAPHY
+       ============================================================ */
+    .text-h3 { 
+        font-size: 18px; 
+        font-weight: 700; 
+        margin: 0; 
+        color: var(--text-main); 
+    }
+    .text-bold { font-weight: 600; color: var(--text-main); }
+    .text-sub { color: var(--text-secondary); font-size: 13px; }
+    .text-xs { font-size: 12px; }
+    .text-sm { font-size: 13px; }
+    .text-primary { color: var(--primary); }
+    .text-secondary { color: var(--text-secondary); }
+    .text-success { color: var(--success); }
+    .text-danger { color: var(--danger); }
+    .text-warning { color: var(--warning); }
+    .text-info { color: var(--info); }
+    .text-upper { text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* ============================================================
+       FORM ELEMENTS
+       ============================================================ */
+    .input-group { margin-bottom: 16px; }
+    .input-label { 
+        display: block; 
+        font-size: 11px; 
+        font-weight: 600; 
+        text-transform: uppercase; 
+        letter-spacing: 0.5px; 
+        color: var(--text-secondary); 
+        margin-bottom: 6px; 
+    }
+    .input-display { 
+        background: var(--secondary); 
+        padding: 12px 16px; 
+        border-radius: var(--radius-m); 
+        font-weight: 500; 
+        font-size: 14px; 
+        color: var(--text-main); 
+        border: 1px solid transparent;
+    }
+
+    /* ============================================================
+       STATUS BADGES
+       ============================================================ */
+    .status-badge {
+        display: inline-flex; 
+        align-items: center; 
+        gap: 6px;
+        padding: 6px 12px; 
+        border-radius: 20px; 
+        font-size: 12px; 
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .status-approved { background: var(--success-bg); color: var(--success); }
+    .status-pending { background: var(--warning-bg); color: var(--warning); }
+    .status-rejected { background: var(--danger-bg); color: var(--danger); }
+    .status-review { background: var(--info-bg); color: var(--info); }
+    .status-cancelled { background: var(--neutral-bg); color: var(--neutral); }
+
+    /* ============================================================
+       LOADING & ANIMATIONS
+       ============================================================ */
+    .loader-container {
+        position: fixed; 
+        inset: 0; 
+        background: var(--bg-body); 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        z-index: 9999;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .spinner {
+        width: 48px; 
+        height: 48px; 
+        border: 4px solid var(--secondary); 
+        border-top-color: var(--primary); 
+        border-radius: 50%; 
+        animation: spin 0.8s linear infinite;
+    }
+    
+    .spinner-sm {
+        display: inline-block;
+        width: 14px; 
+        height: 14px; 
+        border: 2px solid rgba(255,255,255,0.3); 
+        border-top-color: white; 
+        border-radius: 50%; 
+        animation: spin 0.6s linear infinite;
+    }
+    
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .fade-in {
+        animation: fadeIn 0.3s ease-in;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============================================================
+       HEADER & NAVIGATION
+       ============================================================ */
+    .app-header {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        transition: all 0.3s ease;
+    }
+    
+    .header-content {
+        padding: 16px 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        flex-wrap: wrap;
+    }
+
+    /* Navigation Pills */
+    .nav-pills {
+        display: flex;
+        gap: 8px;
+        background: var(--secondary);
+        padding: 4px;
+        border-radius: var(--radius-m);
+        flex-wrap: wrap;
+    }
+    
+    .nav-pill {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        white-space: nowrap;
+    }
+    
+    .nav-pill:hover {
+        color: var(--text-main);
+        background: rgba(0,0,0,0.05);
+    }
+    
+    .nav-pill.active {
+        background: white;
+        color: var(--primary);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+    }
+    
+    /* Badge for notifications */
+    .nav-badge {
+        position: absolute;
+        top: 4px;
+        right: 8px;
+        background: var(--danger);
+        color: white;
+        font-size: 10px;
+        font-weight: 700;
+        padding: 2px 6px;
+        border-radius: 10px;
+        min-width: 18px;
+        text-align: center;
+    }
+
+    /* Mobile Bottom Navigation */
+    .nav-mobile {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(20px);
+        border-top: 1px solid var(--border);
+        display: flex;
+        justify-content: space-around;
+        padding: 8px 0;
+        z-index: 100;
+        box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .nav-mobile-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 8px 16px;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 11px;
+        font-weight: 600;
+    }
+    
+    .nav-mobile-item.active {
+        color: var(--primary);
+    }
+
+    /* ============================================================
+       LAYOUT GRIDS
+       ============================================================ */
+    .grid-main {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 24px;
+        align-items: start;
+    }
+
+    /* Balance Card - Hero element */
+    .balance-card {
+        background: linear-gradient(135deg, var(--primary) 0%, #0051a8 100%);
+        color: white;
+        padding: 24px;
+        border-radius: var(--radius-l);
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0, 113, 227, 0.3);
+    }
+    
+    .balance-circle {
+        position: absolute;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.1);
+        top: -30px;
+        right: -30px;
+    }
+
+    /* ============================================================
+       CALENDAR COMPONENT
+       ============================================================ */
+    .calendar-container {
+        background: white;
+        border-radius: var(--radius-l);
+        padding: 24px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .calendar-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--border);
+    }
+    
+    .calendar-weekdays {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+    
+    .calendar-weekday {
+        text-align: center;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-secondary);
+        padding: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .calendar-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 8px;
+    }
+    
+    .calendar-day {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-m);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+        position: relative;
+    }
+    
+    .calendar-day:hover:not(.disabled):not(.other-month) {
+        background: var(--secondary);
+        transform: scale(1.05);
+    }
+    
+    .calendar-day.today {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+    
+    .calendar-day.selected {
+        background: var(--primary);
+        color: white;
+    }
+    
+    .calendar-day.in-range {
+        background: var(--info-bg);
+        color: var(--info);
+    }
+    
+    .calendar-day.disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+    }
+    
+    .calendar-day.other-month {
+        opacity: 0.3;
+        color: var(--text-light);
+    }
+    
+    .calendar-day.weekend {
+        color: var(--danger);
+    }
+    
+    .calendar-day.has-vacation::after {
+        content: '';
+        position: absolute;
+        bottom: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--success);
+    }
+
+    /* ============================================================
+       REQUEST LIST COMPONENT
+       ============================================================ */
+    .request-item {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-l);
+        padding: 20px;
+        margin-bottom: 16px;
+        transition: all 0.3s ease;
+    }
+    
+    .request-item:hover {
+        border-color: var(--primary);
+        box-shadow: var(--shadow-md);
+        transform: translateX(4px);
+    }
+    
+    .request-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+    }
+    
+    .request-dates {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+        margin-bottom: 12px;
+        padding: 12px;
+        background: var(--secondary);
+        border-radius: var(--radius-m);
+    }
+    
+    .request-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+    }
+
+    /* ============================================================
+       SUMMARY/STATS COMPONENTS
+       ============================================================ */
+    .stat-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-l);
+        padding: 20px;
+        text-align: center;
+        transition: all 0.3s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .stat-value {
+        font-size: 36px;
+        font-weight: 800;
+        margin: 8px 0;
+    }
+    
+    .stat-label {
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-secondary);
+    }
+
+    /* ============================================================
+       EMPTY STATES
+       ============================================================ */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text-secondary);
+    }
+    
+    .empty-state-icon {
+        font-size: 64px;
+        margin-bottom: 16px;
+        opacity: 0.3;
+    }
+
+    /* ============================================================
+       RESPONSIVE DESIGN
+       ============================================================ */
+    @media (max-width: 768px) {
+        .grid-main {
+            grid-template-columns: 1fr;
+        }
+        
+        .md-hidden {
+            display: none;
+        }
+        
+        .md-block {
+            display: block;
+        }
+        
+        .calendar-day {
+            font-size: 12px;
+        }
+        
+        .header-content {
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .nav-pills {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+    
+    @media (min-width: 769px) {
+        .md-hidden {
+            display: flex;
+        }
+        
+        .md-block {
+            display: block;
+        }
+    }
+
+    /* ============================================================
+       SCROLLBAR STYLING
+       ============================================================ */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+        background: var(--secondary);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: var(--border-hover);
+        border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--text-secondary);
     }
   </style>
 </head>
 <body>
-
+  <!-- React Root Element -->
   <div id="root"></div>
-  <div id="loader">Cargando Portal...</div>
 
+  <!-- React Application -->
   <script type="text/babel">
-    const { useState, useEffect } = React;
+    const { useState, useEffect, useRef } = React;
 
-    // --- DATOS COMPLETOS PARA TODAS LAS PESTAÑAS ---
-    const MOCK_DATA = {
-      user: { email: 'bryan.acuna@demo.com', team: 'PA' },
-      // Datos para "Mis Solicitudes"
-      myRequests: [
-        { id: 1, startDate: '2026-02-11', endDate: '2026-02-17', status: 'Pendiente', days: 5 },
-        { id: 2, startDate: '2025-12-09', endDate: '2025-12-09', status: 'Cancelado', days: 1 },
-        { id: 3, startDate: '2025-12-04', endDate: '2025-12-04', status: 'Rechazado', days: 1 },
-        { id: 4, startDate: '2025-11-21', endDate: '2025-11-21', status: 'Aprobado', days: 1 },
-        { id: 5, startDate: '2025-09-12', endDate: '2025-09-12', status: 'Aprobado (Excepción)', days: 1 }
-      ],
-      // Datos para "Equipo" (Manager)
-      teamPending: [
-        { id: 101, employee: 'Sarah Connor', team: 'Data', startDate: '2026-03-10', endDate: '2026-03-15', status: 'Pendiente', days: 4 },
-        { id: 102, employee: 'John Doe', team: 'Data', startDate: '2026-03-12', endDate: '2026-03-14', status: 'Necesita Revisión', days: 3 }
-      ],
-      // Datos para "Resumen"
-      stats: [
-        { name: 'Sarah Connor', team: 'Data', days: 12 },
-        { name: 'John Doe', team: 'Data', days: 8 },
-        { name: 'Mike Ross', team: 'Legal', days: 5 }
-      ]
+    /* ============================================================
+       MOCK DATA SERVICE
+       Simulates backend API calls with localStorage persistence
+       ============================================================ */
+    const MockDataService = {
+      // Initialize demo data if not exists
+      init() {
+        if (!localStorage.getItem('vacationRequests')) {
+          const demoRequests = [
+            {
+              id: '1',
+              userEmail: 'demo@example.com',
+              team: 'Desarrollo',
+              startDate: '2025-01-15',
+              endDate: '2025-01-19',
+              days: 5,
+              status: 'Aprobada',
+              submittedAt: '2025-01-05T10:00:00Z',
+              approvedAt: '2025-01-06T14:30:00Z',
+              approvedBy: 'manager@example.com'
+            },
+            {
+              id: '2',
+              userEmail: 'demo@example.com',
+              team: 'Desarrollo',
+              startDate: '2025-03-10',
+              endDate: '2025-03-14',
+              days: 5,
+              status: 'Pendiente',
+              submittedAt: '2025-01-08T09:15:00Z'
+            }
+          ];
+          localStorage.setItem('vacationRequests', JSON.stringify(demoRequests));
+        }
+        
+        if (!localStorage.getItem('currentUser')) {
+          const demoUser = {
+            email: 'demo@example.com',
+            team: 'Desarrollo',
+            isManager: false,
+            stats: {
+              total: 15,
+              used: 5,
+              pending: 5,
+              remaining: 5
+            }
+          };
+          localStorage.setItem('currentUser', JSON.stringify(demoUser));
+        }
+      },
+
+      // Get current user
+      getCurrentUser() {
+        return JSON.parse(localStorage.getItem('currentUser'));
+      },
+
+      // Get all requests
+      getAllRequests() {
+        return JSON.parse(localStorage.getItem('vacationRequests')) || [];
+      },
+
+      // Get user's requests
+      getUserRequests(email) {
+        const all = this.getAllRequests();
+        return all.filter(r => r.userEmail === email);
+      },
+
+      // Get pending requests (for managers)
+      getPendingRequests() {
+        const all = this.getAllRequests();
+        return all.filter(r => r.status === 'Pendiente');
+      },
+
+      // Create new request
+      createRequest(requestData) {
+        const requests = this.getAllRequests();
+        const newRequest = {
+          id: Date.now().toString(),
+          ...requestData,
+          submittedAt: new Date().toISOString(),
+          status: 'Pendiente'
+        };
+        requests.push(newRequest);
+        localStorage.setItem('vacationRequests', JSON.stringify(requests));
+        
+        // Update user stats
+        this.updateUserStats();
+        return newRequest;
+      },
+
+      // Update request
+      updateRequest(id, updates) {
+        const requests = this.getAllRequests();
+        const index = requests.findIndex(r => r.id === id);
+        if (index !== -1) {
+          requests[index] = { ...requests[index], ...updates };
+          localStorage.setItem('vacationRequests', JSON.stringify(requests));
+          this.updateUserStats();
+          return requests[index];
+        }
+        return null;
+      },
+
+      // Delete request
+      deleteRequest(id) {
+        const requests = this.getAllRequests();
+        const filtered = requests.filter(r => r.id !== id);
+        localStorage.setItem('vacationRequests', JSON.stringify(filtered));
+        this.updateUserStats();
+      },
+
+      // Update user statistics
+      updateUserStats() {
+        const user = this.getCurrentUser();
+        const requests = this.getUserRequests(user.email);
+        
+        const used = requests
+          .filter(r => r.status === 'Aprobada')
+          .reduce((sum, r) => sum + r.days, 0);
+        
+        const pending = requests
+          .filter(r => r.status === 'Pendiente')
+          .reduce((sum, r) => sum + r.days, 0);
+        
+        user.stats.used = used;
+        user.stats.pending = pending;
+        user.stats.remaining = user.stats.total - used - pending;
+        
+        localStorage.setItem('currentUser', JSON.stringify(user));
+      }
     };
 
-    // --- COMPONENTES AUXILIARES ---
+    /* ============================================================
+       UTILITY FUNCTIONS
+       Date calculations and formatting helpers
+       ============================================================ */
+    
+    /**
+     * Calculate business days between two dates (excludes weekends)
+     * @param {string} start - Start date (YYYY-MM-DD)
+     * @param {string} end - End date (YYYY-MM-DD)
+     * @returns {number} Number of business days
+     */
+    function calcBusinessDays(start, end) {
+      if (!start || !end) return 0;
+      
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+      let count = 0;
+      
+      const current = new Date(startDate);
+      while (current <= endDate) {
+        const day = current.getDay();
+        if (day !== 0 && day !== 6) { // Not Sunday (0) or Saturday (6)
+          count++;
+        }
+        current.setDate(current.getDate() + 1);
+      }
+      
+      return count;
+    }
 
-    const Badge = ({ status }) => {
-      let cls = 'b-neutral';
-      if (status === 'Pendiente') cls = 'b-warning';
-      if (status === 'Aprobado') cls = 'b-success';
-      if (status.includes('Excepción')) cls = 'b-info';
-      if (status === 'Rechazado') cls = 'b-danger';
-      if (status === 'Necesita Revisión') cls = 'b-info';
-      return <span className={`badge ${cls}`}>{status.toUpperCase()}</span>;
-    };
+    /**
+     * Format date to friendly Spanish format
+     * @param {string} dateStr - Date string (YYYY-MM-DD)
+     * @returns {string} Formatted date (e.g., "15 Ene 2025")
+     */
+    function formatDateFriendly(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr + 'T12:00:00');
+      const months = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+      return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+    }
 
-    const DateBox = ({ dateStr }) => {
-      const d = new Date(dateStr);
-      const day = d.getUTCDate();
-      const months = ['ENE','FEB','MAR','ABR','MAY','JUN','JUL','AGO','SEP','OCT','NOV','DIC'];
-      const month = months[d.getUTCMonth()];
+    /**
+     * Format timestamp to readable date-time
+     * @param {string} isoStr - ISO timestamp
+     * @returns {string} Formatted date-time
+     */
+    function formatDateTime(isoStr) {
+      if (!isoStr) return '';
+      const d = new Date(isoStr);
+      return d.toLocaleString('es-ES', { 
+        day: '2-digit', 
+        month: 'short', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    /**
+     * Check if date is weekend
+     * @param {Date} date - Date object
+     * @returns {boolean} True if weekend
+     */
+    function isWeekend(date) {
+      const day = date.getDay();
+      return day === 0 || day === 6;
+    }
+
+    /**
+     * Check if date has approved vacation
+     * @param {Date} date - Date to check
+     * @param {Array} requests - Array of vacation requests
+     * @returns {boolean} True if date has vacation
+     */
+    function hasVacation(date, requests) {
+      const dateStr = date.toISOString().split('T')[0];
+      return requests.some(r => {
+        if (r.status !== 'Aprobada') return false;
+        return dateStr >= r.startDate && dateStr <= r.endDate;
+      });
+    }
+
+    /* ============================================================
+       ICON COMPONENT
+       Wrapper for Boxicons library
+       ============================================================ */
+    const Icon = ({name, size = '20px', className = ''}) => (
+      <i className={`bx bx-${name} ${className}`} style={{fontSize: size, lineHeight: '1'}}></i>
+    );
+
+    /* ============================================================
+       CALENDAR COMPONENT
+       Interactive date picker with vacation visualization
+       ============================================================ */
+    const CalendarView = ({requests, selection, onDateClick}) => {
+      const [currentMonth, setCurrentMonth] = useState(new Date());
+      
+      // Get days for current month view
+      const getDaysInMonth = () => {
+        const year = currentMonth.getFullYear();
+        const month = currentMonth.getMonth();
+        
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const daysInMonth = lastDay.getDate();
+        
+        const startPadding = firstDay.getDay();
+        const days = [];
+        
+        // Previous month padding
+        const prevMonthLastDay = new Date(year, month, 0).getDate();
+        for (let i = startPadding - 1; i >= 0; i--) {
+          days.push({
+            date: new Date(year, month - 1, prevMonthLastDay - i),
+            isCurrentMonth: false
+          });
+        }
+        
+        // Current month days
+        for (let i = 1; i <= daysInMonth; i++) {
+          days.push({
+            date: new Date(year, month, i),
+            isCurrentMonth: true
+          });
+        }
+        
+        // Next month padding
+        const remaining = 42 - days.length;
+        for (let i = 1; i <= remaining; i++) {
+          days.push({
+            date: new Date(year, month + 1, i),
+            isCurrentMonth: false
+          });
+        }
+        
+        return days;
+      };
+
+      // Navigate months
+      const prevMonth = () => {
+        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+      };
+      
+      const nextMonth = () => {
+        setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+      };
+
+      // Check if date is in selection range
+      const isInRange = (date) => {
+        if (!selection.start || !selection.end) return false;
+        const dateStr = date.toISOString().split('T')[0];
+        return dateStr >= selection.start && dateStr <= selection.end;
+      };
+
+      // Check if date is selected endpoint
+      const isSelected = (date) => {
+        const dateStr = date.toISOString().split('T')[0];
+        return dateStr === selection.start || dateStr === selection.end;
+      };
+
+      const days = getDaysInMonth();
+      const today = new Date().toISOString().split('T')[0];
+
       return (
-        <div className="date-box">
-          <span className="db-month">{month}</span>
-          <span className="db-day">{day}</span>
+        <div className="calendar-container">
+          {/* Calendar Header */}
+          <div className="calendar-header">
+            <button onClick={prevMonth} className="btn btn-ghost btn-sm">
+              <Icon name="chevron-left" />
+            </button>
+            <h3 className="text-h3">
+              {currentMonth.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+            </h3>
+            <button onClick={nextMonth} className="btn btn-ghost btn-sm">
+              <Icon name="chevron-right" />
+            </button>
+          </div>
+
+          {/* Weekday Headers */}
+          <div className="calendar-weekdays">
+            {['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'].map(day => (
+              <div key={day} className="calendar-weekday">{day}</div>
+            ))}
+          </div>
+
+          {/* Calendar Grid */}
+          <div className="calendar-grid">
+            {days.map((day, idx) => {
+              const dateStr = day.date.toISOString().split('T')[0];
+              const isToday = dateStr === today;
+              const isWknd = isWeekend(day.date);
+              const hasVac = hasVacation(day.date, requests);
+              
+              return (
+                <div
+                  key={idx}
+                  className={`calendar-day 
+                    ${!day.isCurrentMonth ? 'other-month' : ''} 
+                    ${isToday ? 'today' : ''} 
+                    ${isWknd ? 'weekend disabled' : ''} 
+                    ${isSelected(day.date) ? 'selected' : ''} 
+                    ${isInRange(day.date) ? 'in-range' : ''}
+                    ${hasVac ? 'has-vacation' : ''}`}
+                  onClick={() => !isWknd && day.isCurrentMonth && onDateClick(dateStr)}
+                >
+                  {day.date.getDate()}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Legend */}
+          <div className="flex gap-4" style={{marginTop: '16px', fontSize: '12px', color: 'var(--text-secondary)'}}>
+            <div className="flex items-center gap-2">
+              <div style={{width: '12px', height: '12px', borderRadius: '50%', background: 'var(--success)'}}></div>
+              <span>Vacaciones</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div style={{width: '12px', height: '12px', borderRadius: '50%', background: 'var(--info)'}}></div>
+              <span>Selección</span>
+            </div>
+          </div>
         </div>
       );
     };
 
-    const FormatDate = ({ d }) => {
-      const date = new Date(d);
-      return <span>{String(date.getUTCDate()).padStart(2,'0')}/{String(date.getUTCMonth()+1).padStart(2,'0')}/{date.getUTCFullYear()}</span>;
-    };
+    /* ============================================================
+       MY REQUESTS TAB
+       Display and manage user's vacation requests
+       ============================================================ */
+    const MyRequestsTab = ({requests, onCancel, onEdit}) => {
+      if (!requests || requests.length === 0) {
+        return (
+          <div className="empty-state">
+            <div className="empty-state-icon">📅</div>
+            <h3 className="text-h3" style={{marginBottom: '8px'}}>No tienes solicitudes</h3>
+            <p className="text-sub">Crea tu primera solicitud de vacaciones desde el calendario</p>
+          </div>
+        );
+      }
 
-    // --- APP PRINCIPAL ---
-
-    const App = () => {
-      const [tab, setTab] = useState('requests'); // Default a Mis Solicitudes
-      const [loading, setLoading] = useState(true);
-
-      useEffect(() => {
-        setTimeout(() => {
-          document.getElementById('loader').style.display = 'none';
-          setLoading(false);
-        }, 600);
-      }, []);
-
-      const handleAction = (action) => {
-        Swal.fire({
-          title: 'Modo Demo',
-          text: `En la versión real, esto marcaría la solicitud como ${action}`,
-          icon: 'success',
-          timer: 1500,
-          showConfirmButton: false
-        });
-      };
-
-      if (loading) return null;
-
-      const activeRequests = MOCK_DATA.myRequests.filter(r => r.status === 'Pendiente');
-      const historyRequests = MOCK_DATA.myRequests.filter(r => r.status !== 'Pendiente');
+      // Sort by submission date (newest first)
+      const sorted = [...requests].sort((a, b) => 
+        new Date(b.submittedAt) - new Date(a.submittedAt)
+      );
 
       return (
-        <div className="container">
-          {/* HEADER */}
-          <header className="header">
-            <div className="logo"><i className='bx bxs-plane-alt' style={{color:'#0071e3'}}></i> Portal Vacaciones</div>
-            
-            <div className="nav">
-              <button className={`nav-btn ${tab === 'home' ? 'active' : ''}`} onClick={() => setTab('home')}>
-                <i className='bx bx-home'></i> Inicio
-              </button>
-              <button className={`nav-btn ${tab === 'requests' ? 'active' : ''}`} onClick={() => setTab('requests')}>
-                <i className='bx bx-list-ul'></i> Mis Solicitudes
-                <span className="badge-count">1</span>
-              </button>
-              <button className={`nav-btn ${tab === 'team' ? 'active' : ''}`} onClick={() => setTab('team')}>
-                <i className='bx bx-group'></i> Equipo <span className="badge-count">2</span>
-              </button>
-              <button className={`nav-btn ${tab === 'summary' ? 'active' : ''}`} onClick={() => setTab('summary')}>
-                <i className='bx bx-pie-chart-alt-2'></i> Resumen
-              </button>
-            </div>
+        <div className="fade-in">
+          <div style={{marginBottom: '24px'}}>
+            <h2 className="text-h3" style={{fontSize: '24px', marginBottom: '8px'}}>
+              Mis Solicitudes
+            </h2>
+            <p className="text-sub">Gestiona tus solicitudes de vacaciones</p>
+          </div>
 
-            <div className="flex-row" style={{gap: '10px'}}>
-              <div style={{textAlign: 'right'}}>
-                <div style={{fontWeight: 700, fontSize: '13px'}}>bryan.acuna</div>
-                <div style={{fontSize: '11px', color: '#888'}}>EQUIPO: PA</div>
+          {sorted.map(req => (
+            <div key={req.id} className="request-item">
+              {/* Request Header */}
+              <div className="request-header">
+                <span className={`status-badge status-${req.status.toLowerCase()}`}>
+                  <Icon name={
+                    req.status === 'Aprobada' ? 'check-circle' :
+                    req.status === 'Rechazada' ? 'x-circle' :
+                    req.status === 'Cancelada' ? 'minus-circle' :
+                    'clock'
+                  } />
+                  {req.status}
+                </span>
+                <span className="text-xs text-secondary">
+                  Solicitado: {formatDateTime(req.submittedAt)}
+                </span>
               </div>
-              <div style={{width:'32px', height:'32px', background:'#E0F2FE', borderRadius:'50%', color:'#0071E3', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:'bold'}}>B</div>
+
+              {/* Request Dates */}
+              <div className="request-dates">
+                <div className="flex-col">
+                  <span className="text-xs text-secondary">Desde</span>
+                  <span className="text-bold">{formatDateFriendly(req.startDate)}</span>
+                </div>
+                <Icon name="arrow-right" className="text-secondary" />
+                <div className="flex-col">
+                  <span className="text-xs text-secondary">Hasta</span>
+                  <span className="text-bold">{formatDateFriendly(req.endDate)}</span>
+                </div>
+                <div style={{
+                  marginLeft: 'auto',
+                  padding: '8px 16px',
+                  background: 'var(--info-bg)',
+                  borderRadius: 'var(--radius-m)',
+                  color: 'var(--info)',
+                  fontWeight: '700'
+                }}>
+                  {req.days} días
+                </div>
+              </div>
+
+              {/* Additional Info */}
+              {req.approvedAt && (
+                <div className="text-xs text-secondary" style={{marginTop: '8px'}}>
+                  <Icon name="check" size="14px" /> Aprobado el {formatDateTime(req.approvedAt)}
+                  {req.approvedBy && ` por ${req.approvedBy}`}
+                </div>
+              )}
+              
+              {req.rejectedAt && req.rejectionReason && (
+                <div className="text-xs text-danger" style={{marginTop: '8px', padding: '8px', background: 'var(--danger-bg)', borderRadius: 'var(--radius-m)'}}>
+                  <Icon name="info-circle" size="14px" /> Motivo: {req.rejectionReason}
+                </div>
+              )}
+
+              {/* Actions */}
+              {(req.status === 'Pendiente' || req.status === 'Necesita Revisión') && (
+                <div className="request-actions">
+                  <button onClick={() => onEdit(req)} className="btn btn-secondary btn-sm flex-1">
+                    <Icon name="edit" size="16px" /> Modificar
+                  </button>
+                  <button onClick={() => onCancel(req.id)} className="btn btn-danger btn-sm flex-1">
+                    <Icon name="trash" size="16px" /> Cancelar
+                  </button>
+                </div>
+              )}
             </div>
-          </header>
+          ))}
+        </div>
+      );
+    };
 
-          {/* --- PESTAÑA: MIS SOLICITUDES --- */}
-          {tab === 'requests' && (
-            <div>
-              <h2 style={{fontSize: '24px', fontWeight: 700, marginBottom: '20px'}}>Mis Solicitudes</h2>
+    /* ============================================================
+       TEAM MANAGEMENT TAB (For Managers)
+       Approve or reject team vacation requests
+       ============================================================ */
+    const TeamManagement = ({pendingRequests, onAction}) => {
+      if (!pendingRequests || pendingRequests.length === 0) {
+        return (
+          <div className="empty-state">
+            <div className="empty-state-icon">✅</div>
+            <h3 className="text-h3" style={{marginBottom: '8px'}}>Sin solicitudes pendientes</h3>
+            <p className="text-sub">Todas las solicitudes han sido revisadas</p>
+          </div>
+        );
+      }
 
-              <div className="section-title"><i className='bx bx-time-five'></i> EN PROCESO</div>
-              {activeRequests.map(r => (
-                <div key={r.id} className="card card-responsive">
-                  <div className="flex-row" style={{alignItems: 'center'}}>
-                    <DateBox dateStr={r.startDate} />
-                    <div>
-                      <div className="text-dates">
-                        <FormatDate d={r.startDate} /> <i className='bx bx-right-arrow-alt arrow'></i> <FormatDate d={r.endDate} />
-                      </div>
-                      <div className="flex-row gap-2">
-                        <span className="text-meta">{r.days} días</span>
-                        <Badge status={r.status} />
-                      </div>
+      return (
+        <div className="fade-in">
+          <div style={{marginBottom: '24px'}}>
+            <h2 className="text-h3" style={{fontSize: '24px', marginBottom: '8px'}}>
+              Gestión de Equipo
+            </h2>
+            <p className="text-sub">{pendingRequests.length} solicitud(es) pendiente(s) de revisión</p>
+          </div>
+
+          {pendingRequests.map(req => (
+            <div key={req.id} className="request-item">
+              <div className="request-header">
+                <div className="flex items-center gap-3">
+                  <div style={{
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    background: 'var(--info-bg)',
+                    color: 'var(--info)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: '700'
+                  }}>
+                    {req.userEmail.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <div className="text-bold">{req.userEmail.split('@')[0]}</div>
+                    <div className="text-xs text-secondary">{req.team}</div>
+                  </div>
+                </div>
+                <span className="text-xs text-secondary">
+                  {formatDateTime(req.submittedAt)}
+                </span>
+              </div>
+
+              <div className="request-dates">
+                <div className="flex-col">
+                  <span className="text-xs text-secondary">Desde</span>
+                  <span className="text-bold">{formatDateFriendly(req.startDate)}</span>
+                </div>
+                <Icon name="arrow-right" className="text-secondary" />
+                <div className="flex-col">
+                  <span className="text-xs text-secondary">Hasta</span>
+                  <span className="text-bold">{formatDateFriendly(req.endDate)}</span>
+                </div>
+                <div style={{
+                  marginLeft: 'auto',
+                  padding: '8px 16px',
+                  background: 'var(--info-bg)',
+                  borderRadius: 'var(--radius-m)',
+                  color: 'var(--info)',
+                  fontWeight: '700'
+                }}>
+                  {req.days} días
+                </div>
+              </div>
+
+              <div className="request-actions">
+                <button 
+                  onClick={() => onAction(req.id, 'reject')} 
+                  className="btn btn-danger btn-sm flex-1"
+                >
+                  <Icon name="x" size="16px" /> Rechazar
+                </button>
+                <button 
+                  onClick={() => onAction(req.id, 'approve')} 
+                  className="btn btn-success btn-sm flex-1"
+                >
+                  <Icon name="check" size="16px" /> Aprobar
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    };
+
+    /* ============================================================
+       SUMMARY VIEW TAB (For Managers)
+       Team statistics and overview
+       ============================================================ */
+    const SummaryView = ({allRequests}) => {
+      // Calculate statistics
+      const stats = {
+        total: allRequests.length,
+        approved: allRequests.filter(r => r.status === 'Aprobada').length,
+        pending: allRequests.filter(r => r.status === 'Pendiente').length,
+        rejected: allRequests.filter(r => r.status === 'Rechazada').length,
+        totalDays: allRequests
+          .filter(r => r.status === 'Aprobada')
+          .reduce((sum, r) => sum + r.days, 0)
+      };
+
+      // Group by team
+      const byTeam = allRequests.reduce((acc, req) => {
+        if (!acc[req.team]) {
+          acc[req.team] = { total: 0, approved: 0, days: 0 };
+        }
+        acc[req.team].total++;
+        if (req.status === 'Aprobada') {
+          acc[req.team].approved++;
+          acc[req.team].days += req.days;
+        }
+        return acc;
+      }, {});
+
+      return (
+        <div className="fade-in">
+          <div style={{marginBottom: '24px'}}>
+            <h2 className="text-h3" style={{fontSize: '24px', marginBottom: '8px'}}>
+              Resumen General
+            </h2>
+            <p className="text-sub">Estadísticas del equipo</p>
+          </div>
+
+          {/* Overview Stats */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '16px',
+            marginBottom: '32px'
+          }}>
+            <div className="stat-card">
+              <div className="stat-label">Total Solicitudes</div>
+              <div className="stat-value text-primary">{stats.total}</div>
+            </div>
+            
+            <div className="stat-card">
+              <div className="stat-label">Aprobadas</div>
+              <div className="stat-value text-success">{stats.approved}</div>
+            </div>
+            
+            <div className="stat-card">
+              <div className="stat-label">Pendientes</div>
+              <div className="stat-value text-warning">{stats.pending}</div>
+            </div>
+            
+            <div className="stat-card">
+              <div className="stat-label">Días Totales</div>
+              <div className="stat-value text-info">{stats.totalDays}</div>
+            </div>
+          </div>
+
+          {/* By Team */}
+          <div className="card">
+            <div className="card-header">
+              <h3 className="text-h3">Por Equipo</h3>
+            </div>
+            <div className="card-body">
+              {Object.entries(byTeam).map(([team, data]) => (
+                <div key={team} style={{
+                  padding: '16px',
+                  marginBottom: '12px',
+                  background: 'var(--secondary)',
+                  borderRadius: 'var(--radius-m)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <div>
+                    <div className="text-bold">{team}</div>
+                    <div className="text-xs text-secondary">
+                      {data.total} solicitudes · {data.approved} aprobadas
                     </div>
                   </div>
-                  <div style={{display:'flex', gap:'10px', marginTop:'15px'}}>
-                    <button className="btn" onClick={() => handleAction('Editada')}><i className='bx bx-edit-alt'></i> Editar</button>
-                    <button className="btn btn-ghost" onClick={() => handleAction('Cancelada')}><i className='bx bx-trash'></i> Cancelar</button>
+                  <div style={{
+                    padding: '8px 16px',
+                    background: 'white',
+                    borderRadius: 'var(--radius-m)',
+                    fontWeight: '700',
+                    color: 'var(--info)'
+                  }}>
+                    {data.days} días
                   </div>
                 </div>
               ))}
-
-              <div className="section-title"><i className='bx bx-archive'></i> HISTORIAL</div>
-              <div className="flex-col" style={{gap: '12px'}}>
-                {historyRequests.map(r => (
-                  <div key={r.id} className="card" style={{margin: 0, padding: '16px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                    <div className="flex-row text-meta" style={{color: '#444'}}>
-                      <FormatDate d={r.startDate} /> <i className='bx bx-right-arrow-alt arrow'></i> <FormatDate d={r.endDate} />
-                    </div>
-                    <div className="flex-row gap-2">
-                      <span className="text-meta" style={{fontSize: '12px'}}>{r.days}d</span>
-                      <Badge status={r.status} />
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
-          )}
-
-          {/* --- PESTAÑA: INICIO (Calendario) --- */}
-          {tab === 'home' && (
-            <div style={{display:'grid', gridTemplateColumns:'2fr 1fr', gap:'20px'}}>
-              <div>
-                <div className="card">
-                  <div className="flex-row justify-between" style={{marginBottom:'10px'}}>
-                    <span style={{fontWeight:700}}>FEBRERO 2026</span>
-                    <div className="flex-row gap-2">
-                        <button className="btn-icon"><i className='bx bx-chevron-left'></i></button>
-                        <button className="btn-icon"><i className='bx bx-chevron-right'></i></button>
-                    </div>
-                  </div>
-                  <div className="calendar-grid">
-                    {['L','M','X','J','V','S','D'].map(d=><div key={d} className="cal-head">{d}</div>)}
-                    {Array.from({length:6}).map((_,i)=><div key={'e'+i} className="cal-cell" style={{background:'#f9f9f9'}}></div>)}
-                    {Array.from({length:28}).map((_,i)=>{
-                        const d = i+1;
-                        // Simular evento el día 11 (inicio de la solicitud pendiente)
-                        const hasEvent = d === 11; 
-                        return (
-                            <div key={d} className="cal-cell">
-                                <span className="cal-num">{d}</span>
-                                {hasEvent && <div className="cal-dot" style={{background:'#FF9500'}} title="Pendiente"></div>}
-                            </div>
-                        )
-                    })}
-                  </div>
-                </div>
-              </div>
-              <div className="flex-col" style={{gap:'16px'}}>
-                 <div className="card" style={{background:'linear-gradient(135deg, #0071e3 0%, #00c6ff 100%)', color:'white', border:'none'}}>
-                    <div style={{fontSize:'12px', fontWeight:700, opacity:0.8}}>SALDO DISPONIBLE</div>
-                    <div style={{fontSize:'42px', fontWeight:800}}>12 <span style={{fontSize:'16px'}}>días</span></div>
-                 </div>
-                 <div className="card">
-                    <h4 style={{marginTop:0}}>Acciones Rápidas</h4>
-                    <button className="btn btn-primary" onClick={() => setTab('requests')}>Nueva Solicitud</button>
-                 </div>
-              </div>
-            </div>
-          )}
-
-          {/* --- PESTAÑA: EQUIPO (Manager) --- */}
-          {tab === 'team' && (
-            <div>
-              <h2 style={{fontSize: '24px', fontWeight: 700, marginBottom: '20px'}}>Gestión de Equipo</h2>
-              <div className="card">
-                <table>
-                  <thead><tr><th>Empleado</th><th>Fechas</th><th>Días</th><th>Estado</th><th style={{textAlign:'right'}}>Acción</th></tr></thead>
-                  <tbody>
-                    {MOCK_DATA.teamPending.map(r => (
-                      <tr key={r.id}>
-                         <td>
-                            <div style={{fontWeight:700}}>{r.employee}</div>
-                            <div className="text-meta">{r.team}</div>
-                         </td>
-                         <td><FormatDate d={r.startDate}/> - <FormatDate d={r.endDate}/></td>
-                         <td>{r.days}</td>
-                         <td><Badge status={r.status}/></td>
-                         <td style={{textAlign:'right'}}>
-                            <button className="btn-icon" style={{color:'#ff3b30'}} onClick={()=>handleAction('Rechazada')}><i className='bx bx-x'></i></button>
-                            <button className="btn-icon" style={{color:'#34c759'}} onClick={()=>handleAction('Aprobada')}><i className='bx bx-check'></i></button>
-                         </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* --- PESTAÑA: RESUMEN --- */}
-          {tab === 'summary' && (
-            <div>
-                <h2 style={{fontSize: '24px', fontWeight: 700, marginBottom: '20px'}}>Resumen Anual</h2>
-                <div className="card">
-                    <h3>Días tomados por empleado (2025)</h3>
-                    <table>
-                        <thead><tr><th>Empleado</th><th>Equipo</th><th>Total Días</th></tr></thead>
-                        <tbody>
-                            {MOCK_DATA.stats.map((s,i) => (
-                                <tr key={i}>
-                                    <td style={{fontWeight:700}}>{s.name}</td>
-                                    <td><span style={{background:'#f5f5f7', padding:'2px 8px', borderRadius:'4px', fontSize:'11px', fontWeight:700}}>{s.team}</span></td>
-                                    <td>{s.days}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-          )}
-
+          </div>
         </div>
       );
     };
 
+    /* ============================================================
+       MAIN APP COMPONENT
+       Root component managing all application state
+       ============================================================ */
+    function App() {
+      // State management
+      const [loading, setLoading] = useState(true);
+      const [user, setUser] = useState(null);
+      const [requests, setRequests] = useState([]);
+      const [allRequests, setAllRequests] = useState([]);
+      const [pending, setPending] = useState([]);
+      const [activeTab, setActiveTab] = useState('home');
+      const [startDate, setStartDate] = useState('');
+      const [endDate, setEndDate] = useState('');
+      const [editingId, setEditingId] = useState(null);
+      const [submitting, setSubmitting] = useState(false);
+
+      // Refs for tab navigation
+      const tabRefs = useRef({});
+
+      // Initialize app
+      useEffect(() => {
+        const init = async () => {
+          try {
+            // Initialize mock data
+            MockDataService.init();
+            
+            // Load user data
+            const currentUser = MockDataService.getCurrentUser();
+            setUser(currentUser);
+            
+            // Load requests
+            const userRequests = MockDataService.getUserRequests(currentUser.email);
+            setRequests(userRequests);
+            
+            // Load manager data if applicable
+            if (currentUser.isManager) {
+              const all = MockDataService.getAllRequests();
+              setAllRequests(all);
+              setPending(MockDataService.getPendingRequests());
+            }
+            
+            // Simulate loading delay
+            await new Promise(resolve => setTimeout(resolve, 800));
+            setLoading(false);
+          } catch (error) {
+            console.error('Initialization error:', error);
+            Swal.fire('Error', 'Error al cargar la aplicación', 'error');
+          }
+        };
+
+        init();
+      }, []);
+
+      // Detect if running in iframe
+      useEffect(() => {
+        if (window.self !== window.top) {
+          document.body.classList.add('in-iframe');
+        }
+      }, []);
+
+      /**
+       * Handle calendar date clicks
+       * Manages date range selection logic
+       */
+      const handleCalendarClick = (dateStr) => {
+        if (!startDate || (startDate && endDate)) {
+          // Start new selection
+          setStartDate(dateStr);
+          setEndDate('');
+        } else if (dateStr > startDate) {
+          // Complete selection
+          setEndDate(dateStr);
+        } else {
+          // Reset if clicking before start
+          setStartDate(dateStr);
+          setEndDate('');
+        }
+      };
+
+      /**
+       * Submit new vacation request or update existing
+       */
+      const handleFormSubmit = async () => {
+        if (!startDate || !endDate) {
+          Swal.fire('Atención', 'Selecciona las fechas de inicio y fin', 'warning');
+          return;
+        }
+
+        const days = calcBusinessDays(startDate, endDate);
+        
+        if (days <= 0) {
+          Swal.fire('Atención', 'Debes seleccionar al menos un día hábil', 'warning');
+          return;
+        }
+
+        // Check if user has enough balance
+        if (!editingId && days > user.stats.remaining) {
+          Swal.fire('Saldo Insuficiente', 
+            `No tienes suficientes días disponibles. Necesitas ${days} días pero solo tienes ${user.stats.remaining}.`,
+            'error'
+          );
+          return;
+        }
+
+        setSubmitting(true);
+
+        try {
+          if (editingId) {
+            // Update existing request
+            MockDataService.updateRequest(editingId, {
+              startDate,
+              endDate,
+              days,
+              status: 'Necesita Revisión'
+            });
+            
+            Swal.fire('¡Actualizado!', 'Tu solicitud ha sido modificada', 'success');
+            setEditingId(null);
+          } else {
+            // Create new request
+            MockDataService.createRequest({
+              userEmail: user.email,
+              team: user.team,
+              startDate,
+              endDate,
+              days
+            });
+            
+            Swal.fire('¡Enviado!', 'Tu solicitud ha sido creada', 'success');
+          }
+
+          // Refresh data
+          const updatedUser = MockDataService.getCurrentUser();
+          setUser(updatedUser);
+          setRequests(MockDataService.getUserRequests(user.email));
+          
+          if (user.isManager) {
+            setPending(MockDataService.getPendingRequests());
+            setAllRequests(MockDataService.getAllRequests());
+          }
+
+          // Reset form
+          setStartDate('');
+          setEndDate('');
+        } catch (error) {
+          console.error('Submit error:', error);
+          Swal.fire('Error', 'No se pudo procesar la solicitud', 'error');
+        } finally {
+          setSubmitting(false);
+        }
+      };
+
+      /**
+       * Cancel a vacation request
+       */
+      const handleCancelRequest = async (id) => {
+        const result = await Swal.fire({
+          title: '¿Cancelar solicitud?',
+          text: 'Esta acción no se puede deshacer',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, cancelar',
+          cancelButtonText: 'No'
+        });
+
+        if (result.isConfirmed) {
+          MockDataService.deleteRequest(id);
+          
+          const updatedUser = MockDataService.getCurrentUser();
+          setUser(updatedUser);
+          setRequests(MockDataService.getUserRequests(user.email));
+          
+          if (user.isManager) {
+            setPending(MockDataService.getPendingRequests());
+            setAllRequests(MockDataService.getAllRequests());
+          }
+          
+          Swal.fire('Cancelada', 'La solicitud ha sido eliminada', 'success');
+        }
+      };
+
+      /**
+       * Edit existing request
+       */
+      const handleEditClick = (request) => {
+        setEditingId(request.id);
+        setStartDate(request.startDate);
+        setEndDate(request.endDate);
+        setActiveTab('home');
+        
+        // Scroll to form
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }, 100);
+      };
+
+      /**
+       * Manager actions (approve/reject)
+       */
+      const handleManagerAction = async (id, action) => {
+        if (action === 'reject') {
+          const { value: reason } = await Swal.fire({
+            title: 'Motivo del rechazo',
+            input: 'textarea',
+            inputPlaceholder: 'Escribe el motivo...',
+            showCancelButton: true,
+            confirmButtonText: 'Rechazar',
+            cancelButtonText: 'Cancelar'
+          });
+
+          if (reason) {
+            MockDataService.updateRequest(id, {
+              status: 'Rechazada',
+              rejectedAt: new Date().toISOString(),
+              rejectedBy: user.email,
+              rejectionReason: reason
+            });
+            
+            Swal.fire('Rechazada', 'La solicitud ha sido rechazada', 'info');
+          }
+        } else {
+          MockDataService.updateRequest(id, {
+            status: 'Aprobada',
+            approvedAt: new Date().toISOString(),
+            approvedBy: user.email
+          });
+          
+          Swal.fire('¡Aprobada!', 'La solicitud ha sido aprobada', 'success');
+        }
+
+        // Refresh manager data
+        setPending(MockDataService.getPendingRequests());
+        setAllRequests(MockDataService.getAllRequests());
+      };
+
+      // Loading screen
+      if (loading) {
+        return (
+          <div className="loader-container">
+            <div className="spinner"></div>
+            <div style={{fontSize: '14px', color: 'var(--text-secondary)', marginTop: '16px'}}>
+              Cargando Portal de Vacaciones...
+            </div>
+          </div>
+        );
+      }
+
+      const isManager = user?.isManager || false;
+
+      return (
+        <div>
+          {/* Header */}
+          <header className="app-header">
+            <div className="container header-content">
+              {/* Logo */}
+              <div className="flex items-center gap-3">
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  background: 'linear-gradient(135deg, var(--primary), var(--info))',
+                  borderRadius: 'var(--radius-m)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '20px'
+                }}>
+                  🏖️
+                </div>
+                <div>
+                  <h1 className="text-bold" style={{fontSize: '18px', lineHeight: '1.2'}}>
+                    Portal de Vacaciones
+                  </h1>
+                  <div className="text-xs text-secondary">Sistema de Gestión</div>
+                </div>
+              </div>
+
+              {/* Navigation Pills (Desktop) */}
+              <div className="nav-pills md-block" style={{display: 'none'}}>
+                <button 
+                  ref={el => tabRefs.current['home'] = el}
+                  onClick={() => setActiveTab('home')} 
+                  className={`nav-pill ${activeTab==='home'?'active':''}`}>
+                  <Icon name="home" size="16px"/> Inicio
+                </button>
+                
+                <button 
+                  ref={el => tabRefs.current['my-requests'] = el}
+                  onClick={() => setActiveTab('my-requests')} 
+                  className={`nav-pill ${activeTab==='my-requests'?'active':''}`}
+                  style={{
+                    position: 'relative',
+                    paddingRight: requests && requests.filter(r => r.status === 'Pendiente' || r.status === 'Necesita Revisión').length > 0 ? '24px' : '16px'
+                  }}>
+                  <Icon name="list" size="16px"/> Mis Solicitudes
+                  {requests && requests.filter(r => r.status === 'Pendiente' || r.status === 'Necesita Revisión').length > 0 && (
+                    <span className="nav-badge">
+                      {requests.filter(r => r.status === 'Pendiente' || r.status === 'Necesita Revisión').length}
+                    </span>
+                  )}
+                </button>
+                
+                {isManager && (
+                  <button 
+                    ref={el => tabRefs.current['team'] = el}
+                    onClick={() => setActiveTab('team')} 
+                    className={`nav-pill ${activeTab==='team'?'active':''}`}
+                    style={{
+                      position: 'relative',
+                      paddingRight: pending && pending.length > 0 ? '24px' : '16px'
+                    }}>
+                    <Icon name="users" size="16px"/> Equipo
+                    {pending && pending.length > 0 && (
+                      <span className="nav-badge">{pending.length}</span>
+                    )}
+                  </button>
+                )}
+                
+                {isManager && (
+                  <button 
+                    ref={el => tabRefs.current['summary'] = el}
+                    onClick={() => setActiveTab('summary')} 
+                    className={`nav-pill ${activeTab==='summary'?'active':''}`}>
+                    <Icon name="pie-chart" size="16px"/> Resumen
+                  </button>
+                )}
+              </div>
+
+              {/* User Info */}
+              <div className="flex items-center gap-3">
+                <div className="hidden md-block text-right">
+                  <div className="text-bold" style={{fontSize:'13px'}}>
+                    {user.email.split('@')[0]}
+                  </div>
+                  <div className="text-sub" style={{fontSize:'11px', textTransform:'uppercase'}}>
+                    Equipo: {user.team}
+                  </div>
+                </div>
+                <div style={{
+                  width:'36px', 
+                  height:'36px', 
+                  background:'var(--info-bg)', 
+                  color:'var(--info)', 
+                  borderRadius:'50%', 
+                  display:'flex', 
+                  alignItems:'center', 
+                  justifyContent:'center', 
+                  fontWeight:'700'
+                }}>
+                  {user.email.charAt(0).toUpperCase()}
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {/* Main Content */}
+          <main className="container" style={{paddingTop: '32px', paddingBottom: '100px'}}>
+            {/* Home Tab */}
+            {activeTab === 'home' && (
+              <div className="grid-main fade-in">
+                {/* Calendar - Main Feature */}
+                <div className="h-full">
+                  <CalendarView 
+                    requests={requests} 
+                    selection={{start: startDate, end: endDate}} 
+                    onDateClick={handleCalendarClick} 
+                  />
+                </div>
+                
+                {/* Sidebar - Form & Stats */}
+                <div className="flex-col flex gap-4">
+                  {/* Balance Card */}
+                  <div className="balance-card">
+                    <div className="balance-circle" style={{
+                      width: '120px', 
+                      height: '120px', 
+                      top: '-15px', 
+                      right: '-15px'
+                    }}></div>
+                    <div className="relative">
+                      <div className="input-label" style={{
+                        color: 'rgba(255,255,255,0.8)', 
+                        fontSize: '11px'
+                      }}>
+                        SALDO DISPONIBLE
+                      </div>
+                      <div style={{
+                        fontSize: '48px', 
+                        fontWeight: '800', 
+                        margin: '8px 0', 
+                        lineHeight: '1'
+                      }}>
+                        {user.stats.remaining} <span style={{
+                          fontSize: '18px', 
+                          fontWeight: '600', 
+                          opacity: 0.9
+                        }}>días</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Request Form Card */}
+                  <div className="card card-body" style={{padding: '20px'}}>
+                    <h3 className="text-h3" style={{
+                      marginBottom: '16px', 
+                      display:'flex', 
+                      gap:'8px', 
+                      alignItems:'center', 
+                      fontSize: '16px'
+                    }}>
+                      <Icon 
+                        name={editingId ? 'edit-3' : 'calendar-plus'} 
+                        size="18px" 
+                        className={editingId ? 'text-warning' : 'text-primary'}
+                      />
+                      {editingId ? 'Modificar' : 'Nueva Solicitud'}
+                    </h3>
+                    
+                    {/* Start Date Display */}
+                    <div className="input-group" style={{marginBottom: '12px'}}>
+                      <label className="input-label">Desde</label>
+                      <div className="input-display" style={{padding: '10px 14px', fontSize: '13px'}}>
+                        {startDate ? formatDateFriendly(startDate) : '-'}
+                      </div>
+                    </div>
+                    
+                    {/* End Date Display */}
+                    <div className="input-group" style={{marginBottom: '12px'}}>
+                      <label className="input-label">Hasta</label>
+                      <div className="input-display" style={{padding: '10px 14px', fontSize: '13px'}}>
+                        {endDate ? formatDateFriendly(endDate) : '-'}
+                      </div>
+                    </div>
+                    
+                    {/* Business Days Calculation */}
+                    {startDate && endDate && (
+                      <div style={{
+                        background: 'var(--info-bg)', 
+                        padding: '10px 14px', 
+                        borderRadius: 'var(--radius-m)',
+                        border: '1px solid var(--info)',
+                        marginBottom: '12px'
+                      }}>
+                        <div style={{
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          gap: '8px', 
+                          justifyContent: 'space-between'
+                        }}>
+                          <span style={{
+                            fontSize: '12px', 
+                            color: 'var(--info)', 
+                            fontWeight: '600'
+                          }}>
+                            <Icon name="sun" size="14px"/> Días hábiles
+                          </span>
+                          <span style={{
+                            fontSize: '18px', 
+                            fontWeight: '800', 
+                            color: 'var(--info)'
+                          }}>
+                            {calcBusinessDays(startDate, endDate)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Action Buttons */}
+                    <div className="flex gap-2" style={{marginTop: '16px'}}>
+                      {editingId && (
+                        <button 
+                          onClick={() => {
+                            setEditingId(null); 
+                            setStartDate(''); 
+                            setEndDate('');
+                          }} 
+                          className="btn btn-secondary btn-sm flex-1"
+                        >
+                          Cancelar
+                        </button>
+                      )}
+                      <button 
+                        onClick={handleFormSubmit} 
+                        disabled={submitting} 
+                        className={`btn btn-sm flex-1 ${editingId ? 'btn-warning' : 'btn-primary'}`}
+                      >
+                        {submitting && <span className="spinner-sm" style={{marginRight: '6px'}}></span>}
+                        {submitting ? 'Guardando...' : (editingId ? 'Actualizar' : 'Solicitar')}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* My Requests Tab */}
+            {activeTab === 'my-requests' && (
+              <div className="fade-in">
+                <MyRequestsTab 
+                  requests={requests} 
+                  onCancel={handleCancelRequest} 
+                  onEdit={handleEditClick} 
+                />
+              </div>
+            )}
+
+            {/* Team Management Tab (Manager Only) */}
+            {activeTab === 'team' && isManager && (
+              <div className="fade-in">
+                <TeamManagement 
+                  pendingRequests={pending} 
+                  onAction={handleManagerAction} 
+                />
+              </div>
+            )}
+            
+            {/* Summary Tab (Manager Only) */}
+            {activeTab === 'summary' && isManager && (
+              <div className="fade-in">
+                <SummaryView allRequests={allRequests || []} />
+              </div>
+            )}
+          </main>
+          
+          {/* Mobile Bottom Navigation */}
+          <div className="nav-mobile md-hidden">
+            {['home', 'my-requests', ...(isManager ? ['team', 'summary'] : [])].map(t => {
+              const getBadgeCount = () => {
+                if (t === 'my-requests' && requests) {
+                  return requests.filter(r => 
+                    r.status === 'Pendiente' || r.status === 'Necesita Revisión'
+                  ).length;
+                }
+                if (t === 'team' && pending) {
+                  return pending.length;
+                }
+                return 0;
+              };
+              
+              const badgeCount = getBadgeCount();
+              
+              return (
+                <button 
+                  key={t} 
+                  onClick={() => setActiveTab(t)} 
+                  className={`nav-mobile-item ${activeTab===t ? 'active' : ''}`} 
+                  style={{position: 'relative'}}
+                >
+                  <Icon 
+                    name={
+                      t==='home'?'home':
+                      (t==='team'?'users':
+                      (t==='summary'?'pie-chart':'list'))
+                    } 
+                    size="22px"
+                  />
+                  <span style={{fontSize: '10px', fontWeight: 600}}>
+                    {t==='home'?'Inicio':
+                     (t==='team'?'Equipo':
+                     (t==='summary'?'Resumen':'Solicitudes'))}
+                  </span>
+                  {badgeCount > 0 && (
+                    <span 
+                      className="nav-badge" 
+                      style={{
+                        top: '4px', 
+                        right: '50%', 
+                        transform: 'translateX(50%)'
+                      }}
+                    >
+                      {badgeCount}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    // Render application
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App />);
   </script>
